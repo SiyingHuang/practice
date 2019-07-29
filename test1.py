@@ -11,5 +11,5 @@ for line in csv_file:
 def count_active(data):
     counts = {}
     for line in data_ls:
-        for x in line[1]:
+        for x in line[]:
             counts[x]
