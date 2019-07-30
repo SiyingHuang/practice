@@ -7,10 +7,8 @@ csv_path = path_comp
 
 data_read = pd.DataFrame(pd.read_csv(path_comp)[:10])
 
-pd = pd.DataFrame()
-
 tmp = pd.DataFrame({'mobileno': list('aaabbb'),
-                    'date': list('cdedef'),
-                    'value': [1, 1, 1, 1, 1, 1]})
+                    'active_date': list('cdedef'),
+                    'if_p_2_p': [1, 0, 1, 1, 1, 0]})
 tmp2 = tmp.set_index(['mobileno', 'date'])
 tmp3 = tmp2.unstack()
