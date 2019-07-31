@@ -32,6 +32,8 @@ tuples = [('cobra', 'mark i'), ('cobra', 'mark ii'),
           ('viper', 'mark ii'), ('viper', 'mark iii')]
 # 多重索引
 index = pd.MultiIndex.from_tuples(tuples)
-values = [[12, 2], [0, 4], [10, 20],
-          [1, 4], [7, 1], [16, 36]]
-df = pd.DataFrame(values, columns=['max_speed', 'shield'], index=index)
+columns=['max_speed', 'shield']
+values = [[12, 2], [0, 4],
+          [10, 20], [1, 4],
+          [7, 1], [16, 36]]
+df = pd.DataFrame(values, columns=columns, index=index)
