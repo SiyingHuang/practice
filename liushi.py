@@ -18,8 +18,13 @@ data = data[list(('mobileno', 'active_date', 'if_active'))]
 
 data_ls = data[list(('mobileno', 'active_date', 'if_active'))]
 data_ls2 = data_ls.set_index(['mobileno', 'active_date']).unstack()
+data_ls2.columns = data_ls2.columns.levels[1]
+
 data_ls2.index
 data_ls2.columns
+
+data_ls2.iloc[0]
+data_ls2.loc[13903523283]
 
 
 
