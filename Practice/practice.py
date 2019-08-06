@@ -6,14 +6,14 @@ import pandas as pd
 arrays = [[1, 1, 2, 2], ['red', 'blue', 'red', 'blue']]
 pd.MultiIndex.from_arrays(arrays, names=('number', 'color'))
 # 2、from tuples 从元组
-（1）
+# （1）普通元组
 tuples = [(1, 'red'), (1, 'blue'), (2, 'red'), (2, 'blue')]
 pd.MultiIndex.from_tuples(tuples, names=('number', 'color'))
 # Out:
 MultiIndex(levels=[[1, 2], ['blue', 'red']],
            codes=[[0, 0, 1, 1], [1, 0, 1, 0]],
            names=['number', 'color'])
-（2）
+# （2）多重索引
 tuples = [('cobra', 'mark i'), ('cobra', 'mark ii'),
           ('sidewinder', 'mark i'), ('sidewinder', 'mark ii'),
           ('viper', 'mark ii'), ('viper', 'mark iii')]
@@ -35,7 +35,30 @@ tmp2 = tmp.set_index(['mobileno', 'date']).unstack()
 df = pd.DataFrame([[1, 2], [4, 5], [7, 8]],
                   index=['cobra', 'viper', 'sidewinder'],
                   columns=['max_speed', 'shield'])
-# （1）loc
-df.loc['cobra'] #Series. But df.loc[['cobra']] --DataFrame
+df.columns.size # 列数
+df.iloc[:,0].size # 行数，即获取“所有的行的第0列”的大小
+# （1）loc 逗号前取行，逗号后取列
+# 普通DataFrame
+df.loc['cobra'] #Series. df.loc[['cobra']] --DataFrame
+df.loc['cobra':'viper', ['shield']] # --DataFrame
+df.loc[df['max_speed'] == 4]
+df.loc[df['max_speed'] == 4, ['shield']] # --DataFrame
+df[df['shield'] == 2]
+df.loc[[True, False, True], ['shield']] # --DataFrame
+df1 = df.copy()
+df1.loc[['cobra'], ['shield']] = 10
+df1.loc['cobra'] = 10
+df1.loc[:, 'shield'] = 2
+# 多重DataFrame
+df.loc[('cobra', 'mark i')] # --Series
+df.loc[('cobra', 'mark i'):'sidewinder']
+df.loc[('cobra', 'mark i'):('sidewinder', 'mark i')]
 # （2）iloc
-df.iloc[]
+df.iloc[0]
+df.iloc[[0, 1]]
+df.iloc[:2]
+df.iloc[0, 1]
+df.iloc[[0,2], [1]]
+df.iloc[1:2, 0:1]
+df.iloc[:, [True, False]]
+
