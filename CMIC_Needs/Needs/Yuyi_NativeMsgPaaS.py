@@ -26,8 +26,8 @@ def My_to_csv2(data_ys):
     data.to_csv(r'C:\Users\Administrator\Desktop\1.txt', header=False, index=False)
 
 # 直接
-def My_to_csv(data_ys):
-    data = data_ys[['mobileno']]
+def My_to_csv(data_ys, csv_name):
+    data = data_ys.copy()
     data.to_csv(r'C:\Users\Administrator\Desktop\1.txt', header=False, index=False)
 
 My_to_csv(data_yy_tmp)
