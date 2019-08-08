@@ -19,17 +19,3 @@ My_to_csv(data_yz_tmp)
 
 data_yz_tmp3[['mobileno', 'group']].to_csv(r'C:\Users\Administrator\Desktop\fmt_not_zero.txt',
                                   header=False, index=False)
-
-
-#  temp
-with open(r'C:\Users\Administrator\Desktop\各品牌流失用户数据\华为\华为_2-4.txt') as f:
-    for i in range(5):
-        tmp = f.readline()
-        print(tmp)
-data_yz = pd.read_csv(r'C:\Users\Administrator\Desktop\各品牌流失用户数据\华为\华为_2-4.txt',
-                      sep='|', header=None,
-                      names=['mobileno'],
-                      encoding='GBK')
-data_yz_mingan = pd.read_csv(r'C:\Users\Administrator\Desktop\敏感号码.txt',
-                      sep='|', header=None,
-                      names=['mobileno'])

@@ -62,3 +62,19 @@ df.iloc[[0,2], [1]]
 df.iloc[1:2, 0:1]
 df.iloc[:, [True, False]]
 
+
+# 自己写的太复杂的 to_csv 函数
+def My_to_csv2(data_ys):
+    data = []
+    for line in data_ys.index:
+        data.append(data_ys.iloc[line])
+    data = pd.DataFrame(data)[['mobileno']]
+    data.to_csv(r'C:\Users\Administrator\Desktop\1.txt', header=False, index=False)
+
+# 直接
+def My_to_csv(data_ys, csv_name):
+    data = data_ys[['mobileno']]
+    name = csv_name
+    data.to_csv(r'C:\Users\Administrator\Desktop\{}.txt'.format(name), header=False, index=False)
+
+My_to_csv(data_yy_tmp, 'fmsg_over1')

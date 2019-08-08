@@ -28,8 +28,9 @@ data2 = pd.read_csv(r'C:\Users\Administrator\Desktop\育艺\Python匹配\yuyi_yu
 data1 = data1.loc[data1.prov != '上海']
 data1 = data1.loc[data1.prov != '上海', ['mobileno']]
 data2['target'] = 1
-result = pd.merge(data1, data2, how='inner', on='mobileno')
 
+# 方法1：用merge方法
+result = pd.merge(data1, data2, how='inner', on='mobileno')
 # test
 tmp1 = pd.DataFrame({'A': [1, 2, 3, 4, 5],
                      'B': [1, 1, 1, 1, 1]})
@@ -37,7 +38,7 @@ tmp2 = pd.DataFrame({'A': [3, 4, 5, 6, 7]})
 Result = pd.merge(tmp1, tmp2, how='inner', on='A')
 Result = pd.merge(tmp1[['A']], tmp2, how='inner', on='A')
 
-# 先取值，再求交集
+# 方法2：先取值，再求交集
 tmp3 = set(tmp1.A.values)
 tmp4 = set(tmp2.A.values)
 Result2 = tmp3 & tmp4
