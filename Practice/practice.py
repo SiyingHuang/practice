@@ -73,7 +73,7 @@ def My_to_csv2(data_ys):
 
 # 直接
 def My_to_csv(data_ys, csv_name):
-    data = data_ys[['mobileno']]
+    data = data_ys
     name = csv_name
     data.to_csv(r'C:\Users\Administrator\Desktop\{}.txt'.format(name), header=False, index=False)
 

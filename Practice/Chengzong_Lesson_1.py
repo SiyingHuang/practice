@@ -1,8 +1,10 @@
-def my_pow(x, n):
-    return x ** n
+# 【Lesson2 练习】
 
-from lib import m
-from lib.cj_lesson import *
+
+
+
+
+# 【Lesson1 练习】
 
 # 1、交互式输入与格式化输出
 def user_info():
@@ -14,7 +16,7 @@ def user_info():
             break
         except ValueError:
             print('年龄格式不正确，请重新输入。')
-    print('您的姓名是：{}\n您的性别是：{}\n您是{}年出生的。'.format(name, sex, 2019-int(age)))
+    print('您的姓名是：{}\n您的性别是：{}\n您是{}年出生的。'.format(name, sex, 2019 - int(age)))
 
 # 2、字符串操作
 # （1）
