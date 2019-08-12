@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 
 ### pd.MultiIndex 构造多重索引
 
@@ -61,6 +62,7 @@ df.iloc[0, 1]
 df.iloc[[0,2], [1]]
 df.iloc[1:2, 0:1]
 df.iloc[:, [True, False]]
+
 
 
 # 自己写的太复杂的 to_csv 函数
