@@ -10,6 +10,10 @@ data_yy = pd.read_csv(r'C:\Users\Administrator\Desktop\native_msg_07_middle.txt'
                       sep='|', header=None,
                       names=['mobileno', 'all', 'txt', 'pic', 'vid', 'voi', 'pla', 'fmt'],
                       encoding='GBK')
+data_yy = pd.read_csv(r'C:\Users\Administrator\Desktop\yuyi_yuyin_overorequal2_1to11.txt',
+                      sep='|', header=None, usecols=[0, 1],
+                      names=['mobileno', 'yuyin'],
+                      encoding='GBK')
 
 # 【筛选符合消息量条件的号码】
 data_yy_tmp = data_yy.loc[(data_yy['all'] >= 8) & (data_yy['all'] <= 23)]
@@ -44,6 +48,7 @@ data5['group'] = 'E'
 data6 = pd.read_csv(r'C:\Users\Administrator\Desktop\育艺\07.30 PaaS用户年龄分层匹配\fmsg_over1.txt',
                     sep=',', header=None, usecols=[0], names=['mobileno'])
 data6['group'] = 'F'
+
 
 data = data1.append([data2, data3, data4, data5, data6])  # 只能append至末尾。
 data = pd.concat((data1, data2, data3, data4, data5, data6), axis=0)

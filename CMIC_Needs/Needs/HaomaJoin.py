@@ -11,26 +11,29 @@ with open(r'C:\Users\Administrator\Desktop\育艺\Python匹配\1600W.txt', 'r', 
     for i in range(5):
         tmp = f.readline()
         print(tmp)
-with open(r'C:\Users\Administrator\Desktop\育艺\Python匹配\139邮箱酷版日活_190722-31.txt') as f:
+with open(r'C:\Users\Administrator\Desktop\育艺\139邮箱酷版日活明细_190801-03.txt') as f:
     for i in range(5):
         tmp = f.readline()
         print(tmp)
-with open(r'C:\Users\Administrator\Desktop\育艺\Python匹配\yuyi_yuyin_overorequal2.txt', 'r') as f:
+with open(r'C:\Users\Administrator\Desktop\yuyi_yuyin_overorequal2_1to11.txt', 'r') as f:
     for i in range(5):
         tmp = f.readline()
         print(tmp)
 
-data1 = pd.read_csv(r'C:\Users\Administrator\Desktop\育艺\Python匹配\1600W.txt',
-                    sep=',', header=None, names=['mobileno', 'prov', 'term'])
-data2 = pd.read_csv(r'C:\Users\Administrator\Desktop\育艺\Python匹配\yuyi_yuyin_overorequal2.txt',
+data1 = pd.read_csv(r'C:\Users\Administrator\Desktop\育艺\139kuban_190801-03.txt',
+                    sep='|', header=None, names=['mobileno', 'date'])
+data2 = pd.read_csv(r'C:\Users\Administrator\Desktop\育艺\139kuban_190804-12.txt',
+                    sep='|', header=None, names=['mobileno', 'date'])
+data3 = pd.read_csv(r'C:\Users\Administrator\Desktop\yuyi_yuyin_overorequal2_1to11.txt',
                     sep='|', header=None, usecols=[0], names=['mobileno'])
 
 data1 = data1.loc[data1.prov != '上海']
 data1 = data1.loc[data1.prov != '上海', ['mobileno']]
 data2['target'] = 1
+data2 = pd.concat((data1, data2), axis=0)
 
 # 方法1：用merge方法
-result = pd.merge(data1, data2, how='inner', on='mobileno')
+result = pd.merge(data2, data3, how='inner', on='mobileno')
 # test
 tmp1 = pd.DataFrame({'A': [1, 2, 3, 4, 5],
                      'B': [1, 1, 1, 1, 1]})
@@ -43,3 +46,6 @@ tmp3 = set(tmp1.A.values)
 tmp4 = set(tmp2.A.values)
 Result2 = tmp3 & tmp4
 Result2 = pd.Series(list(Result2))
+
+result['mobileno'].to_csv(r'C:\Users\Administrator\Desktop\yuyi_yuyin_jiaoyu0717to0808.txt',
+                          header='False', index=False)
