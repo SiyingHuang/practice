@@ -1,19 +1,21 @@
 import pandas as pd
 import os
 
-with open(r'C:\Users\Administrator\Desktop\native_msg_07_middle.txt') as f:
+with open(r'C:\Users\Administrator\Desktop\native_msg_07_middle.txt', encoding='utf-8') as f:
     for i in range(5):
         tmp = f.readline()
         print(tmp)
 
 data_yy = pd.read_csv(r'C:\Users\Administrator\Desktop\native_msg_07_middle.txt',
                       sep='|', header=None,
-                      names=['mobileno', 'all', 'txt', 'pic', 'vid', 'voi', 'pla', 'fmt'],
-                      encoding='GBK')
+                      names=['mobileno', 'term_brand', 'all', 'txt', 'pic', 'vid', 'voi', 'pla', 'fmt'],
+                      dtype={'term_brand': 'str'},
+                      encoding='utf-8')
 data_yy = pd.read_csv(r'C:\Users\Administrator\Desktop\yuyi_yuyin_overorequal2_1to11.txt',
                       sep='|', header=None, usecols=[0, 1],
                       names=['mobileno', 'yuyin'],
                       encoding='GBK')
+
 
 # 【筛选符合消息量条件的号码】
 data_yy_tmp = data_yy.loc[(data_yy['all'] >= 8) & (data_yy['all'] <= 23)]
@@ -63,3 +65,19 @@ data = data[data['mobileno'].map(lambda x: str(x)[0] == '1')]
 data.iloc[:,0].size
 
 My_to_csv(data, '合并')
+
+
+# 【浩宇下发消息需求】
+data_yy = pd.read_csv(r'C:\Users\Administrator\Desktop\native_msg_07_middle.txt',
+                      sep='|', header=None,
+                      usecols=[0, 1, 2, 8],
+                      names=['mobileno', 'term_brand', 'all', 'fmt'],
+                      dtype={'term_brand': 'str'},
+                      encoding='utf-8')
+data_yy_tmp = data_yy.loc[data_yy['term_brand'] == '华为公版' ]
+data_yy_tmp2 = data_yy.loc[data_yy['term_brand'] == '华为战略']
+data_yy_tmp = data_yy_tmp.append(data_yy_tmp2)
+data_yy_tmp = data_yy_tmp.loc[(data_yy['all'] >= 24) | (data_yy['fmt'] >= 1)]
+data_yy_tmp.drop_duplicates()
+data_yy_tmp[['mobileno']].to_csv(r'C:\Users\Administrator\Desktop\hy.txt',
+                                 header=False, index=False)
