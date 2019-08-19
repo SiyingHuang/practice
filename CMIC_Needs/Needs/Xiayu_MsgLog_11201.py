@@ -18,12 +18,3 @@ data_msg = pd.read_csv(r'C:\Users\Administrator\Desktop\xiaoxiaole_0802to0808\xi
                               'v', 'w', 'x', 'y', 'z'])
 data_msg_tmp = data_msg.loc[data_msg['a'].between(20190802,20190804)]
 data_msg_tmp = data_msg_tmp.sort_values(by=['a', 'z'], ascending=True)
-
-
-def My_to_csv(data_ys, csv_name):
-    data = data_ys
-    name = csv_name
-    data.to_csv(r'C:\Users\Administrator\Desktop\{}.txt'.format(name),
-                header=False, index=False)
-
-My_to_csv(data_msg_tmp, 'xiaoxiaole_0802to0804')
