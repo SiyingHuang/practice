@@ -1,3 +1,5 @@
+# 承宗做的流失用户分析
+
 import pandas as pd
 
 path_home = r'E:\学习\充电\Python学习\流失用户分析\test1.csv'

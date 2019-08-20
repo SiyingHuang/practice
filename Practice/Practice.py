@@ -1,7 +1,8 @@
 import pandas as pd
 import numpy as np
+import time
 
-### pd.MultiIndex 构造多重索引
+### 【pd.MultiIndex 构造多重索引】
 
 # 1、from arrays 从数组
 arrays = [[1, 1, 2, 2], ['red', 'blue', 'red', 'blue']]
@@ -77,6 +78,4 @@ def My_to_csv(data_ys, csv_name):
     data = data_ys
     name = csv_name
     data.to_csv(r'C:\Users\Administrator\Desktop\{}.txt'.format(name), header=False, index=False)
-
-
 My_to_csv(data_yy_tmp, 'fmsg_over1')

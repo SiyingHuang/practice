@@ -1,7 +1,7 @@
 import pandas as pd
 import os
 
-with open(r'C:\Users\Administrator\Desktop\native_msg_07_middle.txt', encoding='utf-8') as f:
+with open(r'C:\Users\Administrator\Desktop\yizhong_msg_sichuan_0801to0819.txt', encoding='utf-8') as f:
     for i in range(5):
         tmp = f.readline()
         print(tmp)

@@ -1,3 +1,6 @@
+# 小米12月有效结算差异数据核查
+# 差异号码量：6447713
+
 import pandas as pd
 
 file_path = r'C:\Users\Administrator\Desktop\小米结算差异数据核查\jiesuan_new_active_notinour_jiesuan_check.txt'

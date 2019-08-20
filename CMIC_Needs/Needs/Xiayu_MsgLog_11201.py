@@ -1,6 +1,6 @@
 import pandas as pd
 
-with open(r'C:\Users\Administrator\Desktop\xiaoxiaole_0802to0808.txt') as f:
+with open(r'C:\Users\Administrator\Desktop\rcs_0815to0822.txt') as f:
     for i in range(5):
         tmp = f.readline()
         print(tmp)
@@ -10,7 +10,7 @@ for i in range(26):
 zimu = [chr(i) for i in range(ord('a'), ord('z')+1)]
 print(zimu)
 
-data_msg = pd.read_csv(r'C:\Users\Administrator\Desktop\xiaoxiaole_0802to0808\xiaoxiaole_0802to0808.txt',
+data_msg = pd.read_csv(r'C:\Users\Administrator\Desktop\rcs_0815to0822.txt',
                        sep='|', header=None,
                        names=['a', 'b', 'c', 'd', 'e', 'f', 'g',
                               'h', 'i', 'j', 'k', 'l', 'm', 'n',

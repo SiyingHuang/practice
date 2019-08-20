@@ -1,16 +1,21 @@
+# 【Lesson3 练习】
+# 1、
+print('a')
+
 # 【Lesson2 练习】
 # 1、列表操作
 list1 = list(('apple', 'pear', 'orange'))
 list1[:2]
 list1.insert(1, 'coconut')
-list1.pop(2)
+list1.pop(2) # 或list1.remove('apple')
 'apple' in list1
 # 2、字典操作
 dict1 = {u'小明': '1990-1-1', u'小红': '2000-1-1', u'小王': '2010-1-1'}
 dict1['小红']
 dict1['小王'] = '2010-12-12'
-'小明' in dict1
-dict1.values() == '2020-10-1'
+'小明' in dict1  # 或'小明' in dict1.keys()
+dict1.values() == '2020-10-1'  # '2020-10-1' in dict1.values()
+
 
 # 【Lesson1 练习】
 # 1、交互式输入与格式化输出
