@@ -1,3 +1,5 @@
+# 对原始数据，剔除指定号码
+
 import pandas as pd
 import numpy as np
 

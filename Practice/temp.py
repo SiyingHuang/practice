@@ -1,10 +1,10 @@
 import pandas as pd
 
 
-data.to_csv(r'C:\Users\Administrator\Desktop\副本小米12月有效结算核查（厂家有我方无）0806.txt',
-            float_format=str, sep='|', header=None, encoding='utf-8')
-
-
+with open(r'C:\Users\Administrator\Desktop\1300040.csv') as f:
+    for i in range(5):
+        tmp = f.readline()
+        print(tmp)
 
 
 filepath = r'C:\Users\Administrator\Desktop\【麻烦思颖协助抽样】RCS增强短信高价值NPS短信调研需求\24条+1000以上组.xlsx'

@@ -1,6 +1,18 @@
 # 【Lesson3 练习】
-# 1、
-print('a')
+# 1、检查输入
+def int_check():
+    while True:
+        tmp = input('请输入0-9的整数：')
+        if tmp.isnumeric():
+            break
+        else:
+            print('您输入的不是整数，请重新输入。')
+        if int(tmp) >=0 & int(tmp) <= 9:
+            break
+        else:
+            print('您输入的整数超出了0-9的范围，请重新输入。')
+
+
 
 # 【Lesson2 练习】
 # 1、列表操作

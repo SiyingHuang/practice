@@ -64,14 +64,13 @@ df.iloc[1:2, 0:1]
 df.iloc[:, [True, False]]
 
 
-# 自己写的太复杂的 to_csv 函数
+# 自己写的太复杂的 to_csv 函数 →_→
 def My_to_csv_own(data_ys):
     data = []
     for line in data_ys.index:
         data.append(data_ys.iloc[line])
     data = pd.DataFrame(data)[['mobileno']]
     data.to_csv(r'C:\Users\Administrator\Desktop\1.txt', header=False, index=False)
-
 
 # 直接
 def My_to_csv(data_ys, csv_name):
