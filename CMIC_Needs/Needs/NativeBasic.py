@@ -1,3 +1,6 @@
+# 取出历史全量的Native用户信息
+# 如Native新增用户、Native活跃用户等
+
 import pandas as pd
 
 with open(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\基础数据\native_new_basic_0731.txt',

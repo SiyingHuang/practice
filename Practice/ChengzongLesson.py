@@ -2,15 +2,18 @@
 # 1、检查输入
 def int_check():
     while True:
-        tmp = input('请输入0-9的整数：')
-        if tmp.isnumeric():
-            break
+        var = input('请输入一个0-9之间的整数：')
+        if var.isnumeric():
+            if (int(var) >=0) & (int(var) <= 9):
+                break
+            else:
+                print('输入的整数超出0-9的范围，请重新输入。')
         else:
             print('您输入的不是整数，请重新输入。')
-        if int(tmp) >=0 & int(tmp) <= 9:
-            break
-        else:
-            print('您输入的整数超出了0-9的范围，请重新输入。')
+
+# 2、猜列表数字
+import random
+
 
 
 

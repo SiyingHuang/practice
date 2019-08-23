@@ -62,7 +62,7 @@ data['mobileno'] = data['mobileno'].astype('str')
 data = data[data['mobileno'].str.len() == 11]
 data = data[data['mobileno'].map(lambda x: str(x)[0] == '1')]
 
-data.iloc[:,0].size
+data.iloc[:, 0].size
 
 My_to_csv(data, '合并')
 

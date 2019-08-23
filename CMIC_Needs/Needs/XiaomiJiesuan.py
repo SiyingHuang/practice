@@ -82,3 +82,15 @@ tmp6 = pd.DataFrame((set(data_jiesuan2_3[0]) - set(tmp5[0])))
 
 # Step4、剩余1408个
 data_jiesuan2_4 = pd.merge(data_jiesuan2_3[:],tmp6[0])
+
+
+
+file_path = r'C:\Users\Administrator\Desktop\jiesuan_imei_check_12to05.txt'
+with open(file_path,
+          encoding='utf-8') as f:
+    for i in range(5):
+        tmp = f.readline()
+        print(tmp)
+data_imei = pd.read_csv(r'C:\Users\Administrator\Desktop\jiesuan_imei_check_12to05.txt',
+                        sep='|', header=None)
+data_imei[0].drop_duplicates()
