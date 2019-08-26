@@ -4,9 +4,9 @@ import pandas as pd
 import numpy as np
 
 # 待剔除号码
-data_num_except = pd.read_csv(r'C:\Users\Administrator\Desktop\请协助提取native活动第二批数据，谢谢\结果\result_all.txt',
+data_num_except = pd.read_csv(r'C:\Users\Administrator\Desktop\其他_tichu.txt',
                       sep='|', header=None,
-                      names=['mobileno','group', 'date'],
+                      names=['mobileno'],
                       encoding='GBK')
 data_num_except = data_num_except['mobileno'].astype('str')
 
@@ -28,7 +28,7 @@ data_num_jituan['mobileno'] = data_num_jituan['mobileno'].astype('str')
 data_num_jituan['tag'] = 2
 
 # 执行剔除操作
-Result = pd.merge(data_num_except, data_num_jituan,
+Result = pd.merge(data_num_except, data_num_mingan,
                   how='left',
                   on='mobileno')
 Result.loc[Result['tag'] == 2]

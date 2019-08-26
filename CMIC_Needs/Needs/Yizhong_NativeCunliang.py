@@ -38,7 +38,8 @@ data_section = pd.read_csv(path3, header=None,
                            names=['prov', 'city', 'section_no'])
 data_section_prov = data_section.loc[(data_section['prov'] != '中国') & (data_section['prov'] != '其他')]
 data_section_prov['section_no'] = data_section_prov['section_no'].astype(np.int32)
-# 源数据
+
+# 源数据（完成剔除后）
 path4 = r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\一众\剔除（和飞信+敏感）结果_0818\MIUI10_0818.txt'
 data = pd.read_csv(path4, header=None, names=['mobileno'])
 data['sec'] = data['mobileno'].map(lambda x: str(x)[:7]).astype(np.int32)
@@ -47,6 +48,6 @@ data_tmp = pd.merge(data, data_section_prov,
                     how='inner',
                     left_on='sec', right_on='section_no')
 
-data_tmp.loc[data_tmp['prov'] == '湖南']['mobileno'].to_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\一众\剔除（和飞信+敏感）结果_0818\MIUI10_湖南（471674个）_0821号段表.txt',
+data_tmp.loc[data_tmp['prov'] == '广东']['mobileno'].to_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\一众\剔除（和飞信+敏感）结果_0818\MIUI10_广东（2667416个）_0821号段表.txt',
                 sep='|', header=None, index=False)
 data_tmp['prov'].value_counts()

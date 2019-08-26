@@ -8,4 +8,3 @@ with open(r'C:\Users\Administrator\Desktop\qiyuan_msg.txt', encoding='utf-8') as
 
 gro = data_xiaomi.groupby('term')
 gro.describe()
-
