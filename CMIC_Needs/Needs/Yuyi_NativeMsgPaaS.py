@@ -19,6 +19,7 @@ data_yy = pd.read_csv(r'C:\Users\Administrator\Desktop\native_msg_07_middle.txt'
 data_yy_tmp = data_yy.loc[(data_yy['all'] >= 8) & (data_yy['all'] <= 23)]
 data_yy_tmp = data_yy.loc[data_yy['all'] >= 24]
 data_yy_tmp = data_yy.loc[data_yy['fmt'] >= 1]
+data_yy_tmp = data_yy.loc[data_yy['all'] >= 200, ['mobileno']]
 # 2、消息量为0的用户（用周期内活跃用户，剔除1、中发消息量不为0的号码）
 # 全量7月Native活跃号码
 data_num_active = pd.read_csv(r'C:\Users\Administrator\Desktop\育艺\07.30 PaaS用户年龄分层匹配\native_active_July.txt',
@@ -68,11 +69,12 @@ data6['group'] = 'F'
 
 
 data = data1.append([data2, data3, data4, data5, data6])  # 只能append至末尾。
-data = pd.concat((data1, data2, data3, data4, data5, data6), axis=0)
+data = pd.concat((data1, data2, data3, data4, data5, data6), axis=0)  # 或用concat拼接，axis=0表示按行拼接。
 data.reset_index(drop=True, inplace=True)  # inplace就地修改。或data = data.reset_index(drop=True)
 
 data.info()
-data['mobileno'] = data['mobileno'].astype('str')
+data['mobileno'] = data['mobileno'].astype('str') # 转为str，便于后续计算字段长度
+data.reset_index
 
 
 # 【剔除异常号码】
@@ -80,9 +82,6 @@ data = data[data['mobileno'].str.len() == 11]
 data = data[data['mobileno'].map(lambda x: str(x)[0] == '1')]
 data.iloc[:, 0].size
 My_to_csv(data, '合并')
-
-
-
 
 
 

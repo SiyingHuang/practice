@@ -14,6 +14,8 @@ data_native_basic = pd.read_csv(
     sep='|', header=None, usecols=[0, 1], names=['new_date', 'mobileno'])
 data_native_basic = data_native_basic.sort_values(by='new_date').drop_duplicates(subset='mobileno',
                                                                                  keep='first')  # 保留号码最早一条新增记录
+data_native_basic = data_native_basic.sort_values(by='new_date').drop_duplicates(keep='first')  # 保留号码、新增日期的唯一组合
+
 # 【统计新增用户数】
 # 按天统计
 tmp = data_native_basic.groupby(['new_date']).count()  # 方式1
@@ -22,6 +24,7 @@ tmp2 = data_native_basic['new_date'].value_counts().sort_index()  # 方式2（�
 tmp_month = tmp.reset_index()
 tmp_month['month'] = tmp_month['new_date'].map(lambda x: str(x)[:6])
 tmp_month = tmp_month[['month', 'mobileno']].groupby(['month']).sum()
+
 
 # 检查重复数据（当同时对mobileno,new_date去重时，会存在一个号码有多天的新增记录）
 tmp = data_native_basic.loc[data_native_basic.duplicated(subset='mobileno')]

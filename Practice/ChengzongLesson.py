@@ -13,8 +13,25 @@ def int_check():
 
 # 2、猜列表数字
 import random
-
-
+def int_game():
+    setInt = random.sample(range(9), 3)
+    print('您需要猜的数字，是一个[0. 9]之间的整数。')
+    print('您有5次猜数机会。')
+    for guessTimes in range(5):
+        guessNum = int(input('请输入您猜的数字：'))
+        if guessNum not in setInt:
+            print('猜错了！')
+        else:
+            break
+    if guessNum in setInt:
+        if guessNum == setInt[0]:
+            print('No.1')
+        elif guessNum == setInt[1]:
+            print('No.2')
+        else:
+            print('No.3')
+    else:
+        print('很遗憾，你的5次机会用完了。正确答案为：'+str(setInt))
 
 
 # 【Lesson2 练习】
