@@ -35,6 +35,11 @@ from collections import Counter
 counts = Counter(counts).most_common(10)
 # 法3：用pandas
 import pandas as pd
-records = pd.DataFrame(records)
-tz_counts = records['tz'].value_counts()
+frame = pd.DataFrame(records)
+tz_counts = frame['tz'].value_counts()
 tz_counts[:10]
+
+# 绘制图像（在pylab模式下才能生效，已尝试在ipython可绘制图像）
+clean_tz = frame['tz'].fillna('Missing')
+clean_tz.loc[clean_tz == ''] = 'Unknown'  # 或写成clean_tz[clean_tz == ''] = 'Unknown'
+clean_tz.value_counts()[:10].plot(kind='barh', rot=0)

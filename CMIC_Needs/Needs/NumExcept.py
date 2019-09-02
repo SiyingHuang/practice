@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 
 # 待剔除号码
-data_num_except = pd.read_csv(r'C:\Users\Administrator\Desktop\其他_tichu.txt',
+data_num_except = pd.read_csv(r'C:\Users\Administrator\Desktop\mz_hx_day_active.txt',
                       sep='|', header=None,
                       names=['mobileno'],
                       encoding='GBK')
