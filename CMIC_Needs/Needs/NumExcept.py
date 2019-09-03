@@ -8,6 +8,10 @@ data_num_except = pd.read_csv(r'C:\Users\Administrator\Desktop\mz_hx_day_active.
                       sep='|', header=None,
                       names=['mobileno'],
                       encoding='GBK')
+data_num_except = pd.read_excel(r'C:\Users\Administrator\Desktop\200W未开通号码_1.xlsx',
+                                header=None,
+                                names=['mobileno'],
+                                encoding='GBK')
 data_num_except = data_num_except['mobileno'].astype('str')
 
 # 需剔除号码1
@@ -28,7 +32,7 @@ data_num_jituan['mobileno'] = data_num_jituan['mobileno'].astype('str')
 data_num_jituan['tag'] = 2
 
 # 执行剔除操作
-Result = pd.merge(data_num_except, data_num_mingan,
+Result = pd.merge(Result, data_num_jituan,
                   how='left',
                   on='mobileno')
 Result.loc[Result['tag'] == 2]
@@ -37,6 +41,8 @@ Result = pd.DataFrame(Result).drop_duplicates().astype(np.int64)
 
 Result.to_csv(r'C:\Users\Administrator\Desktop\请协助提取native活动第二批数据，谢谢\结果\result_all_tichu.txt',
               header=False, index=False)
+Result.to_excel(r'C:\Users\Administrator\Desktop\200W未开通号码_1（剔除后）.xlsx',
+                header=False, index=False)
 
 Result.iloc[:, :3].to_csv(r'C:\Users\Administrator\Desktop\请协助提取native活动第二批数据，谢谢\结果\result_all_tichu.txt',
               sep='|', header=False, index=False)
