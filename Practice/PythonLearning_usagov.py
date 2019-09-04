@@ -44,8 +44,7 @@ clean_tz = frame['tz'].fillna('Missing')
 clean_tz.loc[clean_tz == ''] = 'Unknown'  # 或写成clean_tz[clean_tz == ''] = 'Unknown'
 clean_tz.value_counts()[:10].plot(kind='barh', rot=0)
 
-# frame中的a字段
-# 解析USER_AGENT字符串信息（即每行'a'字段中首个元素）
+# 解析USER_AGENT字符串信息（即frame中每行'a'字段中首个元素）
 result = pd.Series(x.split()[0] for x in frame['a'].dropna())
 result[:5]
 result.value_counts()[:3]
@@ -55,5 +54,7 @@ cframe = frame.loc[frame.a.notnull()]
 operating_system = np.where(cframe.a.str.contains('Windows'), 'Windows', 'Not Windows')
 by_tz_os = cframe.groupby(['tz', operating_system])  # 分组结果
 agg_counts = by_tz_os.size().unstack().fillna(0)  # size()相当于Series的value_counts()，进行计数
-indexer = agg_counts.sum(1).argsort()  # 时区出现的次数并升序排列，argsort()返回索引位置。。sum(0)表示按列相加，sum(1)表示按行相加。
+# 统计出现次数最后的时区，所使用的操作系统
+indexer = agg_counts.sum(1).argsort()  # 时区出现的次数并升序排列，argsort()返回原位置索引。sum(0)表示按列相加，sum(1)表示按行相加。
 count_subset = agg_counts.take(indexer)[-10:]  # 最常出现的10个时区的Windows操作系统使用情况（是否Windows）
+
