@@ -56,12 +56,13 @@ data_tmp['prov'].value_counts()
 
 
 
-with open(r'C:\Users\Administrator\Desktop\需求3：native_active_huoyuedays_messcnt.txt\需求3：native_active_huoyuedays_messcnt.txt') as f:
+with open(r'C:\Users\Administrator\Desktop\育艺\7-8月活\native_active_Aug.txt') as f:
     for i in range(5):
         tmp = f.readline()
         print(tmp)
-data = pd.read_csv(r'C:\Users\Administrator\Desktop\需求3：native_active_huoyuedays_messcnt.txt\需求3：native_active_huoyuedays_messcnt.txt', header=None, skiprows=0,
-                   sep='|', names=['mobileno', 'days', 'mess_cnt'])
+data = pd.read_csv(r'C:\Users\Administrator\Desktop\native_liushi_JulynotAug.txt', header=None,
+                   skiprows=0,
+                   sep='|')
 data = data.drop(index=199)
 data['mobileno'] = data['mobileno'].astype(np.int64)
 data['sec'] = data['mobileno'].map(lambda x: str(x)[:7])

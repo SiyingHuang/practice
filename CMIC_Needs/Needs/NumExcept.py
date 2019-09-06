@@ -4,15 +4,14 @@ import pandas as pd
 import numpy as np
 
 # 待剔除号码
-data_num_except = pd.read_csv(r'C:\Users\Administrator\Desktop\mz_hx_day_active.txt',
+data_num_except = pd.read_csv(r'C:\Users\Administrator\Desktop\native_liushi_JulynotAug.txt',
                       sep='|', header=None,
-                      names=['mobileno'],
-                      encoding='GBK')
+                      names=['mobileno', 'brand'])
 data_num_except = pd.read_excel(r'C:\Users\Administrator\Desktop\200W未开通号码_1.xlsx',
                                 header=None,
                                 names=['mobileno'],
                                 encoding='GBK')
-data_num_except = data_num_except['mobileno'].astype('str')
+data_num_except['mobileno'] = data_num_except['mobileno'].astype('str')
 
 # 需剔除号码1
 data_num_mingan = pd.read_csv(r'C:\Users\Administrator\Desktop\敏感号码.txt',
@@ -32,15 +31,16 @@ data_num_jituan['mobileno'] = data_num_jituan['mobileno'].astype('str')
 data_num_jituan['tag'] = 2
 
 # 执行剔除操作
-Result = pd.merge(Result, data_num_jituan,
+Result = pd.merge(data_num_except, data_num_mingan,
                   how='left',
                   on='mobileno')
-Result.loc[Result['tag'] == 2]
-Result = Result.loc[Result['tag'] != 2, ['mobileno']]
+Result.loc[Result['tag'] == 1]
+Result = Result.loc[Result['tag'] != 1]
+Result['mobileno'] = Result['mobileno'].astype(np.int64)
 Result = pd.DataFrame(Result).drop_duplicates().astype(np.int64)
 
-Result.to_csv(r'C:\Users\Administrator\Desktop\请协助提取native活动第二批数据，谢谢\结果\result_all_tichu.txt',
-              header=False, index=False)
+Result.iloc[:, :2].to_csv(r'C:\Users\Administrator\Desktop\native_liushi_JulynotAug（剔除后）.txt',
+                          sep='|', header=False, index=False)
 Result.to_excel(r'C:\Users\Administrator\Desktop\200W未开通号码_1（剔除后）.xlsx',
                 header=False, index=False)
 
