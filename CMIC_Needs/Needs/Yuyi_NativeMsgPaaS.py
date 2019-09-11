@@ -82,22 +82,3 @@ data = data[data['mobileno'].str.len() == 11]
 data = data[data['mobileno'].map(lambda x: str(x)[0] == '1')]
 data.iloc[:, 0].size
 My_to_csv(data, '合并')
-
-
-
-
-
-# 【浩宇下发消息需求】
-data_yy = pd.read_csv(r'C:\Users\Administrator\Desktop\native_msg_07_middle.txt',
-                      sep='|', header=None,
-                      usecols=[0, 1, 2, 8],
-                      names=['mobileno', 'term_brand', 'all', 'fmt'],
-                      dtype={'term_brand': 'str'},
-                      encoding='utf-8')
-data_yy_tmp = data_yy.loc[data_yy['term_brand'] == '华为公版' ]
-data_yy_tmp2 = data_yy.loc[data_yy['term_brand'] == '华为战略']
-data_yy_tmp = data_yy_tmp.append(data_yy_tmp2)
-data_yy_tmp = data_yy_tmp.loc[(data_yy['all'] >= 24) | (data_yy['fmt'] >= 1)]
-data_yy_tmp.drop_duplicates()
-data_yy_tmp[['mobileno']].to_csv(r'C:\Users\Administrator\Desktop\hy.txt',
-                                 header=False, index=False)
