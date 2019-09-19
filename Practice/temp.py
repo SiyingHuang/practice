@@ -19,14 +19,7 @@ Result['mobileno'].to_csv(
     r'C:\Users\Administrator\Desktop\烦请提取Native全量用户数据与腾讯提供的华为、小米用户数据包匹配（匹配日活）\小米rcs（匹配后）.txt',
     header=None, index=False)
 
-data = pd.read_csv(r'C:\Users\Administrator\Desktop\运营侧下发记录(1).txt',
-                   header=None, names=['mobileno'])
-data2 = pd.read_csv(r'C:\Users\Administrator\Desktop\hsy_tmp20190902003_40106581767111_0830_number.txt',
-                    header=None, names=['mobileno'])
-pd.merge(data, data2, how='inner')
-len(set(data.mobileno)-set(data2.mobileno))
-pd.DataFrame(set(data.mobileno)-set(data2.mobileno)).to_csv(r'C:\Users\Administrator\Desktop\网易考拉差异号码.txt',
-                                                header=None, index=False)
+
 
 # 获取文件行数
 count = 0
@@ -34,6 +27,3 @@ f = open(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\�
 for line in f.readlines():
     count = count + 1
 print(count)
-
-
-
