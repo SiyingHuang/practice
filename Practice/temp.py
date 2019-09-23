@@ -27,3 +27,14 @@ f = open(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\�
 for line in f.readlines():
     count = count + 1
 print(count)
+
+
+hh_data = pd.read_csv(r'C:\Users\Administrator\Desktop\红黑名单.txt',
+                   header=None, names=['mobileno'])
+data = pd.read_csv(
+    r'C:\Users\Administrator\Desktop\Fw_Fw_Re_Re_鱼智科技提供中信_广发信用卡用户数据，请与MaaP9月17日活跃用\xqx0918-py200万（Native日活交集）.txt',
+    header=None, names=['mobileno'])
+pd.merge(hh_data, data, how='inner', on='mobileno')
+pd.DataFrame(set(data['mobileno']) - set(hh_data['mobileno'])).to_csv(
+    r'C:\Users\Administrator\Desktop\Fw_Fw_Re_Re_鱼智科技提供中信_广发信用卡用户数据，请与MaaP9月17日活跃用\xqx0918-py200万（Native日活交集）.txt',
+    header=None, index=False)

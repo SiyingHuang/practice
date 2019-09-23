@@ -1,3 +1,7 @@
+# 【Lesson2 练习】
+
+
+
 # 【Lesson3 练习】
 # 1、检查输入
 def int_check():

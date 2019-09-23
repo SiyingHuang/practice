@@ -94,3 +94,30 @@ with open(file_path,
 data_imei = pd.read_csv(r'C:\Users\Administrator\Desktop\jiesuan_imei_check_12to05.txt',
                         sep='|', header=None)
 data_imei[0].drop_duplicates()
+
+
+
+
+cj_data = pd.read_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\06 - 【公版结算】\小米\厂家提供12月有效明细\new_rcs_12月有效结算.txt',
+                      header=None, names=['mobileno'])
+
+# 获取文件行数
+count = 0
+f = open(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\06 - 【公版结算】\小米\jiesuan_xiaomi\MI_NEW_201812.txt', 'r')
+for line in f.readlines():
+    count = count + 1
+print(count)
+our_data = pd.read_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\06 - 【公版结算】\小米\jiesuan_xiaomi\MI_NEW_201812.txt',
+                       sep='|', header=None, encoding='gbk')
+(our_data.loc[(our_data[5] == '是') & (our_data[6] == '是')][1]).drop_duplicates()
+
+
+count = 0
+f = open(r'C:\Users\Administrator\Desktop\20190920_huangsiying_xiaomi_jiesuan_result02_201812.txt', 'r')
+for line in f.readlines():
+    count = count + 1
+print(count)
+our_data_2 = pd.read_csv(
+    r'C:\Users\Administrator\Desktop\20190920_huangsiying_xiaomi_jiesuan_result02_201812.txt',
+    sep='|', header=None, encoding='gbk')
+(our_data_2.loc[(our_data_2[5] == '是') & (our_data_2[6] == '是')][1]).drop_duplicates()

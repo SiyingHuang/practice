@@ -7,15 +7,15 @@ import numpy as np
 
 maap_data = pd.read_csv(r'C:\Users\Administrator\Desktop\native_active_maap_0918.txt',
                         sep='|', header=None, usecols=[0], names=['mobileno'])
-native_data = pd.read_csv(r'C:\Users\Administrator\Desktop\\native_active_0918.txt',
+native_data = pd.read_csv(r'C:\Users\Administrator\Desktop\\native_active_0921.txt',
                           header=None, names=['mobileno'])
 
-path = r'C:\Users\Administrator\Desktop\Fw_Fw_Re_Re_鱼智科技提供中信_广发信用卡用户数据，请与MaaP9月17日活跃用\xqx0918-py200万'
+path = r'C:\Users\Administrator\Desktop\烦请鱼智科技12.4W匹配9月17日Native每日活跃数据'
 data = pd.read_csv(path+'.txt',
                      header=None, skiprows=1, names=['mobileno'])
 tmp = pd.merge(data, maap_data, how='inner', on='mobileno')
 tmp.to_csv(path+'（MaaP日活交集）.txt',
              header=None, index=False)
 tmp = pd.merge(data, native_data, how='inner', on='mobileno')
-tmp.to_csv(path+'（Native日活交集.txt',
-             header=None, index=False)
+tmp.to_csv(path + '（Native日活交集）.txt',
+           header=None, index=False)
