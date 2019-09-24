@@ -1,8 +1,19 @@
 # 小米12月有效结算差异数据核查
 # 差异号码量：6447713
-
 import pandas as pd
 
+cj_data = pd.read_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\06 - 【公版结算】\小米\厂家提供12月有效明细\new_rcs_12月有效结算.txt',
+                      header=None, names=['mobileno'])
+our_data = pd.read_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\06 - 【公版结算】\小米\jiesuan_xiaomi\MI_NEW_201812.txt',
+                       sep='|', header=None, encoding='gbk')
+our_data = (our_data.loc[(our_data[5] == '是') & (our_data[6] == '是')][1]).drop_duplicates()
+our_data = pd.DataFrame(our_data)
+our_data.rename(columns = {1: 'mobileno'}, inplace=True)
+our_data['tag'] = 1
+Result = pd.merge(cj_data, our_data, how='left', on=['mobileno'])
+len(Result.loc[Result['tag'] != 1])
+
+# 差异核查过程
 file_path = r'C:\Users\Administrator\Desktop\小米结算差异数据核查\jiesuan_new_active_notinour_jiesuan_check.txt'
 with open(file_path,
           encoding='utf-8') as f:
@@ -94,30 +105,3 @@ with open(file_path,
 data_imei = pd.read_csv(r'C:\Users\Administrator\Desktop\jiesuan_imei_check_12to05.txt',
                         sep='|', header=None)
 data_imei[0].drop_duplicates()
-
-
-
-
-cj_data = pd.read_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\06 - 【公版结算】\小米\厂家提供12月有效明细\new_rcs_12月有效结算.txt',
-                      header=None, names=['mobileno'])
-
-# 获取文件行数
-count = 0
-f = open(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\06 - 【公版结算】\小米\jiesuan_xiaomi\MI_NEW_201812.txt', 'r')
-for line in f.readlines():
-    count = count + 1
-print(count)
-our_data = pd.read_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\06 - 【公版结算】\小米\jiesuan_xiaomi\MI_NEW_201812.txt',
-                       sep='|', header=None, encoding='gbk')
-(our_data.loc[(our_data[5] == '是') & (our_data[6] == '是')][1]).drop_duplicates()
-
-
-count = 0
-f = open(r'C:\Users\Administrator\Desktop\20190920_huangsiying_xiaomi_jiesuan_result02_201812.txt', 'r')
-for line in f.readlines():
-    count = count + 1
-print(count)
-our_data_2 = pd.read_csv(
-    r'C:\Users\Administrator\Desktop\20190920_huangsiying_xiaomi_jiesuan_result02_201812.txt',
-    sep='|', header=None, encoding='gbk')
-(our_data_2.loc[(our_data_2[5] == '是') & (our_data_2[6] == '是')][1]).drop_duplicates()

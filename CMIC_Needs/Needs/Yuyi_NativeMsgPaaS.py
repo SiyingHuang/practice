@@ -43,36 +43,17 @@ data_yy_tmp[['mobileno']].to_csv(r'C:\Users\Administrator\Desktop\fmsg.txt',
 
 
 # 【合并多个txt文件】
-data1 = pd.read_csv(r'C:\Users\Administrator\Desktop\育艺\07.30 PaaS用户年龄分层匹配\msg_total_zero.txt',
-                    sep=',', header=None, usecols=[0], names=['mobileno'])
-data1['group'] = 'A'
+txt_dict = {'msg_total_zero(0826)': 'A', 'msg_total_1to7': 'B', 'msg_total_8to23': 'C', 'msg_total_over24': 'D',
+            'fmsg_over0': 'E', 'fmsg_over1': 'F'}
+pieces = []
+for txt_name, group in txt_dict.items():
+    path = r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\育艺\07.30 PaaS用户年龄分层匹配\%s.txt' % txt_name
+    frame = pd.read_csv(path, names=['mobileno'])
+    frame['group'] = group
+    pieces.append(frame)
+# 将所有数据合并到单个DataFrame中
+data = pd.concat(pieces, ignore_index=True)
 
-data2 = pd.read_csv(r'C:\Users\Administrator\Desktop\育艺\07.30 PaaS用户年龄分层匹配\msg_total_1to7.txt',
-                    sep=',', header=None, usecols=[0], names=['mobileno'])
-data2['group'] = 'B'
-
-data3 = pd.read_csv(r'C:\Users\Administrator\Desktop\育艺\07.30 PaaS用户年龄分层匹配\msg_total_8to23.txt',
-                    sep=',', header=None, usecols=[0], names=['mobileno'])
-data3['group'] = 'C'
-
-data4 = pd.read_csv(r'C:\Users\Administrator\Desktop\育艺\07.30 PaaS用户年龄分层匹配\msg_total_over24.txt',
-                    sep=',', header=None, usecols=[0], names=['mobileno'])
-data4['group'] = 'D'
-
-data5 = pd.read_csv(r'C:\Users\Administrator\Desktop\育艺\07.30 PaaS用户年龄分层匹配\fmsg_over0.txt',
-                    sep=',', header=None, usecols=[0], names=['mobileno'])
-data5['group'] = 'E'
-
-data6 = pd.read_csv(r'C:\Users\Administrator\Desktop\育艺\07.30 PaaS用户年龄分层匹配\fmsg_over1.txt',
-                    sep=',', header=None, usecols=[0], names=['mobileno'])
-data6['group'] = 'F'
-
-
-data = data1.append([data2, data3, data4, data5, data6])  # 只能append至末尾。
-data = pd.concat((data1, data2, data3, data4, data5, data6), axis=0)  # 或用concat拼接，axis=0表示按行拼接。
-data.reset_index(drop=True, inplace=True)  # inplace就地修改。或data = data.reset_index(drop=True)
-
-data.info()
 data['mobileno'] = data['mobileno'].astype('str') # 转为str，便于后续计算字段长度
 data.reset_index
 

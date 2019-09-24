@@ -21,7 +21,7 @@ data.loc[:3]  # loc把3视为索引的标签label，从第一行开始取至索�
 data.ix[0]  # 优先基于索引的标签loc，若不存在标签则会回退到iloc
 
 # 按性别计算每部电影的平均得分
-mean_ratings = data.pivot_table(values='rating', index='title', columns='gender', aggfunc='mean')
+mean_ratings = data.pivot_table(index='title', columns='gender', values='rating', aggfunc='mean')
 ratings_by_title = data.groupby('title').size()
 active_titles = ratings_by_title.index[ratings_by_title >= 250]  # 筛选出评分次数>=250次的电影
 mean_ratings = mean_ratings.loc[active_titles]  # active_titles是Index，可用loc取索引在active_titles是Index中的值。
