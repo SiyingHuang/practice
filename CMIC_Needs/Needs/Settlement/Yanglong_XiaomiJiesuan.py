@@ -1,5 +1,5 @@
 # 小米12月有效结算差异数据核查
-# 差异号码量：6447713
+# 我方有、厂家无，差异号码量：6447713个
 import pandas as pd
 
 cj_data = pd.read_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\06 - 【公版结算】\小米\厂家提供12月有效明细\new_rcs_12月有效结算.txt',
@@ -11,7 +11,7 @@ our_data = pd.DataFrame(our_data)
 our_data.rename(columns = {1: 'mobileno'}, inplace=True)
 our_data['tag'] = 1
 Result = pd.merge(cj_data, our_data, how='left', on=['mobileno'])
-len(Result.loc[Result['tag'] != 1])
+len(Result.loc[Result['tag'] != 1])  # 644713个号码
 
 # 差异核查过程
 file_path = r'C:\Users\Administrator\Desktop\小米结算差异数据核查\jiesuan_new_active_notinour_jiesuan_check.txt'
@@ -96,12 +96,11 @@ data_jiesuan2_4 = pd.merge(data_jiesuan2_3[:],tmp6[0])
 
 
 
-file_path = r'C:\Users\Administrator\Desktop\jiesuan_imei_check_12to05.txt'
-with open(file_path,
-          encoding='utf-8') as f:
-    for i in range(5):
-        tmp = f.readline()
-        print(tmp)
-data_imei = pd.read_csv(r'C:\Users\Administrator\Desktop\jiesuan_imei_check_12to05.txt',
-                        sep='|', header=None)
-data_imei[0].drop_duplicates()
+
+our_data = pd.read_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\06 - 【公版结算】\小米\jiesuan_xiaomi\MI_NEW_201810.txt',
+                       sep='|', header=None, encoding='gbk')
+our_data.loc[:, 1].drop_duplicates()
+our_data = (our_data.loc[(our_data[5] == '是') & (our_data[6] == '是')][1]).drop_duplicates()
+our_data = pd.DataFrame(our_data)
+our_data.rename(columns={1: 'mobileno'}, inplace=True)
+len(our_data)

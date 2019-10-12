@@ -29,12 +29,23 @@ for line in f.readlines():
 print(count)
 
 
-hh_data = pd.read_csv(r'C:\Users\Administrator\Desktop\红黑名单.txt',
-                   header=None, names=['mobileno'])
-data = pd.read_csv(
-    r'C:\Users\Administrator\Desktop\Fw_Fw_Re_Re_鱼智科技提供中信_广发信用卡用户数据，请与MaaP9月17日活跃用\xqx0918-py200万（Native日活交集）.txt',
-    header=None, names=['mobileno'])
-pd.merge(hh_data, data, how='inner', on='mobileno')
-pd.DataFrame(set(data['mobileno']) - set(hh_data['mobileno'])).to_csv(
-    r'C:\Users\Administrator\Desktop\Fw_Fw_Re_Re_鱼智科技提供中信_广发信用卡用户数据，请与MaaP9月17日活跃用\xqx0918-py200万（Native日活交集）.txt',
-    header=None, index=False)
+
+
+file_dict = {'OPPO': 'A', '锤子': 'B', '海信': 'C', '华为2': 'D', '魅族': 'E', '融聚': 'F', '小米': 'G'}
+pieces = []
+for file_name, group in file_dict.items():
+    path = r'C:\Users\Administrator\Desktop\Native适配机型客户 明细\Native适配机型用户明细1\%s.txt' %file_name
+    frame = pd.read_csv(path, header=None, names=['mobileno'])
+    frame['group'] = group
+    pieces.append(frame)
+data = pd.concat(pieces, ignore_index=False)
+
+hfx_data = pd.read_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\基础数据\andfetion_register_1011.txt',
+                              sep='|', header=None,
+                              names=['mobileno'])
+hfx_data['tag'] = 1
+
+Result = pd.merge(data, hfx_data, how='left', on='mobileno')
+tmp = Result.loc[Result['tag'] != 1]
+tmp.loc[tmp['group'] == 'G']['mobileno'].to_csv(r'C:\Users\Administrator\Desktop\Native适配机型客户 明细\Native适配机型用户明细1\G.txt',
+                                                header=None, index=False)
