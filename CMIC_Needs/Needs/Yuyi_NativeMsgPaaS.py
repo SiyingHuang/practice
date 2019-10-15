@@ -63,3 +63,11 @@ data = data[data['mobileno'].str.len() == 11]
 data = data[data['mobileno'].map(lambda x: str(x)[0] == '1')]
 data.iloc[:, 0].size
 My_to_csv(data, '合并')
+
+
+# 【将不同组别的号码输出到不同的txt文件中】
+file_dict = {'1-重要价值': 'A', '2-一般价值': 'B', '3-一般发展': 'C', '4-重要挽留': 'D', '5-一般挽留': 'E', '6-新进入用户': 'F', '7-历史无需求': 'G', '8-流失用户': 'H'}
+for file_name, group in file_dict.items():
+    path = r'C:\Users\Administrator\Desktop\native端口号内容运营“早午晚报”内测阶段目标号码\用户分群结果&原始数据\筛选匹配结果\again\%s.txt' %file_name
+    tmp = data_tmp.loc[data_tmp['group'] == group][['mobileno']]
+    tmp.to_csv(path, header=None, index=False)

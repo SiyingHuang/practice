@@ -52,6 +52,8 @@ Result = Result.loc[Result['mobileno'].map(lambda x: len(str(x)) == 11)]
 Result = Result.loc[Result['mobileno'].map(lambda x: str(x)[0] == '1')]
 Result.to_csv(r'C:\Users\Administrator\Desktop\native端口号内容运营“早午晚报”内测阶段目标号码\【8、9月消息量-基础数据】（剔除完成）.txt',
               sep='|', header=None, index=False)
+
+# 读取原始数据（已剔除完成）
 Result = pd.read_csv(r'C:\Users\Administrator\Desktop\native端口号内容运营“早午晚报”内测阶段目标号码\用户分群结果&原始数据\【8、9月消息量-基础数据】（剔除完成）.txt',
                    sep='|', header=None, names=['month', 'mobileno', 'msg', 'fmt'])
 
@@ -59,11 +61,9 @@ Result = pd.read_csv(r'C:\Users\Administrator\Desktop\native端口号内容运�
 act_data = pd.read_csv(
     r'C:\Users\Administrator\Desktop\native_active_1011.txt',
     sep='|', header=None, names=['mobileno'])
-act_data['tag'] = 1
-Result = pd.merge(data, act_data, how='left', on='mobileno')
-Result = Result.loc[Result['tag'] == 1]
+Result = pd.merge(Result, act_data, how='inner', on='mobileno')
 Result.iloc[:, :4].to_csv(
-    r'C:\Users\Administrator\Desktop\native端口号内容运营“早午晚报”内测阶段目标号码\【8、9月消息量-基础数据】（剔除完成）-匹配1010月活.txt',
+    r'C:\Users\Administrator\Desktop\native端口号内容运营“早午晚报”内测阶段目标号码\用户分群结果&原始数据\【8、9月消息量-基础数据】（剔除完成）-匹配1011日活.txt',
     sep='|', header=None, index=False)
 
 # 符合条件用户
@@ -72,22 +72,41 @@ tmp = Result9.loc[(Result9['msg'] >= 24) | (Result9['fmt'] >= 1)]['mobileno']  #
 tmp = Result9.loc[(Result9['msg'] >= 8) & (Result9['msg'] <= 23)]['mobileno']  # 2、一般价值
 tmp = Result9.loc[(Result9['msg'] >= 1) & (Result9['msg'] <= 7)]['mobileno']  # 3、一般发展
 
-tmp = Result.loc[((Result['month'] == 201908) & ((Result['msg'] >= 24) | (Result['fmt'] >= 1))) & (
+# 法1
+tmp = Result.loc[((Result['month'] == 201908) & ((Result['msg'] >= 24) | (Result['fmt'] >= 1))) | (
         (Result['month'] == 201909) & (Result['msg'] == 0))]  # 4、重要挽留
+tmp.duplicated(subset='mobileno').sum()
+tmp = tmp.loc[tmp.duplicated(subset='mobileno')]['mobileno']
+# 法2
+a1 = Result.loc[(Result['month'] == 201908) & ((Result['msg'] >= 24) | (Result['fmt'] >= 1))]
+a2 = Result.loc[(Result['month'] == 201909) & (Result['msg'] == 0)]
+tmp = pd.merge(a1, a2, how='inner', on='mobileno')['mobileno']
 
-tmp = Result.loc[((Result['month'] == 201908) & ((Result['msg'] >= 8) & (Result['msg'] <= 23))) & (
+tmp = Result.loc[((Result['month'] == 201908) & ((Result['msg'] >= 8) & (Result['msg'] <= 23))) | (
         (Result['month'] == 201909) & (Result['msg'] == 0))]  # 5、一般挽留
+tmp.duplicated(subset='mobileno').sum()
+tmp = tmp.loc[tmp.duplicated(subset='mobileno')]['mobileno']
 
 Result2 = Result[['mobileno', 'msg', 'fmt']]
 Result89 = Result2.groupby(by='mobileno').sum()
 Result89.reset_index(inplace=True)
 tmp = Result89.loc[Result89['msg'] == 0]['mobileno']  # 7、历史无需求
 
-tmp = Result.loc[((Result['month'] == 201908) & ((Result['msg'] >= 1) & (Result['msg'] <= 7))) & (
+tmp = Result.loc[((Result['month'] == 201908) & ((Result['msg'] >= 1) & (Result['msg'] <= 7))) | (
         (Result['month'] == 201909) & (Result['msg'] == 0))]  # 8、流失用户
+tmp.duplicated(subset='mobileno').sum()
+tmp = tmp.loc[tmp.duplicated(subset='mobileno')]['mobileno']
 
 
 # 输出符合条件的5W用户包
 tmp = tmp.sample(50000)
-tmp.to_csv(r'C:\Users\Administrator\Desktop\native端口号内容运营“早午晚报”内测阶段目标号码\新进入用户.txt',
+tmp.to_csv(r'C:\Users\Administrator\Desktop\native端口号内容运营“早午晚报”内测阶段目标号码\6-新进入用户.txt',
            header=None, index=False)
+
+tmp = pd.read_csv(r'C:\Users\Administrator\Desktop\zhy_native_new_active_1007.txt',
+                  header=None, names=['mobileno'])
+# 匹配最新一天日活
+act_data = pd.read_csv(
+    r'C:\Users\Administrator\Desktop\native_active_1011.txt',
+    sep='|', header=None, names=['mobileno'])
+tmp = pd.merge(tmp, act_data, how='inner', on='mobileno')

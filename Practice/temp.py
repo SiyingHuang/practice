@@ -21,31 +21,28 @@ Result['mobileno'].to_csv(
 
 
 
-# 获取文件行数
-count = 0
-f = open(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\06 - 【公版结算】\魅族\MMDE20190621011\jiesuan_meizu.txt', 'r')
-for line in f.readlines():
-    count = count + 1
-print(count)
+with open(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\基础数据\native_new_basic_201908_and_before.txt', encoding='utf-8') as f:
+    for i in range(5):
+        tmp = f.readline()
+        print(tmp)
+data = pd.read_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\基础数据\native_new_basic_201908_and_before.txt',
+                    sep='|', header=None, names=['date', 'mobileno', 'prov', 'city', 'brand', 'term'])
+data[data['mobileno'].duplicated()]
+data['mobileno']
+data['mobileno'].drop_duplicates()
 
+with open(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\基础数据\native_active_201908_and_before.txt', encoding='utf-8') as f:
+    for i in range(5):
+        tmp = f.readline()
+        print(tmp)
+data = pd.read_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\基础数据\native_active_201908_and_before.txt',
+                    sep='|', header=None, usecols=[0,1], names=['mobileno','pro'])
+data[data.duplicated()]
 
-
-
-file_dict = {'OPPO': 'A', '锤子': 'B', '海信': 'C', '华为2': 'D', '魅族': 'E', '融聚': 'F', '小米': 'G'}
-pieces = []
-for file_name, group in file_dict.items():
-    path = r'C:\Users\Administrator\Desktop\Native适配机型客户 明细\Native适配机型用户明细1\%s.txt' %file_name
-    frame = pd.read_csv(path, header=None, names=['mobileno'])
-    frame['group'] = group
-    pieces.append(frame)
-data = pd.concat(pieces, ignore_index=False)
-
-hfx_data = pd.read_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\基础数据\andfetion_register_1011.txt',
-                              sep='|', header=None,
-                              names=['mobileno'])
-hfx_data['tag'] = 1
-
-Result = pd.merge(data, hfx_data, how='left', on='mobileno')
-tmp = Result.loc[Result['tag'] != 1]
-tmp.loc[tmp['group'] == 'G']['mobileno'].to_csv(r'C:\Users\Administrator\Desktop\Native适配机型客户 明细\Native适配机型用户明细1\G.txt',
-                                                header=None, index=False)
+with open(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\基础数据\native_new_or_active_201908_and_before.txt', encoding='utf-8') as f:
+    for i in range(5):
+        tmp = f.readline()
+        print(tmp)
+data = pd.read_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\基础数据\native_new_or_active_201908_and_before.txt',
+                    sep='|', header=None, usecols=[0], names=['mobileno'])
+data[data.duplicated()]
