@@ -2,25 +2,28 @@ import pandas as pd
 import numpy as np
 
 # 原始数据
-path1 = r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\一众\剔除（和飞信+敏感）结果_0818\MIUI10_0818.txt'
+path1 = r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\一众\剔除（和飞信+敏感）结果_0818\huawei9（各省份）_1007和飞信.txt'
 with open(path1) as f:
     for i in range(5):
         tmp = f.readline()
         print(tmp)
-
-data = pd.read_csv(path1, header=None, skiprows=0, names=['mobileno'])
+data = pd.read_csv(path1,
+                   sep='|', header=None, skiprows=0, names=['mobileno', 'prov', 'city'])
 
 
 # 剔除和飞信注册用户（20190818）
-path2 = r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\基础数据\andfetion_register_1007.txt'
+path2 = r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\基础数据\andfetion_register_1016.txt'
 with open(path2) as f:
     for i in range(5):
         tmp = f.readline()
         print(tmp)
-data_hfx = pd.read_csv(path2, header=None, names=['mobileno'])
-data_hfx['tag1'] = 1
-tmp = pd.merge(data, data_hfx, how='left', on='mobileno')
-tmp = tmp.loc[tmp['tag1'] != 1, ['mobileno']]
+hfx_data = pd.read_csv(path2, header=None, names=['mobileno'])
+hfx_data['tag1'] = 1
+tmp = pd.merge(data, hfx_data, how='left', on='mobileno')
+tmp.loc[tmp['tag1'] == 1]
+tmp = tmp.loc[tmp['tag1'] != 1, ['mobileno', 'prov', 'city']]
+tmp.to_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\一众\剔除（和飞信+敏感）结果_0818\huawei9（各省份）_1016和飞信.txt',
+           sep='|', header=None, index=False)
 
 
 # 剔除敏感号码
@@ -59,7 +62,7 @@ data_tmp['prov'].value_counts()
 
 
 # 已剔除数据
-path1 = r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\一众\剔除（和飞信+敏感）结果_0818\MIUI10_0818（各省份）_1007和飞信.txt'
+path1 = r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\一众\剔除（和飞信+敏感）结果_0818\MIUI10_（各省份）_1007和飞信.txt'
 with open(path1) as f:
     for i in range(5):
         tmp = f.readline()
@@ -67,18 +70,18 @@ with open(path1) as f:
 data = pd.read_csv(path1, sep='|', header=None, skiprows=0, names=['mobileno', 'prov', 'city'], encoding='utf-8')
 
 # 剔除和飞信注册用户（20191007）
-path2 = r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\基础数据\andfetion_register_1007.txt'
+path2 = r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\基础数据\andfetion_register_1016.txt'
 data_hfx = pd.read_csv(path2, header=None, names=['mobileno'])
 data_hfx['tag1'] = 1
 tmp = pd.merge(data, data_hfx, how='left', on='mobileno')
+tmp.loc[tmp['tag1'] == 1]
 tmp = tmp.loc[tmp['tag1'] != 1]
 
-tmp.iloc[:, :3].to_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\一众\剔除（和飞信+敏感）结果_0818\MIUI10_0818（各省份）_1007和飞信.txt',
+tmp.iloc[:, :3].to_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\一众\剔除（和飞信+敏感）结果_0818\MIUI10_（各省份）_1016和飞信.txt',
            sep='|', header=None, index=False)
-
-(data.loc[data['prov'] == '上海']['mobileno']).to_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\一众\剔除（和飞信+敏感）结果_0818\huawei9_上海.txt',
-                                                  header=None, index=False)
-
+(tmp.loc[tmp['prov'] == '广西']['mobileno']).to_csv(
+    r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\一众\剔除（和飞信+敏感）结果_0818\MIUI10_广西.txt',
+    header=None, index=False)
 
 # 需剔除号码1
 data_num_mingan = pd.read_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\敏感号码.txt',
@@ -88,6 +91,3 @@ data_num_mingan['tag'] = 1
 
 tmp = pd.merge(data, data_num_mingan, how='left', on='mobileno')
 tmp = tmp.loc[tmp['tag'] == '1']
-
-import random
-random.sample([1,2,3], 2)
