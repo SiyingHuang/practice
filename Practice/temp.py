@@ -22,31 +22,39 @@ Result['mobileno'].to_csv(
 
 
 
+data = pd.read_csv(r'C:\Users\Administrator\Desktop\请协助提数-邮箱超服拉新第二批（1400万）\huawei9_0818_fjm_16to27.txt',
+                   header=None, names=['mobileno'])
+data['mobileno'] = data['mobileno'].map(lambda x: str(x)[:11])
+data['mobileno'] = data['mobileno'].astype(np.int64)
+data['tag'] = '1'
+data2 = pd.read_csv(r'C:\Users\Administrator\Desktop\请协助提数-邮箱超服拉新第二批（1400万）\MIUI10_0818_fjm_11to12.txt',
+                   header=None, names=['mobileno'])
+data2['mobileno'] = data2['mobileno'].map(lambda x: str(x)[:11])
+data2['mobileno'] = data2['mobileno'].astype(np.int64)
+data2['tag'] = '2'
+data = data.append(data2)
+data.drop_duplicates()
+
+new_data = pd.read_csv(r'C:\Users\Administrator\Desktop\native_new_1014to1018.txt\native_new_1014to1018.txt',
+                       header=None, names=['mobileno'])
+new_data['if_new'] = 1
+
+Result = pd.merge(data, new_data, how='left', on='mobileno')
+Result.to_csv(r'C:\Users\Administrator\Desktop\请协助提数-邮箱超服拉新第二批（1400万）\号码汇总.txt',
+              sep='|', header=None, index=False)
+
+data['tag'].value_counts()
+Result['tag'].value_counts()
+
+Result.loc[Result['tag'] == '2', 'mobileno'].to_csv(r'C:\Users\Administrator\Desktop\请协助提数-邮箱超服拉新第二批（1400万）\MIUI10_0818_fjm_16to27（新增号码）.txt',
+                                                    header=None, index=False)
+
+tmp = pd.read_csv(r'C:\Users\Administrator\Desktop\test.txt',
+                  header='infer')
 
 
-# 附件2
-data_num_except2 = pd.read_csv(r'C:\Users\Administrator\Desktop\【请思颖协助】邮箱账单NPS调研号码筛选\附件2：9月和飞信账单群发的阅读用户清单_20190930需求1结果new.txt',
-                              sep='|', header=None,
-                              names=['mobileno'])
-# Native用户8月消息明细
-data_num_except = pd.read_csv(r'C:\Users\Administrator\Desktop\Native用户8月消息明细\Native用户8月消息明细.txt',
-                              sep='|', header=None, usecols=[0], skiprows=1,
-                              names=['mobileno'])
-tmp = pd.merge(data_num_except2, data_num_except, how='inner', on='mobileno')
 
-len(set(data_num_except2['mobileno'])-set(data_num_except['mobileno']))
-tmp = pd.DataFrame(set(data_num_except2['mobileno'])-set(data_num_except['mobileno']), columns=['mobileno'])
-data_num_except2.loc[data_num_except2.mobileno == 13578096628]
-data_num_except.loc[data_num_except.mobileno == 13578096628]
-
-13562366456,
-13570260130,
-13578096628,
-
-# 执行剔除操作
-Result = pd.merge(tmp, data_num_jituan,
-                  how='left',
-                  on='mobileno')
-len(Result.loc[Result['tag'] == 2])
-tmp2 = Result.loc[Result['tag'] == 2]
-len(tmp2['mobileno'].drop_duplicates())
+hd_data = pd.read_excel(r'C:\Users\Administrator\Desktop\号段表-1023更新.xlsx',
+                        header=None, names=['section_no', 'area_code', 'prov', 'city', 'operator'], skiprows=1)
+hd_data.to_csv(r'C:\Users\Administrator\Desktop\号段表-1023更新.csv',
+               index=False)
