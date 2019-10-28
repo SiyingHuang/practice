@@ -19,26 +19,25 @@ data_num_except = pd.read_excel(r'C:\Users\Administrator\Desktop\200W未开通�
                                 encoding='GBK')
 # data_num_except['mobileno'] = data_num_except['mobileno'].astype('str')
 
-# 需剔除号码1：敏感号码
-data_num_mingan = pd.read_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\敏感号码.txt',
-                              sep='|', header=None,
-                              names=['mobileno'])
+# 需剔除号码1：敏感号码（含腾讯在线文档免打扰、特定省份敏感号码）
+data_num_mingan = pd.read_excel(r'D:\中移互联网\01 - 运营室\01 - 分析组\05 - 充电\Python\号码剔除验证工具--承宗\blacklist\和飞信免打扰黑名单库.xlsx',
+                                header=None,
+                                usecols=[1], names=['mobileno'])
 # data_num_mingan['mobileno'] = data_num_mingan['mobileno'].astype('str')
-data_num_mingan['tag'] = 2
+data_num_mingan['tag'] = 1
 
-# 需剔除号码2：中国移动集团内部员工号码
-data_num_jituan = pd.read_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\中国移动集团号码及组织树.txt',
-                              sep='|', header=None,
-                              names=['mobileno'])  # 号码已预处理，加载后为int64格式
+# 需剔除号码2：内部员工号码（含中国移动、特定省份号码）
+data_num_jituan = pd.read_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\05 - 充电\Python\号码剔除验证工具--承宗\blacklist\集团内部号码(2月已处理).csv',
+                              header=None, skiprows=1,
+                              names=['mobileno'])
 # data_num_jituan['mobileno'] = data_num_jituan['mobileno'].astype('str')
-data_num_jituan['tag'] = 2
+data_num_jituan['tag'] = 1
 
-# 需剔除号码3：集团领导信息
-data_num_jituan = pd.read_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\集团领导信息.txt',
-                              sep=',', header=None,
-                              names=['names', 'mobileno', 'group'])
-data_num_jituan.loc[data_num_jituan['mobileno'].map(lambda x: len(str(x)) == 11)]
-data_num_jituan['tag'] = 2
+# 需剔除号码3：2019年不再下发的120W号码
+data_num_120W = pd.read_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\05 - 充电\Python\号码剔除验证工具--承宗\blacklist\今年不再发短信的120w号码.csv',
+                            header=None, skiprows=1,
+                            names=['mobileno'])
+data_num_120W['tag'] = 1
 
 # 执行剔除操作
 Result = pd.merge(data_num_except, data_num_jituan,

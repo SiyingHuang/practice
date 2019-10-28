@@ -104,3 +104,32 @@ our_data = (our_data.loc[(our_data[5] == '是') & (our_data[6] == '是')][1]).dr
 our_data = pd.DataFrame(our_data)
 our_data.rename(columns={1: 'mobileno'}, inplace=True)
 len(our_data)
+
+
+with open(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\06 - 【公版结算】\小米\结算明细\未限制首月活跃晚于新增\xiaomi_201810.txt', encoding='gbk') as f:
+    for i in range(5):
+        tmp = f.readline()
+        print(tmp)
+data = pd.read_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\06 - 【公版结算】\小米\结算明细\未限制首月活跃晚于新增\xiaomi_201810.txt',
+                   sep='|', header=None, usecols=[0, 1, 2, 3, 5, 6],
+                   names=['date', 'mobileno', 'term_type', 'imei', 'if1', 'if2'],
+                   encoding='gbk')
+data = data.loc[(data['if1'] == '是') & (data['if2'] == '是') & (data['imei'].notna())]
+data.mobileno.drop_duplicates()
+
+data2 = pd.read_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\06 - 【公版结算】\小米\结算明细\未限制首月活跃晚于新增\xiaomi_201811.txt',
+                    sep='|', header=None, usecols=[0, 1, 2, 3, 5, 6],
+                    names=['date', 'mobileno', 'term_type', 'imei', 'if1', 'if2'],
+                    encoding='gbk')
+data2 = data2.loc[(data2['if1'] == '是') & (data2['if2'] == '是') & (data2['imei'].notna())]
+data2.mobileno.drop_duplicates()
+
+data3 = pd.read_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\06 - 【公版结算】\小米\结算明细\未限制首月活跃晚于新增\xiaomi_201812.txt',
+                    sep='|', header=None, usecols=[0, 1, 2, 3, 5, 6],
+                    names=['date', 'mobileno', 'term_type', 'imei', 'if1', 'if2'],
+                    encoding='gbk')
+data3 = data3.loc[(data3['if1'] == '是') & (data3['if2'] == '是') & (data3['imei'].notna())]
+data3.mobileno.drop_duplicates()
+
+data3.iloc[:, :4].to_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\06 - 【公版结算】\小米\结算明细\未限制首月活跃晚于新增\MI_201812.txt',
+            sep='|', header=None, index=False)

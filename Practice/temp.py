@@ -54,7 +54,4 @@ tmp = pd.read_csv(r'C:\Users\Administrator\Desktop\test.txt',
 
 
 
-hd_data = pd.read_excel(r'C:\Users\Administrator\Desktop\号段表-1023更新.xlsx',
-                        header=None, names=['section_no', 'area_code', 'prov', 'city', 'operator'], skiprows=1)
-hd_data.to_csv(r'C:\Users\Administrator\Desktop\号段表-1023更新.csv',
-               index=False)
+
