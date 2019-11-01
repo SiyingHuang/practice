@@ -38,11 +38,11 @@ tmp.to_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\
 
 
 # 找出指定省份用户
-path3 = r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\基础数据\DIM_SECTION_NO_DAY_1007.txt'  # 号段表
+path3 = r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\基础数据\号段表-1023更新.csv'  # 号段表
 data_section = pd.read_csv(path3, header=None,
-                           sep='|',
+                           sep=',',
                            encoding='utf-8',
-                           names=['prov', 'city', 'section_no'])
+                           usecols=[0, 2, 3, 4], names=['section_no', 'prov', 'city', 'operator'], skiprows=1)
 data_section_prov = data_section.loc[data_section['section_no'].notna()]  # 去除空值（存在省份为其他、中国，而section_no为空的情况）
 data_section_prov['section_no'] = data_section_prov['section_no'].astype(np.int32)
 
@@ -67,11 +67,15 @@ with open(path1) as f:
     for i in range(5):
         tmp = f.readline()
         print(tmp)
-path1 = r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\一众\剔除（和飞信+敏感）结果\huawei9_（各省份）_1020和飞信.txt'
+brand = 'huawei9'
+brand = 'MIUI10'
+hfx_date = '1031'
+path1 = r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\一众\剔除（和飞信+敏感）结果\{}_（各省份）_1030和飞信.txt'.format(brand)
 data = pd.read_csv(path1, sep='|', header=None, skiprows=0, names=['mobileno', 'prov', 'city'], encoding='utf-8')
+data_num_except = pd.read_csv(path1, sep='|', header=None, skiprows=0, names=['mobileno', 'prov', 'city'], encoding='utf-8')
 
-# 剔除和飞信注册用户（20191007）
-path2 = r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\基础数据\andfetion_register_1020.txt'
+# 剔除和飞信注册用户
+path2 = r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\基础数据\andfetion_register_{}.txt'.format(hfx_date)
 data_hfx = pd.read_csv(path2, header=None, names=['mobileno'])
 data_hfx['tag1'] = 1
 tmp = pd.merge(data, data_hfx, how='left', on='mobileno')
@@ -79,17 +83,9 @@ tmp.loc[tmp['tag1'] == 1]
 tmp = tmp.loc[tmp['tag1'] != 1]
 
 tmp.iloc[:, :3].to_csv(
-    r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\一众\剔除（和飞信+敏感）结果\huawei9_（各省份）_1020和飞信.txt',
+    r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\一众\剔除（和飞信+敏感）结果\{}_（各省份）_{}和飞信.txt'.format(brand, hfx_date),
     sep='|', header=None, index=False)
+prov_name = '湖北'
 (tmp.loc[tmp['prov'] == '四川']['mobileno']).to_csv(
-    r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\一众\剔除（和飞信+敏感）结果\\huawei9_四川.txt',
+    r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\一众\剔除（和飞信+敏感）结果\{}_{}.txt'.format(brand, prov_name),
     header=None, index=False)
-
-# 需剔除号码1
-data_num_mingan = pd.read_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\敏感号码.txt',
-                              sep='|', header=None,
-                              names=['mobileno'])
-data_num_mingan['tag'] = 1
-
-tmp = pd.merge(data, data_num_mingan, how='left', on='mobileno')
-tmp = tmp.loc[tmp['tag'] == '1']

@@ -20,34 +20,32 @@ data_num_except = pd.read_excel(r'C:\Users\Administrator\Desktop\200W未开通�
 # data_num_except['mobileno'] = data_num_except['mobileno'].astype('str')
 
 # 需剔除号码1：敏感号码（含腾讯在线文档免打扰、特定省份敏感号码）
-data_num_mingan = pd.read_excel(r'D:\中移互联网\01 - 运营室\01 - 分析组\05 - 充电\Python\号码剔除验证工具--承宗\blacklist\和飞信免打扰黑名单库.xlsx',
+data_num_mingan = pd.read_excel(r'D:\中移互联网\01 - 运营室\01 - 分析组\05 - 充电\Python\[承宗]-号码剔除验证工具\blacklist\和飞信免打扰黑名单库.xlsx',
                                 header=None,
                                 usecols=[1], names=['mobileno'])
 # data_num_mingan['mobileno'] = data_num_mingan['mobileno'].astype('str')
 data_num_mingan['tag'] = 1
 
 # 需剔除号码2：内部员工号码（含中国移动、特定省份号码）
-data_num_jituan = pd.read_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\05 - 充电\Python\号码剔除验证工具--承宗\blacklist\集团内部号码(2月已处理).csv',
+data_num_jituan = pd.read_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\05 - 充电\Python\[承宗]-号码剔除验证工具\blacklist\集团内部号码(2月已处理).csv',
                               header=None, skiprows=1,
                               names=['mobileno'])
 # data_num_jituan['mobileno'] = data_num_jituan['mobileno'].astype('str')
 data_num_jituan['tag'] = 1
 
 # 需剔除号码3：2019年不再下发的120W号码
-data_num_120W = pd.read_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\05 - 充电\Python\号码剔除验证工具--承宗\blacklist\今年不再发短信的120w号码.csv',
+data_num_120W = pd.read_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\05 - 充电\Python\[承宗]-号码剔除验证工具\blacklist\今年不再发短信的120w号码.csv',
                             header=None, skiprows=1,
                             names=['mobileno'])
 data_num_120W['tag'] = 1
 
 # 执行剔除操作
-Result = pd.merge(data_num_except, data_num_jituan,
+Result = pd.merge(data_num_except, data_num_120W,
                   how='left',
                   on='mobileno')
-tmp = Result.loc[Result['tag'] == 2]
-len(tmp['mobileno'].drop_duplicates())
-Result = Result.loc[Result['tag'] != 2]
-Result['mobileno'] = Result['mobileno'].astype(np.int64)
-Result = pd.DataFrame(Result).drop_duplicates().astype(np.int64)
+Result.loc[Result['tag'] == 1]
+Result = Result.loc[Result['tag'] != 1]
+data_num_except = Result.iloc[:, :3].copy()
 
 Result.iloc[:, 0].to_csv(r'C:\Users\Administrator\Desktop\【剔除后结果】native_dayactive_0928to1016.txt',
                           sep='|', header=False, index=False)

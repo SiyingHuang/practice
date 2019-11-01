@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import os
 import random
 import datetime
 
@@ -53,5 +54,18 @@ tmp = pd.read_csv(r'C:\Users\Administrator\Desktop\test.txt',
                   header='infer')
 
 
+info_data = pd.read_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\中国移动内部员工(19.10.31)-机型品牌信息.csv',
+                        header=None, skiprows=1, names=['mobileno', 'brand_name', 'term_type', 'imei', 'os', 'update_time'])
 
+info_data.loc[info_data['brand_name'].str.contains('华为'), 'brand'] = '华为'
+info_data.loc[info_data['brand'].isna(), 'brand'] = info_data['brand_name']
 
+info_data.loc[info_data['brand_name'].str.contains('meizu'), 'brand'] = '魅族'
+
+info_data.loc[info_data['brand_name'].str.contains('redmi'), 'brand'] = '小米'
+
+info_data.to_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\中国移动内部员工(19.10.31)-机型品牌信息2.csv',
+                 index=False)
+
+info_data['brand'].value_counts().to_csv(r'C:\Users\Administrator\Desktop\test.txt',
+                                         header=None)

@@ -6,10 +6,11 @@
 import pandas as pd
 import numpy as np
 
-# 【切换原始文件路径】
+# 【读取原始文件】
+# 切换原始文件路径
 os.chdir(r'C:\Users\Administrator\Desktop\Native十月份流失用户')
 
-ls_data = pd.read_csv(r'C:\Users\Administrator\Desktop\native_liushi_20191027.txt',
+ls_data = pd.read_csv(r'剔除后全量.txt',
                       sep='|', header=None, names=['mobileno', 'brand'])
 # 【剔除异常号码】
 ls_data.loc[ls_data['mobileno'].map(lambda x: len(str(x)) != 11)]
@@ -34,8 +35,14 @@ data_num_120W = pd.read_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\0
                             names=['mobileno'])
 data_num_120W['tag'] = 1
 
+# 需剔除号码4：
+data_num_xzhy = pd.read_csv(r'C:\Users\Administrator\Desktop\xzhy.txt',
+                            header=None, skiprows=0, usecols=[0],
+                            names=['mobileno'])
+data_num_xzhy['tag'] = 1
+
 # 执行剔除操作
-Result = pd.merge(data_num_except, data_num_120W,
+Result = pd.merge(data_num_except, data_num_xzhy,
                   how='left',
                   on='mobileno')
 Result.loc[Result['tag'] == 1]
@@ -43,7 +50,7 @@ Result = Result.loc[Result['tag'] != 1, ['mobileno', 'brand']]
 data_num_except = Result.copy()
 
 # 【输出预处理后全量文件】
-Result.to_csv(r'C:\Users\Administrator\Desktop\Native十月份流失用户\全部.txt',
+Result.to_csv(r'剔除后全量.txt',
               sep='|', header=None, index=False)
 Result.brand.value_counts().sort_values(ascending=False)  # 查看各品牌数量
 
@@ -52,10 +59,15 @@ Result.loc[Result['brand'] == '小米', 'mobileno'].to_csv('小米.txt',
                                                          header=None, index=False)
 Result.loc[Result['brand'] == '魅族', 'mobileno'].to_csv('魅族.txt',
                                                          header=None, index=False)
-Result.loc[Result['brand'].str.contains('华为'), 'mobileno'].to_csv(
-    '华为.txt',
+Result.loc[(Result['brand'].str.contains('华为')) | (Result['brand'].str.contains('OPPO'))].to_csv(
+    '华为&OPPO.txt',
     header=None, index=False)
-Result.loc[
-    ((Result['brand'] != '魅族') & (~Result['brand'].str.contains('华为')) & (Result['brand'] != '小米')), 'mobileno'].to_csv(
+Result.loc[(~Result['brand'].str.contains('华为')) & (~Result['brand'].str.contains('OPPO'))].to_csv(
     '其他.txt',
     header=None, index=False)
+
+data = pd.read_csv(r'C:\Users\Administrator\Desktop\meizu_jiesuan_check_result.txt',
+                   sep='|', header=None, names=['a','b','c','d'])
+data.loc[data['d'].isna()]
+data.to_excel(r'C:\Users\Administrator\Desktop\魅族结算用户验证（结果）.xlsx',
+              header=None, index=False)
