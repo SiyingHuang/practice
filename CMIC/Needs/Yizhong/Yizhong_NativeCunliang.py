@@ -69,10 +69,9 @@ with open(path1) as f:
         print(tmp)
 brand = 'huawei9'
 brand = 'MIUI10'
-hfx_date = '1031'
+hfx_date = '1107'
 path1 = r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\一众\剔除（和飞信+敏感）结果\{}_（各省份）_1030和飞信.txt'.format(brand)
 data = pd.read_csv(path1, sep='|', header=None, skiprows=0, names=['mobileno', 'prov', 'city'], encoding='utf-8')
-data_num_except = pd.read_csv(path1, sep='|', header=None, skiprows=0, names=['mobileno', 'prov', 'city'], encoding='utf-8')
 
 # 剔除和飞信注册用户
 path2 = r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\基础数据\andfetion_register_{}.txt'.format(hfx_date)

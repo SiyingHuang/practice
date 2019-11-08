@@ -54,18 +54,31 @@ tmp = pd.read_csv(r'C:\Users\Administrator\Desktop\test.txt',
                   header='infer')
 
 
-info_data = pd.read_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\中国移动内部员工(19.10.31)-机型品牌信息.csv',
-                        header=None, skiprows=1, names=['mobileno', 'brand_name', 'term_type', 'imei', 'os', 'update_time'])
 
-info_data.loc[info_data['brand_name'].str.contains('华为'), 'brand'] = '华为'
-info_data.loc[info_data['brand'].isna(), 'brand'] = info_data['brand_name']
+data11201 = pd.read_csv(r'C:\Users\Administrator\Desktop\hsy_tmp_20191104003_gb_maap1031.txt',
+                        sep='|', header=None)
+data11201['imei'] = data11201.iloc[:, 12].map(lambda x: str(x)[14:])
+data11201['section_no'] = (data11201.iloc[:, 6].map(lambda x: str(x)[:7])).astype(np.int32)
 
-info_data.loc[info_data['brand_name'].str.contains('meizu'), 'brand'] = '魅族'
+data11201.iloc[:, 6]
 
-info_data.loc[info_data['brand_name'].str.contains('redmi'), 'brand'] = '小米'
+hd_data = pd.read_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\基础数据\号段表-1023更新.csv',
+                      header=None, skiprows=1, usecols=[0, 2, 3], names=['section_no', 'prov', 'city'])
 
-info_data.to_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\中国移动内部员工(19.10.31)-机型品牌信息2.csv',
-                 index=False)
+Result = pd.merge(data11201, hd_data, how='inner', on='section_no')
 
-info_data['brand'].value_counts().to_csv(r'C:\Users\Administrator\Desktop\test.txt',
-                                         header=None)
+Result.drop(columns='section_no', inplace=True)
+
+Result.to_csv(r'C:\Users\Administrator\Desktop\hsy_tmp_20191104003_gb_maap1031（省份、地市）.txt',
+              header=None, index=False)
+
+
+data = pd.read_csv(r'C:\Users\Administrator\Desktop\hsy_tmp_20191104003_gb_maap_1104.txt',
+                   sep='|', header=None, usecols=[6], names=['mobileno'])
+data.drop_duplicates()
+data2 = pd.read_csv(r'C:\Users\Administrator\Desktop\maap_GB_day_active_period_D_20191104.txt',
+                   sep='|', header=None, usecols=[8], names=['mobileno'])
+data2.drop_duplicates()
+set(data2['mobileno'])-set(data['mobileno'])
+
+
