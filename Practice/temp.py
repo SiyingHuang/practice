@@ -82,3 +82,67 @@ data2.drop_duplicates()
 set(data2['mobileno'])-set(data['mobileno'])
 
 
+with open(r'C:\Users\Administrator\Desktop\DATA_FUSI_REGISTER_USER_D_0_2_20191110.txt',
+          encoding='utf-8') as f:
+    for i in range(5):
+        tmp = f.readline()
+        print(tmp)
+
+tmp = pd.read_excel(r'C:\Users\Administrator\Desktop\native端口号内容运营“飞闻快报”内测阶段目标号码\星座运势第三批订阅号码.xls',
+                    sheet_name=1)
+
+count = 0
+f = open(r'C:\Users\Administrator\Desktop\hxmz_active_period_M_201909\hxmz_active_period_M_meizu_cunliang_201909.txt',
+         encoding='utf-8')
+for line in f.readlines():
+    count = count+1
+print(count)
+
+
+
+
+
+data = pd.read_csv(r'C:\Users\Administrator\Desktop\native_no_app_active_recent_30_days.txt',
+                   header=None, sep='|', usecols=[0, 1, 2, 3], names=['mobileno', 'prov', 'city', 'brand'])
+data.dropna(subset=['mobileno'], inplace=True)
+data['mobileno'] = data['mobileno'].astype(np.int64)
+
+data_num_jituan_cmp = pd.read_csv(
+    r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\中国移动集团号码及组织树[公司+号码]（剔除疑似异常号码）.csv',  # 带公司名
+    header=None, names=['cmp', 'mobileno'])
+data_num_jituan = pd.read_csv(r'集团内部号码(2月已处理).csv',
+                              header=None, skiprows=1,
+                              names=['mobileno'])
+Result = pd.merge(data, data_num_jituan, how='inner', on='mobileno')
+Result2 = pd.merge(Result, data_num_jituan_cmp, how='left', on='mobileno')
+data_num_except = Result2.copy()
+
+data_num_except['section_no'] = data_num_except['mobileno'].map(lambda x: str(x)[:7])
+data_section = data_section.loc[data_section['prov'] != '河北']
+data_num_except = data_num_except.iloc[:, :5]
+data_num_except = data_num_except.loc[data_num_except['prov'] != '河北']
+data_num_except.loc[data_num_except['prov'] == '北京']
+
+data_num_except.to_csv(r'C:\Users\Administrator\Desktop\请协助提取集团内部员工号码.txt',
+                       sep='|', header=None, index=False)
+
+
+data = pd.read_csv(r'C:\Users\Administrator\Desktop\hsy_tmp_20191118001_cyz_chongqing_1.txt',
+                   sep='|', header=None, names=['mobileno', 'days', 'mess_cnt'])
+data.loc[data['mess_cnt'].isna(), ['mess_cnt']] = 0
+data['mess_cnt'] = data['mess_cnt'].astype(int)
+data.to_csv(r'C:\Users\Administrator\Desktop\hsy_tmp_20191118001_cyz_chongqing_1.txt',
+            sep='|', header=None, index=False)
+
+
+data1 = pd.read_csv(r'C:\Users\Administrator\Desktop\20191118_lmp01_01\pihao_20191115.txt',
+                    header=None, names=['mobileno'])
+data2 = pd.read_csv(r'C:\Users\Administrator\Desktop\native_active_1119.txt',
+                    header=None, names=['mobileno'])
+data2['tag'] = 1
+tmp = pd.merge(data1, data2, how='left', on='mobileno')
+tmp.loc[tmp['tag'] == 1, 'mobileno'].to_csv(
+    r'C:\Users\Administrator\Desktop\20191118_lmp01_01\pihao_20191115(huawei).txt',
+    header=None, index=False)
+tmp.to_csv(r'C:\Users\Administrator\Desktop\20191118_lmp01_01\pihao_20191115(result).txt',
+           header=None, index=False)
