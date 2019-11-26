@@ -15,7 +15,7 @@ data_num_except = pd.read_csv(
     r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\一众\剔除（和飞信+敏感）结果\MIUI10_（各省份）_1110和飞信_120W.txt',
                               sep='|', header=None,
                               names=['mobileno', 'prov', 'city'])
-data_num_except = pd.read_csv(r'C:\Users\Administrator\Desktop\tmp_20191119001_yz_native_active_no_msg.txt',
+data_num_except = pd.read_csv(r'C:\Users\Administrator\Desktop\发送号码.txt',
                               header=None, usecols=[0], skiprows=0,
                               names=['mobileno'])
 data_num_except = pd.read_excel(r'C:\Users\Administrator\Desktop\200W未开通号码_1.xlsx',
@@ -61,7 +61,7 @@ data_num_except = Result.iloc[:, :2].copy()
 data_num_except = Result.iloc[:, :3].copy()
 data_num_except = Result.iloc[:, :5].copy()
 
-Result.iloc[:, 0].to_csv(r'C:\Users\Administrator\Desktop\tmp_20191119001_yz_native_active_no_msg.txt',
+Result.iloc[:, 0].to_csv(r'C:\Users\Administrator\Desktop\发送号码(已剔除).txt',
                           sep='|', header=False, index=False)
 Result.to_excel(r'C:\Users\Administrator\Desktop\200W未开通号码_1（剔除后）.xlsx',
                 header=False, index=False)
@@ -73,3 +73,5 @@ data_num_except.to_csv(r'C:\Users\Administrator\Desktop\tmp_20191119001_yz_nativ
                        header=None, index=False)
 data_num_except.to_csv(r'C:\Users\Administrator\Desktop\Native十一月份流失用户\十一月份流失用户（剔除完成）.txt',
                        sep='|', header=None, index=False)
+
+
