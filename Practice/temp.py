@@ -125,24 +125,3 @@ data_num_except.loc[data_num_except['prov'] == '北京']
 
 data_num_except.to_csv(r'C:\Users\Administrator\Desktop\请协助提取集团内部员工号码.txt',
                        sep='|', header=None, index=False)
-
-
-data = pd.read_csv(r'C:\Users\Administrator\Desktop\hsy_tmp_20191118001_cyz_chongqing_1.txt',
-                   sep='|', header=None, names=['mobileno', 'days', 'mess_cnt'])
-data.loc[data['mess_cnt'].isna(), ['mess_cnt']] = 0
-data['mess_cnt'] = data['mess_cnt'].astype(int)
-data.to_csv(r'C:\Users\Administrator\Desktop\hsy_tmp_20191118001_cyz_chongqing_1.txt',
-            sep='|', header=None, index=False)
-
-
-data1 = pd.read_csv(r'C:\Users\Administrator\Desktop\20191118_lmp01_01\pihao_20191115.txt',
-                    header=None, names=['mobileno'])
-data2 = pd.read_csv(r'C:\Users\Administrator\Desktop\native_active_1119.txt',
-                    header=None, names=['mobileno'])
-data2['tag'] = 1
-tmp = pd.merge(data1, data2, how='left', on='mobileno')
-tmp.loc[tmp['tag'] == 1, 'mobileno'].to_csv(
-    r'C:\Users\Administrator\Desktop\20191118_lmp01_01\pihao_20191115(huawei).txt',
-    header=None, index=False)
-tmp.to_csv(r'C:\Users\Administrator\Desktop\20191118_lmp01_01\pihao_20191115(result).txt',
-           header=None, index=False)
