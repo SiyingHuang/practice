@@ -125,3 +125,12 @@ data_num_except.loc[data_num_except['prov'] == '北京']
 
 data_num_except.to_csv(r'C:\Users\Administrator\Desktop\请协助提取集团内部员工号码.txt',
                        sep='|', header=None, index=False)
+
+
+data1 = pd.read_csv(r'C:\Users\Administrator\Desktop\huawei_1to21.txt',
+                    header=None, names=['mobileno'])
+data1['mobileno'] = data1['mobileno'].map(lambda x: str(x)[:11])
+data1['mobileno'] = data1['mobileno'].astype(np.int64)
+data2 = pd.read_csv(r'C:\Users\Administrator\Desktop\native_new_1118to1124.txt',
+                    header=None, names=['mobileno'])
+len(pd.merge(data1, data2, how='inner', on='mobileno'))

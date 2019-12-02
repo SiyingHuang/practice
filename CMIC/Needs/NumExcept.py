@@ -51,6 +51,13 @@ data_num_ld = pd.read_csv(r'集团省专业公司部门及以上&大boss.txt',
 data_num_ld['tag'] = 1
 
 # 执行剔除操作
+Result = pd.merge(data, data_num_120W,
+                  how='left',
+                  on='mobileno')
+Result.loc[Result['tag'] == 1]
+Result = Result.loc[Result['tag'] != 1]
+
+
 Result = pd.merge(data_num_except, data_num_120W,
                   how='left',
                   on='mobileno')
