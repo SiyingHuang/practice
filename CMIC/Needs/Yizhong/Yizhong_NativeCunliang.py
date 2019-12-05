@@ -77,8 +77,10 @@ brand = 'huawei9'
 brand = 'huawei_new'
 brand = 'MIUI10'
 path1 = r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\一众\剔除（和飞信+敏感）结果\{}_（各省份）_1124和飞信.txt'.format(brand)
-path1 = r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\一众\剔除（和飞信+敏感）结果\{}_（各省份）_1124和飞信_120W.txt'.format(brand)
+path1 = r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\一众\剔除（和飞信+敏感）结果\{}_（各省份）_1201和飞信_120W.txt'.format(brand)
 data = pd.read_csv(path1, sep='|', header=None, skiprows=0, names=['mobileno', 'prov', 'city'], encoding='utf-8')
+brand = 'xiaomi'
+data = pd.read_csv(path1, sep='|', header=None, skiprows=0, names=['mobileno', 'prov'], encoding='utf-8')
 
 # 剔除和飞信注册用户
 hfx_date = '20191201'
@@ -105,16 +107,19 @@ tmp.iloc[:, 0].to_csv(
     sep='|', header=None, index=False)
 
 # 输出分省号码包
-prov_name = '湖北'
+prov_name = '四川'
 (tmp.loc[tmp['prov'] == '湖北'][['mobileno']]).to_csv(
+    r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\一众\剔除（和飞信+敏感）结果\{}_{}.txt'.format(brand, prov_name),
+    header=None, index=False)
+(data.loc[data['prov'] == '四川'][['mobileno']]).to_csv(
     r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\一众\剔除（和飞信+敏感）结果\{}_{}.txt'.format(brand, prov_name),
     header=None, index=False)
 
 # 合并huaewi9和huawei_new两个号码包
-data1 = pd.read_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\一众\剔除（和飞信+敏感）结果\huawei9_重庆.txt',
+data1 = pd.read_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\一众\剔除（和飞信+敏感）结果\huawei9_四川.txt',
                     header=None, names=['mobileno'])
-data2 = pd.read_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\一众\剔除（和飞信+敏感）结果\huawei_new_重庆.txt',
+data2 = pd.read_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\一众\剔除（和飞信+敏感）结果\huawei_new_四川.txt',
                     header=None, names=['mobileno'])
 data1 = data1.append(data2)
-data1.drop_duplicates().to_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\一众\剔除（和飞信+敏感）结果\huawei_重庆.txt',
+data1.drop_duplicates().to_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\一众\剔除（和飞信+敏感）结果\huawei_四川.txt',
                                header=None, index=False)

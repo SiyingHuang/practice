@@ -24,7 +24,7 @@ data_num_except = pd.read_excel(r'C:\Users\Administrator\Desktop\200W未开通�
                                 encoding='GBK')
 # data_num_except['mobileno'] = data_num_except['mobileno'].astype('str')
 
-os.chdir(r'D:\中移互联网\01 - 运营室\01 - 分析组\05 - 充电\Python\[承宗]-号码剔除验证工具\blacklist')
+os.chdir(r'D:\中移互联网\01 - 运营室\01 - 分析组\05 - 充电\Python\[承宗]-号码剔除验证工具\blacklist')  # 切换工作目录
 # 需剔除号码1：敏感号码（含腾讯在线文档免打扰、特定省份敏感号码）
 data_num_mingan = pd.read_excel(r'和飞信免打扰黑名单库.xlsx',
                                 header=None,
@@ -45,19 +45,12 @@ data_num_120W = pd.read_csv(r'今年不再发短信的120w号码.csv',
                             names=['mobileno'])
 data_num_120W['tag'] = 1
 
-# 需剔除号码4：移动内部（集团公司、省公司、专业公司）部门及部门以上级别领导号码
+# 需剔除号码4：移动内部（集团公司、省公司、专业公司）部门及部门以上级别领导号码 --包含在2中
 data_num_ld = pd.read_csv(r'集团省专业公司部门及以上&大boss.txt',
                           header=None, names=['mobileno'])
 data_num_ld['tag'] = 1
 
 # 执行剔除操作
-Result = pd.merge(data, data_num_120W,
-                  how='left',
-                  on='mobileno')
-Result.loc[Result['tag'] == 1]
-Result = Result.loc[Result['tag'] != 1]
-
-
 Result = pd.merge(data_num_except, data_num_120W,
                   how='left',
                   on='mobileno')
@@ -80,5 +73,3 @@ data_num_except.to_csv(r'C:\Users\Administrator\Desktop\tmp_20191119001_yz_nativ
                        header=None, index=False)
 data_num_except.to_csv(r'C:\Users\Administrator\Desktop\Native十一月份流失用户\十一月份流失用户（剔除完成）.txt',
                        sep='|', header=None, index=False)
-
-
