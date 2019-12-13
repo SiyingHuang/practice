@@ -8,15 +8,18 @@ import os
 data_num_except = pd.read_csv(r'C:\Users\Administrator\Desktop\请协助提取流失用户数据\native_liushi_20191208.txt',
                               sep='|', header=None,
                               names=['mobileno', 'brand'])
-data_num_except = pd.read_csv(r'C:\Users\Administrator\Desktop\native_dayactive_0928to1016.txt',
+data_num_except = pd.read_csv(r'C:\Users\Administrator\Desktop\native_active_1208.txt',
                               sep='|', header=None,
-                              names=['new_data', 'mobileno', 'prov', 'brand'])
+                              names=['mobileno', 'prov', 'brand'])
 data_num_except = pd.read_csv(
     r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\一众\剔除（和飞信+敏感）结果\MIUI10_（各省份）_1110和飞信_120W.txt',
                               sep='|', header=None,
                               names=['mobileno', 'prov', 'city'])
-data_num_except = pd.read_csv(r'C:\Users\Administrator\Desktop\hsy_tmp_20191209001_ll_native_active_no_msg.txt',
+data_num_except = pd.read_csv(r'C:\Users\Administrator\Desktop\hsy_tmp_20191213001_qy_active_over_or_equal_15.txt',
                               header=None, usecols=[0], skiprows=0,
+                              names=['mobileno'])
+data_num_except = pd.read_csv(r'C:\Users\Administrator\Desktop\DATA_FUSI_ACTIVE_USER_M_0_4_201911.txt',
+                              header=None, sep='|', usecols=[5], skiprows=1,
                               names=['mobileno'])
 data_num_except = pd.read_excel(r'C:\Users\Administrator\Desktop\200W未开通号码_1.xlsx',
                                 header=None,
@@ -61,11 +64,11 @@ data_num_except = Result.iloc[:, :2].copy()
 data_num_except = Result.iloc[:, :3].copy()
 data_num_except = Result.iloc[:, :5].copy()
 
-Result.iloc[:, 0].to_csv(r'C:\Users\Administrator\Desktop\山东N=0用户.txt',
+Result.iloc[:, 0].to_csv(r'C:\Users\Administrator\Desktop\11月活跃天数不小于15天的用户.txt',
                           sep='|', header=False, index=False)
 Result.to_excel(r'C:\Users\Administrator\Desktop\200W未开通号码_1（剔除后）.xlsx',
                 header=False, index=False)
-Result.iloc[:, :3].to_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\一众\剔除（和飞信+敏感）结果\MIUI10_（各省份）_1110和飞信_120W.txt',
+Result.iloc[:, :3].to_csv(r'C:\Users\Administrator\Desktop\Chatbot日活1208（已剔除）.txt',
                           sep='|', header=False, index=False)
 Result.iloc[:, :4].to_csv(r'C:\Users\Administrator\Desktop\native_dayactive_0925to0928.txt',
                           sep='|', header=False, index=False)
@@ -73,3 +76,5 @@ data_num_except.to_csv(r'C:\Users\Administrator\Desktop\tmp_20191119001_yz_nativ
                        header=None, index=False)
 data_num_except.to_csv(r'C:\Users\Administrator\Desktop\Native十一月份流失用户\十一月份流失用户（剔除完成）.txt',
                        sep='|', header=None, index=False)
+data_num_except.loc[data_num_except['brand'] == '华为', ['mobileno', 'prov']].to_csv(
+    r'C:\Users\Administrator\Desktop\华为1208日活.txt', sep='|', header=None, index=False)

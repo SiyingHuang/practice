@@ -63,15 +63,6 @@ data11201['section_no'] = (data11201.iloc[:, 6].map(lambda x: str(x)[:7])).astyp
 
 data11201.iloc[:, 6]
 
-hd_data = pd.read_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\基础数据\号段表-1023更新.csv',
-                      header=None, skiprows=1, usecols=[0, 2, 3], names=['section_no', 'prov', 'city'])
-
-Result = pd.merge(data11201, hd_data, how='inner', on='section_no')
-
-Result.drop(columns='section_no', inplace=True)
-
-Result.to_csv(r'C:\Users\Administrator\Desktop\hsy_tmp_20191104003_gb_maap1031（省份、地市）.txt',
-              header=None, index=False)
 
 
 data = pd.read_csv(r'C:\Users\Administrator\Desktop\hsy_tmp_20191104003_gb_maap_1104.txt',
@@ -83,7 +74,7 @@ data2.drop_duplicates()
 set(data2['mobileno'])-set(data['mobileno'])
 
 
-with open(r'C:\Users\Administrator\Desktop\DATA_FUSI_REGISTER_USER_D_0_2_20191110.txt',
+with open(r'C:\Users\Administrator\Desktop\DATA_FUSI_ACTIVE_USER_M_0_4_201911.txt',
           encoding='utf-8') as f:
     for i in range(5):
         tmp = f.readline()
@@ -103,31 +94,6 @@ print(count)
 
 
 
-data = pd.read_csv(r'C:\Users\Administrator\Desktop\native_no_app_active_recent_30_days.txt',
-                   header=None, sep='|', usecols=[0, 1, 2, 3], names=['mobileno', 'prov', 'city', 'brand'])
-data.dropna(subset=['mobileno'], inplace=True)
-data['mobileno'] = data['mobileno'].astype(np.int64)
-
-data_num_jituan_cmp = pd.read_csv(
-    r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\中国移动集团号码及组织树[公司+号码]（剔除疑似异常号码）.csv',  # 带公司名
-    header=None, names=['cmp', 'mobileno'])
-data_num_jituan = pd.read_csv(r'集团内部号码(2月已处理).csv',
-                              header=None, skiprows=1,
-                              names=['mobileno'])
-Result = pd.merge(data, data_num_jituan, how='inner', on='mobileno')
-Result2 = pd.merge(Result, data_num_jituan_cmp, how='left', on='mobileno')
-data_num_except = Result2.copy()
-
-data_num_except['section_no'] = data_num_except['mobileno'].map(lambda x: str(x)[:7])
-data_section = data_section.loc[data_section['prov'] != '河北']
-data_num_except = data_num_except.iloc[:, :5]
-data_num_except = data_num_except.loc[data_num_except['prov'] != '河北']
-data_num_except.loc[data_num_except['prov'] == '北京']
-
-data_num_except.to_csv(r'C:\Users\Administrator\Desktop\请协助提取集团内部员工号码.txt',
-                       sep='|', header=None, index=False)
-
-
 data1 = pd.read_csv(r'C:\Users\Administrator\Desktop\huawei_1to21.txt',
                     header=None, names=['mobileno'])
 data1['mobileno'] = data1['mobileno'].map(lambda x: str(x)[:11])
@@ -143,3 +109,45 @@ data.to_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容
 
 
 
+
+data_num_except = pd.read_csv(r'C:\Users\Administrator\Desktop\20191208_I_DATA_CHATBOT_USER_DTL_D.txt',
+                              sep='|', header=None, usecols=[1, 7, 8], names=['mobileno', 'prov', 'city'],
+                              skiprows=1)
+
+data_num_except = pd.read_excel(r'C:\Users\Administrator\Desktop\魅族国标用户提数需求及Native发送用户活跃用户匹配需求\上海下发消息（289199）.xlsx',
+                                header=None, names=['mobileno', 'prov', 'city'])
+native_act = pd.read_csv(r'C:\Users\Administrator\Desktop\native_active_1208.txt',
+                         sep='|', header=None, names=['mobileno'], usecols=[0])
+native_act = native_act.dropna()
+native_act['mobileno'] = native_act['mobileno'].astype(np.int64)
+Result = pd.merge(data_num_except, native_act, how='inner', on='mobileno')
+Result.to_excel(r'C:\Users\Administrator\Desktop\魅族国标用户提数需求及Native发送用户活跃用户匹配需求\上海下发消息（289199）（已匹配1208Native日活）.xlsx',
+                header=None, index=False)
+
+data = pd.read_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\06 - 【公版结算】\小米\结算明细\限制首月活跃晚于新增\最终保存明细-20191210\MI_201812(mobileno&imei_drop_duplicates)-3441287.txt',
+                   sep='|', header=None)
+data.iloc[:, [0, 1, 2, 3]].to_csv(
+    r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\06 - 【公版结算】\小米\结算明细\限制首月活跃晚于新增\最终保存明细-20191210\MI_201812_normal(3441287).txt',
+    sep='|', header=None, index=False)
+
+
+
+
+
+
+import hashlib
+def md5Encode(str):
+    m = hashlib.md5()
+    m.update(str)
+    return m.hexdigest()
+data['mobileno'] = data['mobileno'].astype('str')
+
+data['mobileno'].map(lambda x: hashlib.md5(str(x).encode(encoding="utf-8")))
+
+
+import hashlib
+data = pd.read_csv(r'C:\Users\Administrator\Desktop\11月Native活跃用户.txt',
+                    header=None, names=['mobileno'])
+Result = data['mobileno'].map(lambda x: hashlib.md5(str(x).encode(encoding="utf-8")).hexdigest())
+Result.to_csv(r'C:\Users\Administrator\Desktop\11月Native活跃用户(MD5).txt',
+              index=False)
