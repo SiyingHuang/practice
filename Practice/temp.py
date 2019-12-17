@@ -135,19 +135,18 @@ data.iloc[:, [0, 1, 2, 3]].to_csv(
 
 
 
-import hashlib
-def md5Encode(str):
-    m = hashlib.md5()
-    m.update(str)
-    return m.hexdigest()
-data['mobileno'] = data['mobileno'].astype('str')
+data = pd.read_csv(r'C:\Users\Administrator\Desktop\native_active_1214.txt',
+                   sep='|', header=None, names=['mobileno', 'brand'])
+data = data.loc[data['mobileno'].notna()]
+data['mobileno'] = data['mobileno'].astype(np.int64)
+data['brand'].value_counts()
+data['tag'] = 1
 
-data['mobileno'].map(lambda x: hashlib.md5(str(x).encode(encoding="utf-8")))
-
-
-import hashlib
-data = pd.read_csv(r'C:\Users\Administrator\Desktop\11月Native活跃用户.txt',
+data2 = pd.read_csv(r'C:\Users\Administrator\Desktop\合并结果_2558847.txt',
                     header=None, names=['mobileno'])
-Result = data['mobileno'].map(lambda x: hashlib.md5(str(x).encode(encoding="utf-8")).hexdigest())
-Result.to_csv(r'C:\Users\Administrator\Desktop\11月Native活跃用户(MD5).txt',
-              index=False)
+
+Result = pd.merge(data2, data, how='left', on='mobileno')
+Result.loc[Result['tag'] == 1]
+Result.loc[Result['tag'] == 1, 'brand'].value_counts()
+Result.loc[Result['tag'] == 1, ['mobileno', 'brand']].to_csv(r'C:\Users\Administrator\Desktop\合并结果_2558847（匹配后）.txt',
+                                                             sep='|', header=None, index=False)

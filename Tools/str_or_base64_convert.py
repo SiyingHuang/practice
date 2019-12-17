@@ -2,6 +2,7 @@
 
 import base64
 
+
 # 字符串→base64字符串
 def strToBase64(s):
     '''
@@ -11,6 +12,7 @@ def strToBase64(s):
     '''
     strEncode = base64.b64encode(s.encode('utf8'))
     return str(strEncode, encoding='utf8')
+
 
 # base64字符串→字符串
 def base64ToStr(s):
@@ -22,9 +24,9 @@ def base64ToStr(s):
     strDecode = base64.b64decode(bytes(s, encoding="utf8"))
     return str(strDecode, encoding='utf8')
 
+
 # 主代码
 if __name__ == '__main__':
-
     s = "python:字符串转换成字节的三种方式"
     print(strToBase64(s))
 
