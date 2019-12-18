@@ -20,23 +20,3 @@ f = open(r'C:\Users\Administrator\Desktop\hxmz_active_period_M_201909\hxmz_activ
 for line in f.readlines():
     count = count+1
 print(count)
-
-
-
-
-
-data = pd.read_csv(r'C:\Users\Administrator\Desktop\native_active_1214.txt',
-                   sep='|', header=None, names=['mobileno', 'brand'])
-data = data.loc[data['mobileno'].notna()]
-data['mobileno'] = data['mobileno'].astype(np.int64)
-data['brand'].value_counts()
-data['tag'] = 1
-
-data2 = pd.read_csv(r'C:\Users\Administrator\Desktop\合并结果_2558847.txt',
-                    header=None, names=['mobileno'])
-
-Result = pd.merge(data2, data, how='left', on='mobileno')
-Result.loc[Result['tag'] == 1]
-Result.loc[Result['tag'] == 1, 'brand'].value_counts()
-Result.loc[Result['tag'] == 1, ['mobileno', 'brand']].to_csv(r'C:\Users\Administrator\Desktop\合并结果_2558847（匹配后）.txt',
-                                                             sep='|', header=None, index=False)
