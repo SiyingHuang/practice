@@ -40,7 +40,3 @@ Result.loc[Result['tag'] == 1]
 Result.loc[Result['tag'] == 1, 'brand'].value_counts()
 Result.loc[Result['tag'] == 1, ['mobileno', 'brand']].to_csv(r'C:\Users\Administrator\Desktop\合并结果_2558847（匹配后）.txt',
                                                              sep='|', header=None, index=False)
-
-
-
-
