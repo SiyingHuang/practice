@@ -1,4 +1,5 @@
-# 【Lesson2 练习】
+# 【Lesson5 练习】
+
 
 
 
@@ -36,6 +37,7 @@ def int_game():
             break
 
 
+
 # 【Lesson2 练习】
 # 1、列表操作
 list1 = list(('apple', 'pear', 'orange'))
@@ -49,6 +51,7 @@ dict1['小红']
 dict1['小王'] = '2010-12-12'
 '小明' in dict1  # 或'小明' in dict1.keys()
 dict1.values() == '2020-10-1'  # '2020-10-1' in dict1.values()
+
 
 
 # 【Lesson1 练习】

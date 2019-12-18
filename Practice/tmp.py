@@ -12,8 +12,6 @@ with open(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\�
 
 
 
-
-
 count = 0
 f = open(r'C:\Users\Administrator\Desktop\hxmz_active_period_M_201909\hxmz_active_period_M_meizu_cunliang_201909.txt',
          encoding='utf-8')
