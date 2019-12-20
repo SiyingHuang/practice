@@ -1,4 +1,6 @@
 # 处理南方BDOC中公众平台下发MaaP的日志
+# 针对时间格式进行处理
+# 并筛选出指定时间周期内的数据
 
 import pandas as pd
 import numpy as np

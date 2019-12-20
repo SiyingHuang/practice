@@ -1,7 +1,27 @@
-# 【Lesson5 练习】
+import pandas as pd
+import numpy as np
 
-
-
+# 【Lesson4 练习】
+# 1、判断两个字符串是否相同
+def is_equal(var1, var2):
+    if not (isinstance(var1, str) & isinstance(var2, str)):
+        return None
+    if len(var1) != len(var2):
+        return False
+    for i in range(len(var1)):
+        if var1[i] != var2[i]:
+            return False
+    return True
+print(is_equal('abc', 10))
+print(is_equal('01', '10'))
+print(is_equal('ab', 'ab'))
+# 2、返回满足条件的两数之和的下标
+def two_sum(nums, sum):
+    for i in range(len(nums)-1):
+        for j in range(i+1, len(nums)):
+            if nums[i]+nums[j] == sum:
+                return [i, i+1]
+print(two_sum([1,2,3,4,5], 9))
 
 # 【Lesson3 练习】
 # 1、检查输入

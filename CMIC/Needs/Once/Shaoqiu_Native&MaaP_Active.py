@@ -1,6 +1,6 @@
 # 根据所提供号码
-# 匹配最新一天MaaP日活。
-# 匹配Native存量：即，至今有过Native新增或活跃记录的号码。
+# 1、匹配最新一天MaaP日活。
+# 2、匹配Native存量：即，至今有过Native新增或活跃记录的号码。
 
 import pandas as pd
 import numpy as np

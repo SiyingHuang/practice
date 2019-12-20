@@ -1,10 +1,11 @@
-# 对原始数据，剔除指定号码
+# 对给定的原始数据，剔除指定号码
 
 import pandas as pd
 import numpy as np
 import os
 
 # 待剔除号码
+data_num_except = tmp3.copy()
 data_num_except = pd.read_csv(r'C:\Users\Administrator\Desktop\请协助提取流失用户数据\native_liushi_20191208.txt',
                               sep='|', header=None,
                               names=['mobileno', 'brand'])
@@ -53,6 +54,10 @@ data_num_ld = pd.read_csv(r'集团省专业公司部门及以上&大boss.txt',
                           header=None, names=['mobileno'])
 data_num_ld['tag'] = 1
 
+# 需剔除号码5：已下发1条及以上的不再打扰用户
+data_not_disturb = pd.read_csv(r'12月已下发过的号码.txt', header=None, names=['mobileno'], skiprows=1)
+data_not_disturb['tag'] = 1
+
 # 执行剔除操作
 Result = pd.merge(data_num_except, data_num_120W,
                   how='left',
@@ -78,3 +83,10 @@ data_num_except.to_csv(r'C:\Users\Administrator\Desktop\Native十一月份流失
                        sep='|', header=None, index=False)
 data_num_except.loc[data_num_except['brand'] == '华为', ['mobileno', 'prov']].to_csv(
     r'C:\Users\Administrator\Desktop\华为1208日活.txt', sep='|', header=None, index=False)
+
+Result = pd.DataFrame(
+    set(data_num_except['mobileno'])
+    - set(data_num_mingan['mobileno'])
+    - set(data_num_jituan['mobileno'])
+    - set(data_num_120W['mobileno'])
+    - set(data_not_disturb['mobileno']))
