@@ -23,6 +23,8 @@ def two_sum(nums, sum):
                 return [i, i+1]
 print(two_sum([1,2,3,4,5], 9))
 
+
+
 # 【Lesson3 练习】
 # 1、检查输入
 def int_check():
