@@ -95,3 +95,13 @@ for chunk in reader:
 
 
 
+act = pd.read_csv(r'C:\Users\Administrator\Desktop\native_active_zhaohui.txt',
+                  header=None, names=['mobileno'])
+ori = pd.read_csv(r'C:\Users\Administrator\Desktop\核对1219\核对\剔除后全量.txt', header=None, sep='|', names=['mobileno', 'brand'])
+minus = pd.read_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\05 - 充电\Python\[承宗]-号码剔除验证工具\blacklist\受影响的1375用户.txt', header=None,
+                    names=['mobileno'], skiprows=1)  # 待剔除号码
+ori = pd.merge(ori, pd.DataFrame(set(ori['mobileno']) - set(minus['mobileno']),
+                                 columns=['mobileno']), how='inner', on='mobileno')  # 剔除后
+len(set(ori['mobileno']) - set(minus['mobileno']))
+Result = pd.merge(act, ori, how='inner', on='mobileno')
+Result['brand'].value_counts()

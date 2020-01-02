@@ -29,15 +29,14 @@ print(two_sum([1,2,3,4,5], 9))
 # 1、检查输入
 def int_check():
     while True:
-        var = input('请输入一个0-9之间的整数：')
-        if not var.isnumeric():
-            print('您输入的不是整数，请重新输入。')
+        num = input('请输入一个0-9之间的整数：')
+        if not num.isnumeric():
+            print('不是整数，请重新输入。', end='')
+        elif not (0 <= int(num) <= 9):
+            print('不是0-9之间，请重新输入。', end='')
         else:
-            if (int(var) >=0) & (int(var) <= 9):
-                print('你输入的整数为{}'.format(var))
-                break
-            else:
-                print('输入的整数超出0-9的范围，请重新输入。')
+            print('您输入的整数为:{}'.format(int(num)))
+            break
 # 2、猜列表数字
 import random
 def int_game():
