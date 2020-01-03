@@ -90,3 +90,9 @@ Result = pd.DataFrame(
     - set(data_num_jituan['mobileno'])
     - set(data_num_120W['mobileno'])
     - set(data_not_disturb['mobileno']), columns=['mobileno'])
+
+Result = pd.DataFrame(
+    set(data_num_except['mobileno'])
+    - set(data_num_mingan['mobileno'])
+    - set(data_num_jituan['mobileno'])
+    - set(data_num_120W['mobileno']), columns=['mobileno'])

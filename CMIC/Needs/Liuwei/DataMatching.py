@@ -7,6 +7,14 @@ import numpy as np
 import os
 
 # 待匹配数据包
+data = pd.read_csv(r'C:\Users\Administrator\Desktop\王者-移动-3246851-12.31国标MaaP用户匹配\王者-移动-3246851\王者-移动-3246851（剔重后）.txt',
+                   header=None, names=['mobileno'])
+no_data = pd.read_csv(r'C:\Users\Administrator\Desktop\王者-移动-3246851-12.31国标MaaP用户匹配\王者-移动-3246851\王者-移动-3246851（非交集用户）.txt',
+                      header=None, names=['mobileno'])
+data_num_except = pd.DataFrame(set(data['mobileno'])-set(no_data['mobileno']), columns=['mobileno'])
+
+
+
 data = pd.read_csv(r'C:\Users\Administrator\Desktop\王者-移动-3246851\王者-移动-3246851.txt', sep='|', header=None,
                    names=['mobileno'])
 data.drop_duplicates(inplace=True)  # 号码去重
@@ -16,11 +24,11 @@ data.to_csv(r'C:\Users\Administrator\Desktop\王者-移动-3246851\王者-移动
 act = pd.read_csv(r'C:\Users\Administrator\Desktop\native_active_1228.txt',
                   header=None, names=['mobileno'])  # Native活跃明细
 qb_act = pd.read_csv(r'C:\Users\Administrator\Desktop\20191230_I_DATA_CHATBOT_USER_DTL_D.txt',
-                     sep='|', header=None, names=['mobileno'], usecols=[1], skiprows=1)  # 企标MaaP活跃明细
+                     sep='|', header=None, names=['mobileno'], usecols=[1], skiprows=1)  # 国标MaaP活跃明细
 qb_act['tag'] = 1
 # 交集用户（data_num_except用于进一步剔除）
 data_num_except = pd.DataFrame(set(data['mobileno']) & set(qb_act['mobileno']), columns=['mobileno'])
-Result.to_csv(r'C:\Users\Administrator\Desktop\王者-移动-3246851\王者-移动-3246851（交集且剔除后用户）.txt',
+Result.to_csv(r'C:\Users\Administrator\Desktop\王者-移动-3246851-12.31国标MaaP用户匹配\王者-移动-3246851（交集且剔除后用户）.txt',
                                       header=None, index=False)
 # 非交集用户
 len(set(data['mobileno'])-set(qb_act['mobileno']))

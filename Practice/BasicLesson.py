@@ -39,18 +39,35 @@ def int_check():
             break
 # 2、猜列表数字
 import random
+# 自己尝试
+while True:
+    rand_ls = random.sample(range(10), 3)
+    num = int(input('随机数位于0-9之间，请猜数：'))
+    if int(num) not in rand_ls:
+        print('猜错了 o(╥﹏╥)o \n --随机列表为{}'.format(rand_ls))
+        enter = int(input('输入1继续，输入其他则退出游戏。'))
+        if enter == 1:
+            continue
+        else:
+            break
+    else:
+        for guess_num in rand_ls:
+            if num == guess_num:
+                print('猜对了，获得第【{}】名 (*^▽^*) \n --随机列表为{}'.format(rand_ls.index(guess_num)+1, rand_ls))
+    break
+# 参考答案
 def int_game():
     rewards = ['第一名', '第二名', '第三名']
     print('您需要猜的数字，是一个[0-9]之间的整数。')
     while True:
-        setInt = random.sample(range(10), 3)
+        rand_ls = random.sample(range(10), 3)
         guessNum = input('请输入您猜的数字：')
         for guessTimes in range(3):
-            if int(guessNum) == setInt[guessTimes]:
-                print('随机列表为{}, 您获得了{}。'.format(setInt, rewards[guessTimes]))
+            if int(guessNum) == rand_ls[guessTimes]:
+                print('随机列表为{}, 您获得了{}。'.format(rand_ls, rewards[guessTimes]))
                 break
         else:
-            print('随机列表为{}, 您没有获奖。'.format(setInt))
+            print('随机列表为{}, 您没有获奖。'.format(rand_ls))
         ans = input('是否继续猜？ 按1重新开始，按2结束游戏。')
         if int(ans) == 1:
             pass
