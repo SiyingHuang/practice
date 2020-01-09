@@ -105,3 +105,11 @@ ori = pd.merge(ori, pd.DataFrame(set(ori['mobileno']) - set(minus['mobileno']),
 len(set(ori['mobileno']) - set(minus['mobileno']))
 Result = pd.merge(act, ori, how='inner', on='mobileno')
 Result['brand'].value_counts()
+
+
+
+
+data = pd.read_csv(r'C:\Users\Administrator\Desktop\huawei_new_湖北.txt', header=None,
+                   names=['mobileno'])
+Result.to_csv(r'C:\Users\Administrator\Desktop\huawei_new_湖北.txt',
+              header=None, index=False)

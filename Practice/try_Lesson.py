@@ -1,14 +1,25 @@
 import pandas as pd
 import numpy as np
+import random
 
+rewards = ['第一名', '第二名', '第三名']
 while True:
-    num = input('请输入一个0-9之间的整数：')
-    if not num.isnumeric():
-        print('不是整数，请重新输入。', end='')
-    elif not (0 <= int(num) <= 9):
-        print('不是0-9之间，请重新输入。', end='')
+    rand_ls = random.sample(range(10), 3)
+    guess_num = input('请输入0-9的整数')
+    for guess in range(3):
+        if int(guess_num) == rand_ls[guess]:
+            print('您获得了{} \n --列表为{}'.format(rewards[guess], rand_ls))
+            break
     else:
-        print('您输入的整数为:{}'.format(int(num)))
+        print('您没有猜对 \n 列表为{}'.format(rand_ls))
+    enter = input('是否重新猜数？输入1继续，输入2退出。')
+    if int(enter) == 1:
+        pass
+    elif int(enter) == 2:
         break
 
 
+def list_add_end(L=[]):
+    L.append('END')
+    return L
+print(list_add_end())

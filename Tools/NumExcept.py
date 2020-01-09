@@ -5,7 +5,8 @@ import numpy as np
 import os
 
 # 待剔除号码
-data_num_except = tmp3.copy()
+data_num_except = data.copy()
+data_num_except = tmp.iloc[:, :1].copy()
 data_num_except = pd.read_csv(r'C:\Users\Administrator\Desktop\请协助提取流失用户数据\native_liushi_20191208.txt',
                               sep='|', header=None,
                               names=['mobileno', 'brand'])
@@ -59,7 +60,7 @@ data_not_disturb = pd.read_csv(r'12月已下发过的号码.txt', header=None, n
 data_not_disturb['tag'] = 1
 
 # 执行剔除操作
-Result = pd.merge(data_num_except, data_num_mingan,
+Result = pd.merge(data_num_except, data_num_120W,
                   how='left',
                   on='mobileno')
 Result.loc[Result['tag'] == 1]
