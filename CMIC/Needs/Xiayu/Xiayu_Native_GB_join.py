@@ -6,20 +6,24 @@
 
 import pandas as pd
 import numpy as np
+import os
 
-data = pd.read_csv(r'C:\Users\Administrator\Desktop\【叶旋】升档享购机券\升139元套餐享1200购机-11314161.txt',
-                   header=None, names=['mobileno'])
-data_if = pd.read_csv(r'C:\Users\Administrator\Desktop\hsy_tmp_20191204002_gd_native_if_GB.txt',
+os.chdir(r'C:\Users\Administrator\Desktop\1月广东10086标杆打造目标用户筛选')
+data = pd.read_csv(r'APP20191-11-省统APP+H5累计_20191231剔除限定号码（含万能副卡）1121(剔除(1300)).txt',
+                   header=None, names=['mobileno'], skiprows=1)
+data_if = pd.read_csv(r'C:\Users\Administrator\Desktop\native_if_gb.txt',
                       sep='|', header=None, names=['mobileno', 'if_gb'])
-data_if['tag'] = 1
+data_if['if_native'] = 1
 tmp = pd.merge(data, data_if, how='left', on='mobileno')
-tmp.loc[tmp['tag'] == 1]
-tmp.loc[((tmp['tag'] == 1) & (tmp['if_gb'] != 1)), ['mobileno']].to_csv(
-    r'C:\Users\Administrator\Desktop\【叶旋】升档享购机券\升139元套餐享1200购机-11314161(native活跃不含国标maap).txt',
+tmp.loc[tmp['if_native'] == 1]
+data_num_except = tmp.loc[((tmp['if_native'] == 1) & (tmp['if_gb'] != 1)), ['mobileno']]
+Result.to_csv(
+    r'APP20191-11-省统APP+H5累计_20191231剔除限定号码（含万能副卡）1121(剔除(1300))(native活跃不含国标maap).txt',
     header=None, index=False)
-tmp.loc[((tmp['tag'] == 1) & (tmp['if_gb'] == 1)), ['mobileno']].to_csv(
-    r'C:\Users\Administrator\Desktop\【叶旋】升档享购机券\升139元套餐享1200购机-11314161(国标maap).txt',
+data_num_except = tmp.loc[((tmp['if_native'] == 1) & (tmp['if_gb'] == 1)), ['mobileno']]
+Result.to_csv(
+    r'APP20191-11-省统APP+H5累计_20191231剔除限定号码（含万能副卡）1121(剔除(1300))(国标maap).txt',
     header=None, index=False)
-tmp.loc[tmp['tag'] != 1, ['mobileno']].to_csv(
-    r'C:\Users\Administrator\Desktop\【叶旋】升档享购机券\升139元套餐享1200购机-11314161(剩余用户).txt',
+tmp.loc[tmp['if_native'] != 1, ['mobileno']].to_csv(
+    r'APP20191-11-省统APP+H5累计_20191231剔除限定号码（含万能副卡）1121(剔除(1300))(剩余用户).txt',
     header=None, index=False)

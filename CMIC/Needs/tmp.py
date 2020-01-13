@@ -4,8 +4,9 @@ import os
 import random
 import datetime
 
-with open(r'C:\Users\Administrator\Desktop\20191230_I_DATA_CHATBOT_USER_DTL_D.txt',
-          encoding='utf-8') as f:
+with open(
+        r'C:\Users\Administrator\Desktop\APP20191-11-省统APP H5累计_20191231剔除限定号码（含万能副卡）1121(剔除(1300))\APP20191-11-省统APP+H5累计_20191231剔除限定号码（含万能副卡）1121(剔除(1300)).txt',
+        encoding='utf-8') as f:
     for i in range(5):
         tmp = f.readline()
         print(tmp)

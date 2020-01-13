@@ -56,7 +56,7 @@ data_num_ld = pd.read_csv(r'集团省专业公司部门及以上&大boss-2019111
 data_num_ld['tag'] = 1
 
 # 需剔除号码5：已下发1条及以上的不再打扰用户
-data_not_disturb = pd.read_csv(r'12月已下发过的号码.txt', header=None, names=['mobileno'], skiprows=1)
+data_not_disturb = pd.read_csv(r'1月免打扰名单.txt', header=None, names=['mobileno'], skiprows=0)
 data_not_disturb['tag'] = 1
 
 # 执行剔除操作
