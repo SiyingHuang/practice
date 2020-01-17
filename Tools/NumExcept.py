@@ -97,3 +97,11 @@ Result = pd.DataFrame(
     - set(data_num_mingan['mobileno'])
     - set(data_num_jituan['mobileno'])
     - set(data_num_120W['mobileno']), columns=['mobileno'])
+
+
+from preprocess.data_handler import DataHandler
+
+dh = DataHandler(data=yourdata)
+dh.delete_already_send()
+result = dh.save()
+

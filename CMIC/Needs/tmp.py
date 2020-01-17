@@ -114,3 +114,20 @@ data = pd.read_csv(r'C:\Users\Administrator\Desktop\huawei_new_湖北.txt', head
                    names=['mobileno'])
 Result.to_csv(r'C:\Users\Administrator\Desktop\huawei_new_湖北.txt',
               header=None, index=False)
+
+
+
+
+
+data = pd.read_csv(r'C:\Users\Administrator\Desktop\陕西需求0114\陕西需求\COC_CHENXILEI_20200113200537_101996.txt',
+                   header=None, names=['mobileno', 'city', 'term'], skiprows=1, encoding='gbk')
+hfx = pd.read_csv(r'C:\Users\Administrator\Desktop\ANDFETION_REGISTER_20200114.txt',
+                  header=None, names=['mobileno'])
+hfx['tag'] = 1
+tmp = pd.merge(data, hfx, how='left', on='mobileno')
+Result = tmp.loc[tmp['tag'] != 1]
+Result.iloc[:, :3].to_csv(r'C:\Users\Administrator\Desktop\陕西需求0114\陕西需求\COC_CHENXILEI_20200113200537_101996（已剔除）.txt',
+                          header=None, index=False)
+
+tmp = pd.DataFrame(set(data['mobileno']) - set(hfx['mobileno']), columns=['mobileno'])
+Result = pd.merge(data, tmp, how='inner')
