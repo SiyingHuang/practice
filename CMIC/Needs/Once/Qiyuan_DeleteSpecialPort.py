@@ -6,7 +6,7 @@ os.chdir(r'C:\Users\Administrator\Desktop\小王子需求')
 
 data = pd.read_csv('运营原始号码.csv')
 data.drop_duplicates(subset=['mobileno', 'group'], inplace=True)
-tmp = pd.read_csv('消息明细.csv', header=None, names=['mobileno', 'mess_cnt', 'date'], parse_dates=[2])
+tmp = pd.read_csv('qy_num_messcnt.txt', header=None, names=['mobileno', 'mess_cnt', 'date'], parse_dates=[2])
 data = pd.merge(data, tmp, how='left', on='mobileno')
 
 hy_gp = {}
