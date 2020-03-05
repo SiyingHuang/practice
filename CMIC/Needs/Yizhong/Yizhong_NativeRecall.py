@@ -11,7 +11,7 @@ data_yz = pd.read_csv(r'C:\Users\Administrator\Desktop\native_msg_0726to0801_mid
                       encoding='GBK')
 
 data_yz_tmp = data_yz.loc[data_yz['all'].notna()
-                          & data_yz['all'] != 0] # all是Python方法，不能直接data_yz.all
+                          & data_yz['all'] != 0]  # all是Python方法，不能直接data_yz.all
 data_yz_tmp2 = data_yz_tmp.loc[data_yz_tmp['voi'] != 0]
 data_yz_tmp3 = data_yz_tmp.loc[data_yz_tmp.fmt.notna() & data_yz_tmp.fmt != 0]
 

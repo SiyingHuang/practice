@@ -7,6 +7,9 @@ import os
 # 待剔除号码
 data_num_except = data.copy()
 data_num_except = tmp.iloc[:, :1].copy()
+data_num_except = pd.read_csv(r'C:\Users\Administrator\Desktop\native_active_0210.txt',
+                              sep='|', header=None,
+                              names=['mobileno', 'city', 'brand', 'term'], usecols=[0, 1, 2, 3])
 data_num_except = pd.read_csv(r'C:\Users\Administrator\Desktop\请协助提取流失用户数据\native_liushi_20191208.txt',
                               sep='|', header=None,
                               names=['mobileno', 'brand'])
@@ -30,6 +33,7 @@ data_num_except = pd.read_excel(r'C:\Users\Administrator\Desktop\200W未开通�
                                 header=None,
                                 names=['mobileno'],
                                 encoding='GBK')
+data_num_except = pd.merge(data1, data2, how='inner', on='mobileno')
 # data_num_except['mobileno'] = data_num_except['mobileno'].astype('str')
 
 os.chdir(r'D:\中移互联网\01 - 运营室\01 - 分析组\05 - 充电\Python\[承宗]-号码剔除验证工具\blacklist')  # 切换工作目录
@@ -58,30 +62,34 @@ data_num_ld = pd.read_csv(r'集团省专业公司部门及以上&大boss-2019111
                           header=None, names=['mobileno'])
 data_num_ld['tag'] = 1
 
-# 需剔除号码5：已下发1条及以上的不再打扰用户
-data_not_disturb = pd.read_csv(r'1月免打扰名单.txt', header=None, names=['mobileno'], skiprows=1)
+# 需剔除号码5：当月免打扰用户
+data_not_disturb = pd.read_csv(r'2月免打扰名单.txt', header=None, names=['mobileno'], skiprows=0)
 data_not_disturb['tag'] = 1
 
 # 执行剔除操作
+"""
+待剔除号码包：敏感号码（data_num_mingan）、内部员工（data_num_jituan）、当月免打扰用户（data_not_disturb）
+"""
 Result = pd.merge(data_num_except, data_not_disturb,
                   how='left',
                   on='mobileno')
-Result.loc[Result['tag'] == 1]
+len(Result.loc[Result['tag'] == 1])
 Result = Result.loc[Result['tag'] != 1]
 data_num_except = Result.iloc[:, 0].copy()
 data_num_except = Result.iloc[:, :2].copy()
 data_num_except = Result.iloc[:, :3].copy()
+data_num_except = Result.iloc[:, :4].copy()
 data_num_except = Result.iloc[:, :5].copy()
 
-Result.iloc[:, 0].to_csv(r'C:\Users\Administrator\Desktop\王者-移动-3246851（匹配12月月活MaaP并剔除后）.txt',
+Result.iloc[:, [0]].to_csv(r'C:\Users\Administrator\Desktop\native测试撞库清单105万（已撞库+已剔除）.txt',
                           sep='|', header=False, index=False)
 Result.to_excel(r'C:\Users\Administrator\Desktop\200W未开通号码_1（剔除后）.xlsx',
                 header=False, index=False)
-Result.iloc[:, :2].to_csv(r'C:\Users\Administrator\Desktop\周期内新增活跃号码（0114-0120）.txt',
+Result.iloc[:, [:2]].to_csv(r'C:\Users\Administrator\Desktop\周期内新增活跃号码（0114-0120）.txt',
                           sep='|', header=False, index=False)
-Result.iloc[:, :3].to_csv(r'C:\Users\Administrator\Desktop\Chatbot日活1208（已剔除）.txt',
+Result.iloc[:, [:3]].to_csv(r'C:\Users\Administrator\Desktop\Chatbot日活1208（已剔除）.txt',
                           sep='|', header=False, index=False)
-Result.iloc[:, :4].to_csv(r'C:\Users\Administrator\Desktop\native_dayactive_0925to0928.txt',
+Result.iloc[:, [:4]].to_csv(r'C:\Users\Administrator\Desktop\native_active_0210（已剔除）.txt',
                           sep='|', header=False, index=False)
 data_num_except.to_csv(r'C:\Users\Administrator\Desktop\tmp_20191119001_yz_native_active_no_msg.txt',
                        header=None, index=False)
@@ -89,6 +97,11 @@ data_num_except.to_csv(r'C:\Users\Administrator\Desktop\Native十一月份流失
                        sep='|', header=None, index=False)
 data_num_except.loc[data_num_except['brand'] == '华为', ['mobileno', 'prov']].to_csv(
     r'C:\Users\Administrator\Desktop\华为1208日活.txt', sep='|', header=None, index=False)
+
+Result = pd.DataFrame(
+    set(data_num_except['mobileno'])
+    - set(data_num_mingan['mobileno'])
+    - set(data_num_jituan['mobileno']), columns=['mobileno'])
 
 Result = pd.DataFrame(
     set(data_num_except['mobileno'])
@@ -104,9 +117,11 @@ Result = pd.DataFrame(
     - set(data_num_120W['mobileno']), columns=['mobileno'])
 
 
+
+
+# 承宗提供的脚本
 from preprocess.data_handler import DataHandler
 
 dh = DataHandler(data=yourdata)
 dh.delete_already_send()
 result = dh.save()
-

@@ -51,38 +51,6 @@ pd.DataFrame(set(chk1['mobileno'])-set(chk2['mobileno'])).to_csv(r'C:\Users\Admi
 
 
 
-os.chdir(r'D:\中移互联网\01 - 运营室\01 - 分析组\05 - 充电\Python\[承宗]-号码剔除验证工具\blacklist')
-data = pd.read_csv(r'C:\Users\Administrator\Desktop\hsy_tmp_20191230001_qy_native_msg_day.txt',
-                   sep='|', header=None, skiprows=0, names=['date', 'mobileno', 'mess_cnt'])
-data = pd.read_csv(r'C:\Users\Administrator\Desktop\hsy_tmp_20191230001_qy_native_msg_month12.txt',
-                   sep='|', header=None, skiprows=0, names=['mobileno', 'mess_cnt'])
-data = data.loc[~(data['mess_cnt'] == 0)]
-data.to_csv(r'native_msg_count_day.txt', header=None, sep='|')
-data2 = pd.read_csv(r'')
-data_ld = pd.read_csv(r'集团&专业公司-部门级别以上领导-20191101.txt',
-                      header=None, names=['name', 'mobileno', 'prov', 'part', 'level', 'tag'], usecols=[0, 1, 2, 3, 4, 5])
-data_num_jituan = pd.read_csv(r'集团内部号码(2月已处理).csv',
-                              header=None, skiprows=1,
-                              names=['mobileno'])
-# data_ld['tag'].value_counts()
-# data_ld = data_ld.loc[data_ld['tag'] != 50]
-Result = pd.merge(data, data_ld, how='inner', on='mobileno')
-Result.to_csv(r'day_ld.txt', header=None, index=False)
-Result.to_csv(r'month12_ld.txt', header=None, index=False)
-
-Result['prov'].value_counts().to_csv(r'result.txt', header=None)
-data_ld[data_ld['mobileno'].duplicated()]
-data_ld = data_ld.sort_values(by=['mobileno', 'prov'])
-data_ld.drop_duplicates(inplace=True)
-Result = pd.merge(data, data_ld, how='inner', on='mobileno')
-Result['prov'].value_counts().to_csv(r'result.txt', sep='|')
-Result.to_excel(r'tmp.xlsx')
-Result.loc[Result[1] == 201911, 'prov'].value_counts().to_csv(r'result_201911.txt', header=None)
-
-
-
-
-
 
 reader = pd.read_csv(r'D:\yy_1252004012520040123_and_12520040123_1220to1224.txt',
                      sep='|', header=None, chunksize=100000)
@@ -109,25 +77,5 @@ Result['brand'].value_counts()
 
 
 
-
-data = pd.read_csv(r'C:\Users\Administrator\Desktop\huawei_new_湖北.txt', header=None,
-                   names=['mobileno'])
-Result.to_csv(r'C:\Users\Administrator\Desktop\huawei_new_湖北.txt',
-              header=None, index=False)
-
-
-
-
-
-data = pd.read_csv(r'C:\Users\Administrator\Desktop\陕西需求0114\陕西需求\COC_CHENXILEI_20200113200537_101996.txt',
-                   header=None, names=['mobileno', 'city', 'term'], skiprows=1, encoding='gbk')
-hfx = pd.read_csv(r'C:\Users\Administrator\Desktop\ANDFETION_REGISTER_20200114.txt',
-                  header=None, names=['mobileno'])
-hfx['tag'] = 1
-tmp = pd.merge(data, hfx, how='left', on='mobileno')
-Result = tmp.loc[tmp['tag'] != 1]
-Result.iloc[:, :3].to_csv(r'C:\Users\Administrator\Desktop\陕西需求0114\陕西需求\COC_CHENXILEI_20200113200537_101996（已剔除）.txt',
-                          header=None, index=False)
-
-tmp = pd.DataFrame(set(data['mobileno']) - set(hfx['mobileno']), columns=['mobileno'])
-Result = pd.merge(data, tmp, how='inner')
+s = pd.Series(['a', 'b', 'c'], name='num')
+s.to_frame()

@@ -7,12 +7,12 @@ import os
 
 os.chdir(r'C:\Users\Administrator\Desktop')
 # 待匹配数据
-data_ori1 = pd.read_csv(r'【湖北号码需求提醒】12月2日需求\huawei_new_湖北.txt',
+data_ori = pd.read_csv(r'C:\Users\Administrator\Desktop\Native1月拉新（匹配后）\combine.txt',
                        header=None, names=['mobileno'])
-data_ori1 = pd.read_csv(r'【湖北号码需求提醒】12月2日需求\huawei9_湖北.txt',
+data_ori = pd.read_csv(r'【湖北号码需求提醒】12月2日需求\huawei9_湖北.txt',
                        header=None, names=['mobileno'])
 # 新增用户
-data_new = pd.read_csv(r'native_new_1219to1222.txt',
+data_new = pd.read_csv(r'native_new_0114to0120.txt',
                        header=None, names=['mobileno'])
 # N=1用户
 data_msg = pd.read_csv(r'native_msg_count_1219to1222.txt',
