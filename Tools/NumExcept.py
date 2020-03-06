@@ -6,7 +6,7 @@ import os
 
 # 待剔除号码
 data_num_except = data.copy()
-data_num_except = tmp.iloc[:, :1].copy()
+data_num_except = tmp.iloc[:, [:1]].copy()
 data_num_except = pd.read_csv(r'C:\Users\Administrator\Desktop\native_active_0210.txt',
                               sep='|', header=None,
                               names=['mobileno', 'city', 'brand', 'term'], usecols=[0, 1, 2, 3])

@@ -84,7 +84,7 @@ class DataHandler:
                                    dtype={'mobileno': np.int64})
         self.data, self.already_send_nums = remove_df2_from_df1(df1=self.data, df2=already_send, df1_name=self.name)
 
-    def delete_provinces(self, provinces: list) -> None:
+    def delete_provinces(self, provinces: list) -> None:  # 指定返回值为None（-> None）
         """在没有省份字段的情况下，根据号段表剔除部分省份"""
         if not isinstance(provinces, list):  # 判断传入省份是否为一个list
             raise TypeError('provinces必须是一个list，如["河北", "安徽", "北京"]')
@@ -94,38 +94,38 @@ class DataHandler:
             '青海', '湖北', '湖南', '内蒙古', '河南', '山东', '辽宁', '上海', '河北', '云南', '新疆', '浙江', '福建',
             '天津', '广西', '黑龙江', '贵州', '海南')
 
-        for prov in provinces:
+        for prov in provinces:  # provinces为传入的需要剔除的省份列表
             if prov not in provinces_tuple:  # 判断输入省份是否有误
                 raise ValueError(f'"{prov}"不是合理省份！(请输入省份简称，如：河北)')
 
-        before_nums = self.data.shape[0]  # 剔除前号码数
+        before_nums = self.data.shape[0]                # 剔除前号码数
         prov_map = pd.read_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\05 - 充电\Python\[承宗]-号码剔除验证工具\blacklist\运营需剔除号码\三网号段分省映射_20191120.txt',
                                usecols=[0, 1])  # 号段（prefix）- 前8位、省份（province）、城市（city）
-        prov_map = prov_map.loc[prov_map.province.isin(provinces)]  # 剔除异网用户（非移动用户，prefix字段为“异网”）
+        prov_map = prov_map.loc[prov_map.province.isin(provinces)]  # 剔除号段表中的异网用户（非移动用户，prefix字段为“异网”）
 
-        self.data['prefix'] = self.data[self.name] // 10000  # 取号码字段的前8位（“//”表示除法，结果向下取整）
+        self.data['prefix'] = self.data[self.name] // 10000  # 取号码字段的前8位（“//”表示除法，结果向下取整）作为号段
         self.data = pd.merge(self.data, prov_map, how='left', on='prefix')
-        self.data = self.data.loc[self.data.province.isnull()]
-        self.data.drop(columns=['prefix', 'province'], inplace=True)
-        after_nums = self.data.shape[0]  # 剔除后号码数
-        self.provinces_nums = before_nums - after_nums
+        self.data = self.data.loc[self.data.province.isnull()]  # 剔除指定省份
+        self.data.drop(columns=['prefix', 'province'], inplace=True)  # 删除号段、省份字段，仅保留源文件原有字段
+        after_nums = self.data.shape[0]                 # 剔除后号码数
+        self.provinces_nums = before_nums - after_nums  # 计算得到已剔除的号码数
 
-    def delete_special_mobileno(self, data):
+    def delete_special_mobileno(self, data):     # 【剔除特殊号码】
         before_nums = self.data.shape[0]
         if not (isinstance(data, pd.Series) or isinstance(data, pd.DataFrame)):
             raise TypeError('data应该是一个Series或DataFrame!')
 
-        if isinstance(data, pd.DataFrame):
+        if isinstance(data, pd.DataFrame):  # 若为DataFrame时
             data2, name2 = get_valid_dataframe(df=data)
             data2['delete_flag'] = 1
-        else:
+        else:                               # 若为Series时
             data2 = get_valid_series(s=data)
             name2 = 'mobileno'
             data2['delete_flag'] = 1
 
-        self.data = pd.merge(self.data, data2[['mobileno', 'delete_flag']], how='left', left_on=self.name,
-                             right_on=name2)
-        self.data = self.data.loc[self.data.delete_flag.isnull()]
+        self.data = pd.merge(self.data, data2[['mobileno', 'delete_flag']], how='left',
+                             left_on=self.name, right_on=name2)
+        self.data = self.data.loc[self.data.delete_flag.isnull()]  # 剔除操作
 
         if self.name != name2:
             self.data.drop(columns=[name2, 'delete_flag'], inplace=True)
@@ -137,13 +137,13 @@ class DataHandler:
 
     def save(self):
         """保存数据并打印出剔除信息"""
-        self.final_nums = self.data.shape[0]
+        self.final_nums = self.data.shape[0]  # 输出完成剔除后号码数
         dic = {'黑名单': self.blacklist_nums,
                '集团员工': self.staff_nums,
                '已经下发': self.already_send_nums,
                '特定省份': self.provinces_nums,
                '额外指定': self.special_mobileno_nums}
-        print(f'原始数据号码数量： {self.original_nums}')
+        print(f'原始数据号码数量： {self.original_nums}')  # 原始数据号码量original_nums
         for key, value in dic.items():
             if value is not None:
                 print(f'剔除{key}号码数量： {value}')
