@@ -20,22 +20,23 @@ def split_data_to_excel():
             'C:\\Users\\CMIC\\Desktop\\new_folder')
         sys.exit(0)
 
-    if not os.path.exists(PATH):                            # 判断文件夹路径是否不存在
-        print('输入的文件路径不存在!请重新输入')
+    """判断文件夹路径是否存在"""
+    if not os.path.exists(PATH):
+        print('输入的文件夹路径不存在!请重新输入')
         sys.exit(0)
 
     st = time.time()                                        # 记录任务开始时间
     print('任务开始!时间:{}'.format(datetime.strftime(datetime.now(), '%Y-%m-%d %H:%M:%S')))
 
     NUMS = 1000000                                          # 拆分成每个excel文件的行数
-    all_files = os.listdir(PATH)                            # 返回路径下文件名称的列表
-    files = []                                              # files为待处理的文件列表
+    all_files = os.listdir(PATH)                            # 返回路径下文件名称的列表（可能包括“不正确”的文件路径）
+    files = []                                              # files为待处理的文件列表（存入“正确”的文件路径）
     for file in all_files:                                  # 遍历路径下的所有文件或文件夹
         if os.path.isfile(os.path.join(PATH, file)):        # 把目录PATH和文件名file拼接成一个完整文件路径，再判断该路径是否为文件
-                                                            # （如'C:\\Users\\CMIC\\Desktop\\new_folder\\huawei8_result.txt'）
+                                                            # （拼接后，如'C:\\Users\\CMIC\\Desktop\\new_folder\\huawei8_result.txt'）
             files.append(file)                              # 若为文件，则将该路径加入files列表中
 
-    if not files:                                           # 检查txt文件是否不存在
+    if not files:                                           # 检查文件夹中是否有文件存在
         print('文件夹中没有txt数据文件!请检查!')
         return None
 
@@ -43,13 +44,14 @@ def split_data_to_excel():
         name = file[:-len(file.split('.')[-1]) - 1]       # 防止文件名中有多个.（如示例.示例.txt）；取最后一个.之前的内容作为文件名
         if not os.path.exists(os.path.join(PATH, name)):  # 若文件夹（切分后文件存放的文件夹）不存在，则新建文件夹（名称为'name'）
             os.mkdir(os.path.join(PATH, name))
-        else:                                             # 若文件夹存在，则清空里面的内容
+        else:                                             # 若文件夹存在，则清空里面原有的内容
             old_files = os.listdir(os.path.join(PATH, name))
             for i in old_files:
-                os.remove(os.path.join(PATH, name, i))    # 清空文件夹中的每个文件
+                os.remove(os.path.join(PATH, name, i))    # 清空文件夹中原有文件
 
         file_path = os.path.join(PATH, file)
         data = pd.read_csv(file_path, skiprows=0, names=['中国移动手机号'], dtype={'中国移动手机号': 'str'})
+        """确定可拆分成的文件个数"""
         if data.shape[0] % NUMS == 0:
             n = data.shape[0] // NUMS
         else:
@@ -57,7 +59,7 @@ def split_data_to_excel():
 
         print('正在处理文件：{}...'.format(file))
         for i in range(n):
-            tmp = data.iloc[i * NUMS: (i + 1) * NUMS].copy()
+            tmp = data.iloc[i * NUMS: (i + 1) * NUMS].copy()  # 拆分后的每个文件，包含NUMS个号码
             tmp['姓名'] = np.nan  # '姓名'列赋'NaN'值
             tmp = tmp[['姓名', '中国移动手机号']]
             tmp['所属分组'] = name
