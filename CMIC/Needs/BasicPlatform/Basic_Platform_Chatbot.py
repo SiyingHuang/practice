@@ -24,7 +24,7 @@ mp = pd.read_csv(r'消息中台\处理后\触发的下行.txt', sep='|', header=
 len('g302000003a70otffzbii1080k6a6oke5000')  # 消息ID长度：36
 # 消息ID字段处理
 mp['msg_id'] = mp['msg_id'].map(lambda x: str(x)[9:45])  # 消息中台下发的消息ID（消息ID长度：36）
-# 区分 群聊or上行触发的下行
+# 区分 群聊or上行触发的下行（针对混合日志）
 mp.loc[mp['msg_id'].map(lambda x: str(x)[:8]) == 'g3020000', 'type'] = '1'              # 群聊
 mp.loc[mp['msg_id'].map(lambda x: str(x)[:8]) != 'g3020000', 'type'] = '2'              # 上行触发的下行
 mp.info()  # time列格式为datetime64
@@ -40,7 +40,7 @@ data_ori['r_date'] = data_ori['r_time'].map(lambda x: str(x)[:14])  # 接收时�
 data_ori['r_date'] = data_ori['r_date'].map(lambda x: datetime.datetime.strptime(str(x), '%Y%m%d%H%M%S'))
 # 被叫号码字段处理
 data_ori['called'] = data_ori['called'].map(lambda x: str(x)[2:]).astype(np.int64)
-# 区分 群聊or上行触发的下行
+# 区分 群聊or上行触发的下行（针对混合日志）
 data_ori.loc[data_ori['msg_id'].map(lambda x: str(x)[:8]) == 'g3020000', 'type'] = '1'  # 群聊
 data_ori.loc[data_ori['msg_id'].map(lambda x: str(x)[:8]) != 'g3020000', 'type'] = '2'  # 上行触发的下行
 # 活动用户
@@ -58,7 +58,6 @@ data_ori.loc[(data_ori['s_date'] <= i) | (data_ori['s_date'] >= j)]
 data = pd.merge(data, mp, how='inner', on='msg_id')  # 保留与消息中台ID相同的日志
 # （3）匹配活动用户号码
 data = pd.merge(data, users, how='inner', on='called')  # 匹配出活动号码
-data.loc[(data['group'] == 4) & (data['called'] == 13612669536)][['called', 'r_type', 'status_code', 's_date']]
 
 # 基础平台【发送时间】
 data_s = data.loc[data['r_type'] == 7]  # 筛选出接收端为7的日志记录
