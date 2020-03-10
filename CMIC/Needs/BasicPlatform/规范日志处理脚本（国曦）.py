@@ -57,6 +57,31 @@ def maapdown(fname, fwname):
     f.close()
     fw.close()
 
+def maapdown(fname, fwname):
+    f = open(fname, 'r')
+    fw = open(fwname, 'w')
+    str_demos = f.readlines()
+    for str_demo in str_demos:
+        seg = str_demo.split(',')
+        time = seg[0]
+        msg_id = re.search(r'maapBody[:](.){36}', str_demo).group()
+        main = re.search(r'sip[:](.*?)com', str_demo).group()  # “.*?”匹配尽量少（?）的字符，非贪婪（一行中存在两个sip）
+        called = re.search(r'[+86]\d{13}', str_demo).group()  # “\d”匹配任何十进制数(0-9)，共13个数字（含"+86"）--python3
+        code = re.search(r'code[:](.){1,3}', str_demo).group()  # “code:”后的数字可能为1-3个
+        fw.write(time)
+        fw.write(',')
+        fw.write(str(main).lstrip("sip:").rstrip("@botplatform.rcs.chinamobile.com"))  # 先后移除左侧（"sip:"）、右侧（"@botplatform.rcs.chinamobile.com"）指定字符
+        fw.write(',')
+        fw.write(str(called).lstrip("+86"))
+        fw.write(',')
+        fw.write(str(msg_id).lstrip("maapBody:"))
+        fw.write(',')
+        fw.write(str(code).lstrip("code:"))
+        fw.write('\n')
+
+    f.close()
+    fw.close()
+
 
 def downstate(fname, fwname):
     f = open(fname, 'r')

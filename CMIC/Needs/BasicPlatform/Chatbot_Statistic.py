@@ -6,6 +6,9 @@ from datetime import datetime
 import time
 import os
 
+def maap_down_log():
+
+
 
 def chatbot_statistic():
     st = time.time()
