@@ -15,6 +15,15 @@ import sys
 
 
 def maap_down_log():
+    FILE = r'C:\Users\Administrator\Desktop\关于消息中台日志规范输出的需求\规范日志示例\data\maapdown\maapdown_demo.txt'
+    l = []
+    data = pd.read_csv(FILE, header=None, sep=',,,')
+    for i in data.index:
+        line = data.iloc[i][0]
+        time = datetime.strptime(line.split(',')[0][:-4], '%Y-%m-%d %H:%M:%S')
+        main = re.search(r'sip[:](.*?)[.]com', line)
+        called = re.search(r'[+86](.*){13}', line).group()
+        msg_id = re.search(r'maapBody[:](.){36}', line).group()
 
 
 if __name__ == '__main__':
@@ -25,8 +34,6 @@ if __name__ == '__main__':
 
     os.chdir(r'')
     maap_down_log()
-
-
 
 
 def maapdown(fname, fwname):
@@ -58,4 +65,6 @@ def maapdown(fname, fwname):
     s2 = pd.Series(msg_id)
     s = s1 + ',' + s2
     l = []
-    l = l.append(s)
+    l = pd.concat((s1, s2), axis=1)
+    l = l.append(l)
+    len(l)
