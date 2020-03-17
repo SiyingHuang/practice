@@ -5,59 +5,45 @@ import re
 from datetime import datetime
 import time
 import os
-import sys
-
-
-maapdown = pd.read_csv(r'C:\Users\Administrator\Desktop\关于消息中台日志规范输出的需求\规范日志示例\data\maapdown\maapdown_demo.txt',
-                       header=None, dtype={2: 'str'})
-"""单条日志样式"""
-str_demo = '2020-02-26 10:29:30.030,sip:12520040106@botplatform.rcs.chinamobile.com,+8613414928948,{"address":"+8613414928948","appid":"Uchatbot1252004010","bodyText":"--next\r\nContent-Type: application/vnd.gsma.botmessage.v1.0+json\nContent-Length: 1300\n\n{\"message\":{\"generalPurposeCardCarousel\":{\"content\":[{\"description\":\"亲爱的用户，您的手机已全面支持短信小程序。点击下方按钮，可以快速了解小程序、体验精品小程序、了解疫情最新动态！【中移互联网 增强信息】\",\"media\":{\"height\":\"MEDIUM_HEIGHT\",\"mediaContentType\":\"image/jpeg\",\"mediaUrl\":\"http://117.161.4.174/group/M00/B0/9B/CgIRnV4hE3uAE-mvAAP9_1HEnPo386.png\",\"thumbnailContentType\":\"image/png\",\"thumbnailUrl\":\"http://117.161.4.174/group/M00/B0/9B/CgIRnV4hE3uAE-mvAAP9_1HEnPo386_small.png\"},\"suggestions\":[{\"reply\":{\"displayText\":\"认识小程序\",\"postback\":{\"data\":\"认识小程序\"}}}],\"title\":\"【欢迎体验短信小程序】\"},{\"description\":\"为您推荐10086、火车票预订、违章代缴等三个精品短信小程序，马上了解一下吧\",\"media\":{\"height\":\"MEDIUM_HEIGHT\",\"mediaContentType\":\"image/jpeg\",\"mediaUrl\":\"http://117.161.4.174/group/M00/29/84/CgIRnV5V1vuADK6sAACu2vo9MB8735.png\",\"thumbnailContentType\":\"image/png\",\"thumbnailUrl\":\"http://117.161.4.174/group/M00/29/84/CgIRnV5V1vuADK6sAACu2vo9MB8735_small.png\"},\"suggestions\":[{\"reply\":{\"displayText\":\"精品小程序\",\"postback\":{\"data\":\"精品小程序\"}}}],\"title\":\"体验精品小程序\"}],\"layout\":{\"cardOrientation\":\"VERTICAL\",\"cardWidth\":\"MEDIUM_WIDTH\"}}}}\n--next\r\nContent-Type: application/vnd.gsma.botsuggestion.v1.0+json\nContent-Length: 265\n\n{\"suggestions\":[{\"reply\":{\"displayText\":\"认识小程序\",\"postback\":{\"data\":\"认识小程序\"}}},{\"reply\":{\"displayText\":\"精品小程序\",\"postback\":{\"data\":\"精品小程序\"}}},{\"reply\":{\"displayText\":\"共同战\\\"疫\\\"\",\"postback\":{\"data\":\"共同战\\\"疫\\\"\"}}}]}\n--next--","clientCorrelator":"12520040","contentType":"multipart/mixed; boundary=\"next\"","contributionID":"g302000003c68jzatn2a71799k72pahv8001","conversationID":"a1093c9f-cbc5-4e5e-a11b-fb58f8f56ea5","destinationAddress":"+8613414928948","imFormat":"IMPagerMode","messageId":"g302000003c68jzatn2a71799k72pahv8001","senderAddress":"sip:12520040106@botplatform.rcs.chinamobile.com","senderName":"A2p","subject":"统一消息接入平台","taskId":"439372507187773519"},201,maapBody:g302000003c68jzatn2a71799k72pahv8001 code:201'
 
 
 st = time.time()
+os.chdir(r'C:\Users\Administrator\Desktop\关于消息中台日志规范输出的需求\规范日志示例\data')
 """pattern为正则表达式对象（正则对象）：便于复用，让程序更加高效"""
-pattern = re.compile(r'(.{19}).*?sip:(\d*).*?\+86(\d*).*?maapBody:(.*?) code:(\d*).*',
+pattern = re.compile(r'(.{19}).*?sip:(\d*).*?\+86(\d*).*?maapBody:(.*?) code:(\d*).*',  # 每个括号中的内容代表一个分组
                      re.DOTALL)  # re.DOTALL，让'.'特殊字符匹配任何字符（包括换行符）
 mp_time_l, main_l, called_l, msg_id_l, code_l = [], [], [], [], []
-with open(r'C:\Users\Administrator\Desktop\关于消息中台日志规范输出的需求\规范日志示例\data\maapdown\maapdown_demo.txt', 'r',
+with open(r'maapdown.txt', 'r',
           encoding='utf-8') as f:
     for s in f:
         gp = pattern.search(s)
         if gp:
-            gp.group()
-            mp_time_l.append(gp.group(1))
-            main_l.append(gp.group(2))
-            called_l.append(gp.group(3))
-            msg_id_l.append(gp.group(4))
-            code_l.append(gp.group(5))
+            # gp.group()  # 匹配正则表达式的整体结果（或group(0)）
+            mp_time_l.append(gp.group(1))  # (.{19}).*?：取前19位字符（任意字符，因已注明DOALL）
+            main_l.append(gp.group(2))     # sip:(\d*).*?：非贪婪方式（匹配尽量少的字符），匹配出“sip:”及其后边的数字
+            called_l.append(gp.group(3))   # \+86(\d*).*?：非贪婪方式，匹配出“+86”及其后边的数字
+            msg_id_l.append(gp.group(4))   # maapBody:(.*?)：非贪婪方式，匹配出“maapBody”及其后边的数字
+            code_l.append(gp.group(5))     # code:(\d*).*：匹配出“code:”及其后边的数字，以及数字后边的任意字符
         else:
             mp_time_l.append(None)
             main_l.append(None)
             called_l.append(None)
             msg_id_l.append(None)
             code_l.append(None)
-print('本次耗时{:.1f}秒'.format(time.time() - st))
 
-pd.set_option('display.max_columns', 100)
-pd.set_option('display.width', 100)
-test_data = pd.DataFrame({'mp_time': mp_time_l,
+pd.set_option('display.max_columns', 300)
+pd.set_option('display.width', 300)
+data_output = pd.DataFrame({'mp_time': mp_time_l,
                           'main': main_l,
                           'called': called_l,
                           'msg_id': msg_id_l,
                           'code': code_l})
+data_output.to_csv(r'maapdown_result.txt', header=None, index=False)
+
+print('本次耗时{:.1f}秒'.format(time.time() - st))
 
 
-if __name__ == '__main__':
-    if len(sys.argv) != 2:
-        print(r'输入参数有误，请重新输入！用法示例：')
-    sys.exit(0)
-    FILE = sys.argv[1]  # 传入第2个参数为待处理日志
-
-    os.chdir(r'')
-    maap_down_log()
-
-
-# 优化后（修改每条日志解析后的插入方式为append）
+# 优化后（修改每条日志解析后的插入方式为append）【问题：比优化前耗时更长】
 def maap_down_log():
     FILE = r'C:\Users\Administrator\Desktop\关于消息中台日志规范输出的需求\规范日志示例\data\maapdown\maapdown_demo.txt'
     l = []
@@ -88,7 +74,7 @@ def maap_down_log():
     print('本次耗时{:.1f}秒'.format(time.time() - st))
 
 
-# 自己写的日志处理脚本
+# 自己写的日志处理脚本【问题：对每一行记录进行多次搜索，且每次搜索完成后都需要转换成Series格式，耗时长】
 def maap_down_log():
     FILE = r'C:\Users\Administrator\Desktop\关于消息中台日志规范输出的需求\规范日志示例\data\maapdown\maapdown_demo.txt'
     l = []
