@@ -29,44 +29,48 @@ s = '2020-01-02 08:01:16.016,None,None,None,None,{"bodyText":"eyJyZXNwb25zZSI6ey
 st = time.time()
 os.chdir(r'C:\Users\Administrator\Desktop\关于消息中台日志规范输出的需求\规范日志示例\data')
 pattern = re.compile(r'(.{19}).*?bodyText":"(.*?)".*?contentType":"(.*?)".*?destinationAddress":"sip:(\d*).*?messageId":"(.*?)".*?\+86(\d*).*', re.DOTALL)
-pattern_body = re.compile(r'"reply":(.*}?).*}}')
+# pattern_body = re.compile(r'"reply":(.*}?).*}}')
 
-mp_time_l, main_l, called_l, msg_id_l, type_l, body_l = [], [], [], [], [], []
+mp_time, main, called, msg_id, type, body = [], [], [], [], [], []
 with open(r'up.txt') as f:
     for s in f:
         gp = pattern.search(s)
         if gp:
             # gp.group()
-            mp_time_l.append(gp.group(1))
-            main_l.append(gp.group(6))
-            called_l.append(gp.group(4))
-            msg_id_l.append(gp.group(5))
-            type_l.append(gp.group(3))
-            body_l.append(base64ToStr(gp.group(2)))
-            # body_l.append(gp.group(2))
-
-            # 字段解析测试
-            # a1 = re.search(pattern_body, base64ToStr(gp.group(2))).group(1)
-            # json.loads(a1)
+            mp_time.append(gp.group(1))
+            main.append(gp.group(6))
+            called.append(gp.group(4))
+            msg_id.append(gp.group(5))
+            type.append(gp.group(3))
+            # body.append(gp.group(2))  # 原始内容为base64加密的字符串
+            # body.append(json.loads(base64ToStr(gp.group(2)))['response']['reply'])
+            body.append(base64ToStr(gp.group(2)))  # base64加密消息内容转为普通字符串
 
         else:
-            mp_time_l.append(None)
-            main_l.append(None)
-            called_l.append(None)
-            msg_id_l.append(None)
-            type_l.append(None)
-            body_l.append(None)
-data_output = pd.DataFrame({'mp_time_l': mp_time_l,
-                           'main_l': main_l,
-                           'called_l': called_l,
-                           'msg_id_l': msg_id_l,
-                           'type_l': type_l,
-                           'body_l': body_l})
+            mp_time.append(None)
+            main.append(None)
+            called.append(None)
+            msg_id.append(None)
+            type.append(None)
+            body.append(None)
+data_output = pd.DataFrame({'mp_time': mp_time,
+                           'main': main,
+                           'called': called,
+                           'msg_id': msg_id,
+                           'type': type,
+                           'body': body})
 
-data_output['type'] = data_output.type_l.map(lambda x: 'text' if x == 'text/plain' else 'bottom')  # 指定上行消息类型（文字回复or按钮点击）
+data_output['body'] = data_output.body.map(lambda x: str(x).replace(" ", ""))                    # 去除字段内容中的空格符
+data_output['type'] = data_output.type.map(lambda x: 'text' if x == 'text/plain' else 'bottom')  # 指定上行消息类型（文字回复or按钮点击）
+data_output = data_output.loc[
+    (data_output.type == 'bottom') & (data_output.body.str.contains('response'))]  # 剔除非文本/按钮回复（即语音等）
+
 print('本次耗时{:.1f}秒'.format(time.time() - st))
 
 
-"""将json格式的body_l字段解析成字典（！！仍有问题！！）"""
 x = '{"response":{"reply":{"displayText":"发现精彩","postback":{"data":"发现精彩"},"type":"reply"}}}'
-data_output['body_str'] = data_output.loc[data_output.type == 'bottom']['body_l'].map(lambda x: json.loads(re.search(pattern_body, str(x)).group(1)))
+data_output.loc[data_output.type == 'bottom', 'body'].map(lambda x: json.loads(str(x))['response'])
+data_output.loc[data_output.type == 'bottom', 'body'].map(lambda x: json.loads(str(x))['response']['reply'])
+
+data_output.loc[data_output.type == 'bottom', 'body'].to_csv(r'C:\Users\Administrator\Desktop\test.txt',
+                                                             header=None, index=False)
