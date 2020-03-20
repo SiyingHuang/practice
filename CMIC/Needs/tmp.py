@@ -77,3 +77,15 @@ def fun(ls: list, s: int) -> list:
     s.lower()
 
     return '123'
+
+
+data = pd.read_csv(r'C:\Users\Administrator\Desktop\lq_native_qn_users.txt',
+                   header=None, names=['mobileno', 'if_both', 'if_mess', 'if_bmess'])
+data_num_jituan = pd.read_csv(r'集团内部号码(2月已处理).csv',
+                              header=None, skiprows=1,
+                              names=['mobileno'])
+data_num_jituan['if_inner'] = '1'
+result = pd.merge(data, data_num_jituan, how='left', on='mobileno')
+result['if_inner'] = result['if_inner'].fillna('0')
+result.to_csv(r'C:\Users\Administrator\Desktop\native_qn_users.txt',
+              header=True, index=False)
