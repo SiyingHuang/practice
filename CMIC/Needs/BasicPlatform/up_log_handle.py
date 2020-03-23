@@ -79,6 +79,7 @@ data_output = pd.DataFrame({'mp_time': mp_time,
                             'body': body})
 
 data_output['body'] = data_output.body.map(lambda x: str(x).replace(" ", ""))                   # 去除字段内容中的空格符
+data_output['body'] = data_output.body.map(lambda x: str(x).replace("\\\"", "\'"))              # 将字段内容中的“\"”替换为“'”（如“共同战“疫””）
 data_output.loc[data_output.type == "text/plain", 'type'] = 'text'                              # 文字输入回复
 data_output.loc[data_output.type.str.contains("botsuggestion"), 'type'] = 'bottom'              # 建议回复（按钮）
 data_output.loc[data_output.type.str.contains("report\+xml"), 'type'] = 'comp'                  # 投诉
