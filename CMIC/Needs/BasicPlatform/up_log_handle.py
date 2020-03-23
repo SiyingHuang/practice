@@ -2,11 +2,9 @@
 
 import pandas as pd
 import re
-from datetime import datetime
 import time
 import os
 import base64
-import json
 
 
 # base64字符串 → 字符串
@@ -31,24 +29,26 @@ s = '2020-01-02 08:01:16.016,None,None,None,None,{"bodyText":"eyJyZXNwb25zZSI6ey
 无'messageId'字段
 s = '2019-12-21 09:19:44.044,None,None,None,None,{"bodyText":"PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPFNSIHhtbG5zPSJ1cm46Z3NtYTpwYXJhbXM6eG1sOm5zOnJjczpyY3M6c3BhbXJlcG9ydCI+CiAgPENoYXRib3Q+c2lwOjEyNTIwMDQwMTA2QGJvdHBsYXRmb3JtLnJjcy5jaGluYW1vYmlsZS5jb208L0NoYXRib3Q+CiAgPHNwYW0tdHlwZT48L3NwYW0tdHlwZT4KICA8ZnJlZS10ZXh0PuWkqeWkqemqmuaJsDwvZnJlZS10ZXh0Pgo8L1NSPg==","contentType":"application/vnd.gsma.rcsspam-report+xml","contributionID":"e50a52eb-05bd-1038-a34f-6b0fbc8c4ec3","conversationID":"e50a52b3-05bd-1038-8565-174299c32f4a","destinationAddress":"sip:12520040106@botplatform.rcs.chinamobile.com","senderAddress":"sip:+8618890043156@hn.ims.mnc000.mcc460.3gppnetwork.org"}'
 '''
-# 2、pattern3
+# 2、pattern2
 s = '{"response":{"reply":{"displayText":"发现精彩","postback":{"data":"发现精彩"},"type":"reply"}}}'
 
 st = time.time()
 os.chdir(r'C:\Users\Administrator\Desktop\关于消息中台日志规范输出的需求\规范日志示例\data')
+os.chdir(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\01 - 【分析】\终端室需求\02.26 信息卡片与文案测试\消息中台')
+
+
+"""对日志内容进行解析"""
 pattern = re.compile(
     r'(.{19}).*?bodyText":"(.*?)".*?contentType":"(.*?)".*?destinationAddress":"sip:(\d*).*?(messageId":"(.*?)".*?)?\+86(\d*).*',
-    re.DOTALL)
+    re.DOTALL)                                                            # 部分日志无"messageId"字段内容
 # pattern = re.compile(
 #     r'(.{19}).*?bodyText":"(.*?)".*?contentType":"(.*?)".*?destinationAddress":"sip:(\d*).*?messageId":"(.*?)".*?\+86(\d*).*',
 #     re.DOTALL)  # 此正则匹配，若日志中无'messageId'时，则无法匹配成功
-
-
-
-pattern2 = re.compile(r'displayText":"(.*?)".*', re.DOTALL)
+"""对“建议回复”中的消息内容进行解析"""
+pattern2 = re.compile(r'displayText":"(.*?)"(,"postback)?.*', re.DOTALL)  # 部分“建议回复”日志无"postback"字段内容
 
 mp_time, main, called, msg_id, type, body = [], [], [], [], [], []
-with open(r'up.txt') as f:
+with open(r'上行.txt') as f:
 
     for s in f:
         gp = pattern.search(s)
@@ -77,30 +77,30 @@ data_output = pd.DataFrame({'mp_time': mp_time,
                             'msg_id': msg_id,
                             'type': type,
                             'body': body})
-data_output['body'] = data_output.body.map(lambda x: str(x).replace(" ", ""))      # 去除字段内容中的空格符
-data_output.loc[data_output.type == "text/plain", 'type'] = 'text'
-data_output.loc[data_output.type.str.contains("botsuggestion"), 'type'] = 'bottom'
-data_output.loc[data_output.type.str.contains("report\+xml"), 'type'] = 'comp'
-data_output.loc[data_output.type == 'application/vnd.gsma.rcs-ft-http+xml', 'type'] = 'other'
-data_output.iloc[5635, 5]
 
-# data_output = data_output.loc[((data_output.type == 'bottom') & (
-#     data_output.body.str.contains('response'))) | data_output.type != 'bottom']    # 剔除非文本/按钮回复（即语音等）
-# data_output.loc[data_output.type == 'bottom', 'bottom_dis'] = data_output.loc[data_output.type == 'bottom', 'body'].map(
-#     lambda x: re.search(pattern2, str(x)).group(1))                                # 提取按钮文本内容
+data_output['body'] = data_output.body.map(lambda x: str(x).replace(" ", ""))                   # 去除字段内容中的空格符
+data_output.loc[data_output.type == "text/plain", 'type'] = 'text'                              # 文字输入回复
+data_output.loc[data_output.type.str.contains("botsuggestion"), 'type'] = 'bottom'              # 建议回复（按钮）
+data_output.loc[data_output.type.str.contains("report\+xml"), 'type'] = 'comp'                  # 投诉
+data_output.loc[data_output.type.str.contains("botsharedclientdata"), 'type'] = 'tsr'           # 终端状态上报
+data_output.loc[data_output.type == 'application/vnd.gsma.rcs-ft-http+xml', 'type'] = 'others'  # 其它消息体（用户上行语音、文件等）
+
+data_output.loc[data_output.type == 'bottom', 'bottom_dis'] = data_output.loc[data_output.type == 'bottom', 'body'].map(
+    lambda x: re.search(pattern2, str(x)).group(1) if re.search(pattern2, str(x)) else str(x))  # 提取按钮文本内容
 
 print('本次耗时{:.1f}秒'.format(time.time() - st))
 
 
-data_output.iloc[:, [0, 1, 2, 3, 4, 6]].to_csv(r'C:\Users\Administrator\Desktop\test.txt',
-                                               header=None, index=False)
-data_output.to_csv(r'C:\Users\Administrator\Desktop\test.txt',
-                                               header=None, index=False)
+data_output.loc[data_output.type=='bottom', 'body'].to_csv(r'C:\Users\Administrator\Desktop\test.txt', header=None, index=False)
+data_output.loc[data_output.type=='bottom', 'bottom_dis'].to_csv(r'C:\Users\Administrator\Desktop\test2.txt', header=None, index=False)
 
-s = '"contentType":"application/vnd.gsma.rcsspam-report+xml"'
-s.__contains__()
-str(s).contains("gsma")
-data_output.loc[data_output.type.notna()]
-data_output.loc[data_output.type.isna()]
-data_output.loc[[1003,1004, 1005]]
-data_output.loc[data_output['type'].str.contains('json')]
+data_output.columns
+data_output.iloc[:, [0, 1, 2, 3, 4, 6]].to_csv(r'C:\Users\Administrator\Desktop\test.txt', header=None, index=False)
+
+
+top_bottom = data_output.loc[data_output.type == 'bottom'].groupby(by='called')['called'].count().sort_values(ascending=False).index
+top10_data = data_output.loc[data_output.called.isin(top_bottom[:10])]
+top10_result = top10_data.groupby(by=['called', 'bottom_dis'])['mp_time'].count().to_frame()
+top10_result.reset_index(inplace=True)
+top10_result.columns = ['called', 'bottom_dis', 'counts']
+top10_result.to_csv(r'C:\Users\Administrator\Desktop\test.txt', index=False)
