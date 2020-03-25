@@ -8,7 +8,7 @@ import base64
 
 
 # base64字符串 → 字符串
-def base64ToStr(s):
+def base64_2_str(s):
     '''
     将base64字符串转换为字符串
     :param s:
@@ -62,7 +62,7 @@ with open(r'上行.txt') as f:
             type.append(gp.group(3))
             # body.append(gp.group(2))  # 原始内容为base64加密的字符串
             # body.append(json.loads(base64ToStr(gp.group(2)))['response']['reply'])
-            body.append(base64ToStr(gp.group(2)))  # base64加密消息内容转为普通字符串
+            body.append(base64_2_str(gp.group(2)))  # base64加密消息内容转为普通字符串
 
         else:
             mp_time.append(None)
@@ -92,11 +92,6 @@ data_output.loc[data_output.type == 'bottom', 'bottom_dis'] = data_output.loc[da
 print('本次耗时{:.1f}秒'.format(time.time() - st))
 
 
-data_output.loc[data_output.type=='bottom', 'body'].to_csv(r'C:\Users\Administrator\Desktop\test.txt', header=None, index=False)
-data_output.loc[data_output.type=='bottom', 'bottom_dis'].to_csv(r'C:\Users\Administrator\Desktop\test2.txt', header=None, index=False)
-
-data_output.columns
-data_output.iloc[:, [0, 1, 2, 3, 4, 6]].to_csv(r'C:\Users\Administrator\Desktop\test.txt', header=None, index=False)
 
 
 top_bottom = data_output.loc[data_output.type == 'bottom'].groupby(by='called')['called'].count().sort_values(ascending=False).index
