@@ -32,7 +32,7 @@ with open(r'maapdown.txt', 'r',
             code_l.append(None)
 
 pd.set_option('display.max_columns', 300)
-pd.set_option('display.width', 600)
+pd.set_option('display.width', 300)
 data_output = pd.DataFrame({'mp_time': mp_time_l,
                           'main': main_l,
                           'called': called_l,

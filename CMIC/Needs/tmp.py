@@ -89,3 +89,19 @@ result = pd.merge(data, data_num_jituan, how='left', on='mobileno')
 result['if_inner'] = result['if_inner'].fillna('0')
 result.to_csv(r'C:\Users\Administrator\Desktop\native_qn_users.txt',
               header=True, index=False)
+
+path = r'C:\Users\Administrator\Desktop'
+os.chdir(path)
+os.mkdir('test')
+os.mkdir(os.path.join(path, 'test', 'test2'))
+os.mkdir(os.path.join(path, 'test', 'test2', 'test3'))
+os.rename(os.path.join(path, 'test', 'test2', 'test3'), os.path.join(path, 'test', 'test2', 'test_new'))
+os.removedirs(os.path.join(path, 'test', 'test2', 'test_new'))
+os.listdir()
+
+
+import re
+text = '【顺丰快递】你好，订单654321已送达【菜鸟驿站】，凭取件码123456取件。'
+pat = re.compile(r'【(.*?)】.*?取件码(\d*).*')
+p = re.search(pat, text)
+p.groups()
