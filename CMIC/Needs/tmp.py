@@ -98,21 +98,3 @@ os.mkdir(os.path.join(path, 'test', 'test2', 'test3'))
 os.rename(os.path.join(path, 'test', 'test2', 'test3'), os.path.join(path, 'test', 'test2', 'test_new'))
 os.removedirs(os.path.join(path, 'test', 'test2', 'test_new'))
 os.listdir()
-
-
-import re
-text = '【顺丰快递】你好，订单654321已送达【菜鸟驿站】，凭取件码123456取件。'
-pat = re.compile(r'【(.*?)】.*?取件码(\d*).*')
-p = re.search(pat, text)
-p.groups()
-
-
-import re
-
-pattern = re.compile(r'(.*?):(.*?),(.*?):(.*)')
-pattern = re.compile(r'(.*?):(.*?)(,(.*?):(.*))?')
-
-x = '自己:23'
-x = '自己:29.5,他人:29.5'
-gp = re.search(pattern, x)
-gp.groups()

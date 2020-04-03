@@ -50,16 +50,16 @@ def score_type(s):
         return None
 
 
-data['scene2'] = data['scene'].map(lambda x: str(x)[2:6])
-data['ques'] = data['content'].map(extract_content)
-# data.loc[data.ques == 'else'].to_csv(r'no_ques.txt', header=None, index=False)  # 检查无此问题的日志
+data['scene2'] = data['scene'].map(lambda x: str(x)[2:6])  # 取出场景编码（原始数据，如“["0058"]”）
+data['ques'] = data['content'].map(extract_content)  # 取出NPS满意度调查的问题
+data.loc[data.ques == 'else'].to_csv(r'no_ques.txt', header=None, index=False)  # 检查无此问题的日志
 data = data.loc[~(data.ques == 'else')]  # 剔除无此问题的日志
 data['score'] = data['content'].map(extract_score).astype(np.int8)
 data['score_type'] = data['score'].map(score_type)
 # data[['mobileno', 'scene2', 'ques', 'score', 'score_type']].to_csv(r'test.txt', header=None, index=False)
-data[['mobileno', 'scene2', 'ques', 'score']].to_csv(r'test.txt', header=None, index=False)
+data[['mobileno', 'scene2', 'ques', 'score']].to_csv(r'npsMobilQuesScore.txt', header=None, index=False)
 
-data.scene2.drop_duplicates()
+# 统计各场景、各满意度结果数量
+data.scene2.drop_duplicates()  # 场景个数
 result = data.groupby(by=['scene2', 'score_type']).count()['score'].to_frame().reset_index()
-result.to_excel(r'test2.xls', index=False)
-result.reset_index()
+result.to_excel(r'各场景满意度结果.xls', index=False)
