@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*
+
 import pandas as pd
 import numpy as np
 import os
@@ -79,11 +81,12 @@ def fun(ls: list, s: int) -> list:
     return '123'
 
 
+
+path = r'D:\中移互联网\01 - 运营室\01 - 分析组\05 - 充电\Python\[承宗]-号码剔除验证工具\blacklist'
+os.chdir(path)
 data = pd.read_csv(r'C:\Users\Administrator\Desktop\lq_native_qn_users.txt',
-                   header=None, names=['mobileno', 'if_both', 'if_mess', 'if_bmess'])
-data_num_jituan = pd.read_csv(r'集团内部号码(2月已处理).csv',
-                              header=None, skiprows=1,
-                              names=['mobileno'])
+                   header=None, names=['mobileno', 'if_both', 'if_mess', 'if_bmess', 'if_app_active'])
+data_num_jituan = pd.read_csv(r'集团内部号码(2020年4月已处理).csv')
 data_num_jituan['if_inner'] = '1'
 result = pd.merge(data, data_num_jituan, how='left', on='mobileno')
 result['if_inner'] = result['if_inner'].fillna('0')
@@ -98,3 +101,6 @@ os.mkdir(os.path.join(path, 'test', 'test2', 'test3'))
 os.rename(os.path.join(path, 'test', 'test2', 'test3'), os.path.join(path, 'test', 'test2', 'test_new'))
 os.removedirs(os.path.join(path, 'test', 'test2', 'test_new'))
 os.listdir()
+
+from functools import reduce
+reduce(lambda x, y: x*y, range(1, 3+1))
