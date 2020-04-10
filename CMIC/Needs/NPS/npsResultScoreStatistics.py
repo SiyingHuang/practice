@@ -16,6 +16,7 @@ gp.group(1)
 gp.group(2)
 
 
+st = time.time()
 os.chdir(r'C:\Users\Administrator\Desktop')
 data = pd.read_csv(r'nps_SurveyResult.txt', header=None, sep='|',
                    names=['mobileno', 'scene', 'content', 'date'])
@@ -63,3 +64,5 @@ data[['mobileno', 'scene2', 'ques', 'score']].to_csv(r'npsMobilQuesScore.txt', h
 data.scene2.drop_duplicates()  # 场景个数
 result = data.groupby(by=['scene2', 'score_type']).count()['score'].to_frame().reset_index()
 result.to_excel(r'各场景满意度结果.xls', index=False)
+
+print('耗时{:.4f}秒'.format(time.time() - st))
