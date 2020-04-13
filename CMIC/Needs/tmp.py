@@ -104,3 +104,19 @@ os.listdir()
 
 from functools import reduce
 reduce(lambda x, y: x*y, range(1, 3+1))
+
+
+path = r'hsy_tmp_hfx_origin_sso_web.txt'
+path = r'hsy_tmp_hfx_origin_message_storage_web.txt'
+
+with open(path, encoding='utf-8') as f:
+    for i in range(5):
+        tmp = f.readline()
+        print(tmp)
+
+data_name_list = list(('adate', 'log_level', 'class', 'controller', 'member_function', 'remote_addr', 'x_real_id', 'x_forward_for', 'http_method', 'http_uri', 'user_agent', 'session', 'auser', 'duration', 'result', 'message', 'dtime'))
+
+data = pd.read_csv(path, header=None, sep='@@sep',
+                   names=data_name_list, engine='python')
+data.member_function.drop_duplicates()
+
