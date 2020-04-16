@@ -26,7 +26,6 @@ data = pd.read_csv(r'SELF_INNOVATE_ORIGIN_MESSAGE_TEMP_ALL.txt',
                    sep=r'@@sep',
                    names=name_list, dtype=col_type,
                    parse_dates=[0], engine='python', encoding='utf-8')
-data.type.value_counts()
+data.p_day_id.value_counts()
 tmp = data.loc[(data.type == '5d3fdc22dbdd7a668be5fbff') & (data.msg_type == 'postMessage')]
-tmp.term_brand.value_counts()
-tmp.groupby(by=['p_day_id', 'term_brand'])['main_number'].count()
+
