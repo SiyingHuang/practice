@@ -106,8 +106,12 @@ from functools import reduce
 reduce(lambda x, y: x*y, range(1, 3+1))
 
 
-path = r'hsy_tmp_hfx_origin_sso_web.txt'
-path = r'hsy_tmp_hfx_origin_message_storage_web.txt'
+
+os.chdir(r'C:\Users\Administrator\Desktop')
+
+path = r'hfx_origin_sso_web.txt'
+path = r'hfx_origin_message_storage_web.txt'
+path = r'hfx_origin_message_storage_web_4.txt'
 
 with open(path, encoding='utf-8') as f:
     for i in range(5):
@@ -116,7 +120,69 @@ with open(path, encoding='utf-8') as f:
 
 data_name_list = list(('adate', 'log_level', 'class', 'controller', 'member_function', 'remote_addr', 'x_real_id', 'x_forward_for', 'http_method', 'http_uri', 'user_agent', 'session', 'auser', 'duration', 'result', 'message', 'dtime'))
 
-data = pd.read_csv(path, header=None, sep='@@sep',
-                   names=data_name_list, engine='python')
-data.member_function.drop_duplicates()
+data = pd.read_csv(path, header=None, sep='|',
+                   names=data_name_list)
+data = pd.read_csv(path, header=None, sep='|',
+                   names=['adate', 'result', 'duration', 'user_agent'],
+                   dtype={'user_agent': 'str'}, encoding='utf-8',
+                   parse_dates=[0])
+data.iloc[:, [0]]
 
+
+import re
+# user_agent
+ua_pattern = re.compile(r'(.*?)/(.*?) ', re.DOTALL)
+ios_pattern = re.compile(r'.*?iOS (.*?);.*', re.DOTALL)
+def app_extract(s):
+    gp = re.search(ua_pattern, str(s))
+    if gp:
+        return gp.group(1)
+    else:
+        return 'else'
+def app_ver_extract(s):
+    gp = re.search(ua_pattern, str(s))
+    if gp:
+        return gp.group(2)
+    else:
+        return 'else'
+def brand_type_extract(s1, s2):
+
+
+
+def iosversionExtract(s):
+    gp = re.search(ios_pattern, str(s))
+    if gp:
+        return gp.group(1)
+    else:
+        return None
+
+data['os'] = data['user_agent'].map(osExtract)
+data['version'] = data['user_agent'].map(versionExtract)
+data['ios'] = data['user_agent'].map(iosversionExtract)
+s = 'AndFetion/5.0.0 (iPhone; iOS 13.3.1; Scale/3.00)'
+s = 'HFX/7.0.0.0409_2_release vivo V1913A'
+s = 'LuaSocket 3.0-rc1'
+osExtract(s)
+data[['result', 'duration', 'user_agent', 'os', 'version']].to_csv(r'test.txt', header=None, index=False)
+data['result']
+data[['user_agent', 'ios']]
+data[['user_agent', 'os', 'version']].to_csv(r'test.txt', index=False)
+
+# auser
+s = '5d36b5b34e3f4601103c819c/19802021069'
+pattern = '(.*?)/(\d*)'
+gp = re.search(pattern, s)
+gp.group()
+gp.groups()
+
+# http_url
+s = 'http://origin.apps.dmz.ht.paas.cmic.cn/v1/origin/message/storage/api/messages?message_type=1&size=0&content_type=text&receiver=52253667&font_size=16&uuid=68cfe0ea5a984785965c9058d05ec8fb&text=試用'
+s = 'http://origin.apps.dmz.ht.paas.cmic.cn/v1/origin/message/storage/api/messages?message_type=1&size=0&content_type=text&receiver=52253667&font_size=16&uuid=68cfe0ea5a984785965c9058d05ec8fb&text=試用&'
+text_pattern = r'.*?text=(.*)&'
+text_pattern = r'.*?text=(.*)&{0}'
+text_pattern = r'.*?text=(.*)&{1}'
+gp = re.search(text_pattern, s)
+gp.group()
+gp.groups()
+
+#
