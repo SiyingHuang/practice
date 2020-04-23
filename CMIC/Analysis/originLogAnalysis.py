@@ -25,7 +25,8 @@ name_list = ['adate', 'type', 'main_number', 'called_number', 'msg_scene', 'cont
 col_type = dict.fromkeys(
     ['type', 'main_number', 'called_number', 'msg_scene', 'content_type', 'msg_id', 'status_code', 'msg_type',
      'content', 'ip', 'p_day_id'], 'str')
-data = pd.read_csv(r'SELF_INNOVATE_ORIGIN_MESSAGE_TEMP_ALL.txt',
+path = r'SELF_INNOVATE_ORIGIN_MESSAGE_20200422.txt'
+data = pd.read_csv(path,
                    sep=r'@@sep',
                    names=name_list, dtype=col_type,
                    # parse_dates=[0],
@@ -56,6 +57,9 @@ tmp2.pivot_table(values=['main_number'],
                  columns=['msg_scene'],
                  aggfunc=pd.Series.nunique,  # 去重统计
                  margins=True)
+tmp2.loc[(tmp2.new_type == 'others')]  # 异常日志检查
+tmp2.loc[tmp2.msg_id.duplicated()]
+tmp2.loc[tmp2.msg_id == '5e036838848111eaa350005056ad0070']
 
 
 
