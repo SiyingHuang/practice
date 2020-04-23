@@ -40,7 +40,8 @@ tmp3.new_brand.value_counts()
 
 # 统计和飞信APP发送消息成功情况
 data.p_day_id.value_counts()
-data['new_type'] = data.type.apply(type_distinguish)
+data['term'] = data.term_brand.apply(terminal_distinguish)  # 区分APP、PC
+data['new_type'] = data.type.apply(type_distinguish)        # 区分和飞信、和办公
 # data.drop(columns='new_type', inplace=True)
 
 # st = time.time()
@@ -53,13 +54,12 @@ tmp2 = data.loc[
 tmp2.groupby(by=['p_day_id', 'new_type', 'msg_scene'])['msg_id'].nunique()  # 去重统计
 tmp2.groupby(by=['p_day_id', 'new_type', 'msg_scene'])['main_number'].nunique()  # 去重统计
 tmp2.pivot_table(values=['main_number'],
-                 index=['p_day_id', 'new_type'],
+                 index=['p_day_id', 'term', 'new_type'],
                  columns=['msg_scene'],
                  aggfunc=pd.Series.nunique,  # 去重统计
                  margins=True)
 tmp2.loc[(tmp2.new_type == 'others')]  # 异常日志检查
 tmp2.loc[tmp2.msg_id.duplicated()]
-tmp2.loc[tmp2.msg_id == '5e036838848111eaa350005056ad0070']
 
 
 
@@ -69,9 +69,9 @@ col_type = dict.fromkeys(['member_function', 'x_real_id', 'http_uri', 'user_agen
 data = pd.read_csv(r'SELF_INNOVATE_ORIGIN_MESSAGE_TEMP_ALL_CHK.txt',
                    sep=r'@@sep',
                    names=name_list, dtype=col_type,
-                   engine='python', encoding='utf-8')  # 0416：1499403条记录
-data['type'] = data.auser.map(lambda x: str(x)[:24])  # 区分和飞信、和办公
-data['main_number'] = data.auser.map(lambda x: str(x)[-11:])  # 主叫号码
+                   engine='python', encoding='utf-8')
+data['type'] = data.auser.map(lambda x: str(x)[:24])             # 区分和飞信、和办公
+data['main_number'] = data.auser.map(lambda x: str(x)[-11:])     # 提取主叫号码
 data.dtime.value_counts()
 
 error_list = list(tmp2.loc[tmp2.called_number.isna(), 'adate'])
@@ -81,7 +81,16 @@ tmp = data.loc[
 tmp.to_csv(r'test.txt', index=False)
 
 
-# 区分和飞信、和办公、PC
+# 区分APP、PC、其他日志
+def terminal_distinguish(x):
+    if x == 'iPhone':       # iPhone
+        return 'iOS'
+    elif x == 'PC':         # PC
+        return 'PC'
+    else:                   # Android
+        return 'Android'
+
+# 区分和飞信、和办公、其他日志
 def type_distinguish(x):
     if x == '5d36b5b34e3f4601103c819c':     # 和飞信
         return 'hfx'
