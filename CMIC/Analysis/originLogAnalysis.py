@@ -1,11 +1,11 @@
 '''
 分APP（auser）、分端（user_agent）两个字段：{
-    和飞信：'5d36b5b34e3f4601103c819c'
+    {和飞信：'5d36b5b34e3f4601103c819c'
         iOS：'AndFetion'
-        Android：'HFX'
-    和办公：'5d3fdc22dbdd7a668be5fbff'
+        Android：'HFX'},
+    {和办公：'5d3fdc22dbdd7a668be5fbff'
         iOS：'AndFetion'
-        Android：'okhttp/${project.version}'
+        Android：'okhttp/${project.version}'}
 }
 '''
 
@@ -25,41 +25,59 @@ name_list = ['adate', 'type', 'main_number', 'called_number', 'msg_scene', 'cont
 col_type = dict.fromkeys(
     ['type', 'main_number', 'called_number', 'msg_scene', 'content_type', 'msg_id', 'status_code', 'msg_type',
      'content', 'ip', 'p_day_id'], 'str')
-path = r'SELF_INNOVATE_ORIGIN_MESSAGE_20200422.txt'
+path = r'SELF_INNOVATE_ORIGIN_MESSAGE_20200423.txt'
 data = pd.read_csv(path,
                    sep=r'@@sep',
                    names=name_list, dtype=col_type,
-                   # parse_dates=[0],
+                   parse_dates=[0],
                    engine='python', encoding='utf-8')
 len(data.loc[data.msg_id.isna()])  # 被叫号码缺失记录
 
-# iPhone、Android日志条数检查
-tmp3 = data.loc[data.p_day_id == '20200420'].copy()
-tmp3['new_brand'] = tmp3.term_brand.apply(lambda x: 'iPhone' if x == 'iPhone' else 'Android')
-tmp3.new_brand.value_counts()
+# iPhone、Android日志条数检查（日志已加入PC端，该段代码暂停使用）
+# tmp3 = data.loc[data.p_day_id == '20200423'].copy()
+# tmp3['new_brand'] = tmp3.term_brand.apply(lambda x: 'iPhone' if x == 'iPhone' else 'Android')
+# tmp3.new_brand.value_counts()
 
-# 统计和飞信APP发送消息成功情况
+# 一对一被叫号码处理
+data.loc[data.msg_scene == '1', 'called_handle'] = data.loc[data.msg_scene == '1'].called_number.map(lambda x: str(x)[-11:])
+data.loc[data.msg_scene == '2', 'called_handle'] = data.loc[data.msg_scene == '2'].called_number
+# 区分APP/PC、和飞信/和办公
 data.p_day_id.value_counts()
 data['term'] = data.term_brand.apply(terminal_distinguish)  # 区分APP、PC
-data['new_type'] = data.type.apply(type_distinguish)        # 区分和飞信、和办公
-# data.drop(columns='new_type', inplace=True)
+data['os'] = data.term_brand.apply(os_distinguish)          # 区分iOS、Android、PC
+data['type_name'] = data.type.apply(type_distinguish)        # 区分和飞信、和办公
+# data.drop(columns='type_name', inplace=True)
 
+# 筛选出所需日志
 # st = time.time()
 tmp2 = data.loc[
     # (data.p_day_id == '20200419') &  # 日期
-    # (data.type == '5d36b5b34e3f4601103c819c') &  # 和飞信
+    (data.type == '5d36b5b34e3f4601103c819c') &  # 和飞信
     (data.msg_type == 'postMessage') &  # 发消息
     (data.status_code.map(lambda x: str(x).startswith(('2', '3'))))].copy()  # 成功
+tmp2.loc[(tmp2.type_name == 'others') & (tmp2.term == 'PC')]['called_number'].drop_duplicates().to_csv(r'test.txt',
+                                                                                                   index=False)  # 异常日志提取
 # print('耗时{:.4f}秒'.format(time.time() - st))
-tmp2.groupby(by=['p_day_id', 'new_type', 'msg_scene'])['msg_id'].nunique()  # 去重统计
-tmp2.groupby(by=['p_day_id', 'new_type', 'msg_scene'])['main_number'].nunique()  # 去重统计
+
+# 数据统计
+tmp2.groupby(by=['p_day_id', 'type_name', 'msg_scene'])['msg_id'].nunique()  # 去重统计
+tmp2.groupby(by=['p_day_id', 'type_name', 'msg_scene'])['main_number'].nunique()  # 去重统计
 tmp2.pivot_table(values=['main_number'],
-                 index=['p_day_id', 'term', 'new_type'],
+                 index=['p_day_id', 'term', 'type_name'],
                  columns=['msg_scene'],
-                 aggfunc=pd.Series.nunique,  # 去重统计
+                 aggfunc=pd.Series.nunique,  # 主叫人数统计
                  margins=True)
-tmp2.loc[(tmp2.new_type == 'others')]  # 异常日志检查
-tmp2.loc[tmp2.msg_id.duplicated()]
+tmp2.pivot_table(values=['called_handle'],
+                 index=['p_day_id', 'term'],
+                 columns=['msg_scene'],
+                 aggfunc=pd.Series.nunique,  # 被叫人数统计
+                 margins=True)
+tmp2.pivot_table(values=['msg_id'],
+                 index=['p_day_id', 'term'],
+                 columns=['msg_scene'],
+                 aggfunc=pd.Series.nunique,  # 消息量统计
+                 margins=True)
+tmp2.loc[(tmp2.type_name == 'others')]  # 异常日志检查
 
 
 
@@ -81,14 +99,25 @@ tmp = data.loc[
 tmp.to_csv(r'test.txt', index=False)
 
 
-# 区分APP、PC、其他日志
-def terminal_distinguish(x):
+# 被叫号码处理
+def p2p_called_handle(s):
+
+
+# 区分操作系统（iOS、Android、其他日志）
+def os_distinguish(x):
     if x == 'iPhone':       # iPhone
         return 'iOS'
     elif x == 'PC':         # PC
         return 'PC'
     else:                   # Android
         return 'Android'
+
+# 区分APP、PC、其他日志
+def terminal_distinguish(x):
+    if x == 'PC':       # PC
+        return 'PC'
+    else:               # APP
+        return 'APP'
 
 # 区分和飞信、和办公、其他日志
 def type_distinguish(x):
