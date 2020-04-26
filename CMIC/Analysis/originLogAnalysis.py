@@ -25,7 +25,7 @@ name_list = ['adate', 'type', 'main_number', 'called_number', 'msg_scene', 'cont
 col_type = dict.fromkeys(
     ['type', 'main_number', 'called_number', 'msg_scene', 'content_type', 'msg_id', 'status_code', 'msg_type',
      'content', 'ip', 'p_day_id'], 'str')
-path = r'SELF_INNOVATE_ORIGIN_MESSAGE_20200423.txt'
+path = r'SELF_INNOVATE_ORIGIN_MESSAGE.txt'
 data = pd.read_csv(path,
                    sep=r'@@sep',
                    names=name_list, dtype=col_type,
@@ -41,6 +41,7 @@ len(data.loc[data.msg_id.isna()])  # 被叫号码缺失记录
 # 一对一被叫号码处理
 data.loc[data.msg_scene == '1', 'called_handle'] = data.loc[data.msg_scene == '1'].called_number.map(lambda x: str(x)[-11:])
 data.loc[data.msg_scene == '2', 'called_handle'] = data.loc[data.msg_scene == '2'].called_number
+
 # 区分APP/PC、和飞信/和办公
 data.p_day_id.value_counts()
 data['term'] = data.term_brand.apply(terminal_distinguish)  # 区分APP、PC

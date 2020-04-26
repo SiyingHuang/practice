@@ -74,7 +74,7 @@ class DataHandler:
 
     def delete_staff(self):
         """剔除集团内部员工"""
-        staff = pd.read_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\05 - 充电\Python\[承宗]-号码剔除验证工具\blacklist\运营需剔除号码\集团内部号码(2月已处理).txt',
+        staff = pd.read_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\05 - 充电\Python\[承宗]-号码剔除验证工具\blacklist\运营需剔除号码\集团内部号码(2020年4月已处理).txt',
                             dtype={'mobileno': np.int64})
         self.data, self.staff_nums = remove_df2_from_df1(df1=self.data, df2=staff, df1_name=self.name)
 
@@ -167,6 +167,12 @@ if __name__ == '__main__':
 # 承宗提供的脚本
 from preprocess.data_handler import DataHandler
 
-dh = DataHandler(data=yourdata)
-dh.delete_already_send()
+data = pd.read_csv(r'C:\Users\Administrator\Desktop\chatbot_day_active_gd_mz_0426.txt',
+                   header=None, names=['mobileno', 'city'], usecols=[0, 1])
+dh = DataHandler(data=data)
+dh.delete_blacklist()
+dh.delete_staff()
 result = dh.save()
+result = pd.merge(result, data, how='left', on='mobileno')
+result.to_csv(r'C:\Users\Administrator\Desktop\chatbot_day_active_gd_mz_0426（已剔除）.txt',
+              header=None, index=False)
