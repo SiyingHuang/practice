@@ -25,7 +25,7 @@ name_list = ['adate', 'type', 'main_number', 'called_number', 'msg_scene', 'cont
 col_type = dict.fromkeys(
     ['type', 'main_number', 'called_number', 'msg_scene', 'content_type', 'msg_id', 'status_code', 'msg_type',
      'content', 'ip', 'p_day_id'], 'str')
-path = r'SELF_INNOVATE_ORIGIN_MESSAGE.txt'
+path = r'SELF_INNOVATE_ORIGIN_MESSAGE_20200506.txt'
 data = pd.read_csv(path,
                    sep=r'@@sep',
                    names=name_list, dtype=col_type,
@@ -39,6 +39,7 @@ len(data.loc[data.msg_id.isna()])  # 被叫号码缺失记录
 # tmp3.new_brand.value_counts()
 
 # 一对一被叫号码处理
+data.loc[(data.called_number.map(lambda x: str(x).startswith('86')))].called_number.map(lambda x: x.replace('+86', ''))
 data.loc[data.msg_scene == '1', 'called_handle'] = data.loc[data.msg_scene == '1'].called_number.map(lambda x: str(x)[-11:])
 data.loc[data.msg_scene == '2', 'called_handle'] = data.loc[data.msg_scene == '2'].called_number
 
@@ -46,7 +47,7 @@ data.loc[data.msg_scene == '2', 'called_handle'] = data.loc[data.msg_scene == '2
 data.p_day_id.value_counts()
 data['term'] = data.term_brand.apply(terminal_distinguish)  # 区分APP、PC
 data['os'] = data.term_brand.apply(os_distinguish)          # 区分iOS、Android、PC
-data['type_name'] = data.type.apply(type_distinguish)        # 区分和飞信、和办公
+data['type_name'] = data.type.apply(type_distinguish)       # 区分和飞信、和办公
 # data.drop(columns='type_name', inplace=True)
 
 # 筛选出所需日志
@@ -78,7 +79,9 @@ tmp2.pivot_table(values=['msg_id'],
                  columns=['msg_scene'],
                  aggfunc=pd.Series.nunique,  # 消息量统计
                  margins=True)
-tmp2.loc[(tmp2.type_name == 'others')]  # 异常日志检查
+# 异常日志检查
+tmp2.loc[(tmp2.type_name == 'others')]
+tmp2.loc[tmp2.msg_id.isna()]
 
 
 
@@ -98,10 +101,6 @@ tmp = data.loc[
     (data.dtime == '20200416') & (data.type == '5d36b5b34e3f4601103c819c') & (data.member_function == 'postMessage') &
     (data.adate.isin(error_list))]
 tmp.to_csv(r'test.txt', index=False)
-
-
-# 被叫号码处理
-def p2p_called_handle(s):
 
 
 # 区分操作系统（iOS、Android、其他日志）

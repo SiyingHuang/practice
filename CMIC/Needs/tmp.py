@@ -86,9 +86,9 @@ os.chdir(r'C:\Users\Administrator\Desktop')
 
 path = r'hfx_origin_sso_web.txt'
 path = r'hfx_origin_message_storage_web.txt'
-path = r'hfx_origin_message_storage_web_4.txt'
+path = r'zhushanzhi_0507.txt'
 
-with open(path, encoding='utf-8') as f:
+with open(path, encoding='gbk') as f:
     for i in range(5):
         tmp = f.readline()
         print(tmp)
