@@ -19,13 +19,13 @@ pd.set_option('display.width', 600)
 
 os.chdir(r'C:\Users\Administrator\Desktop')
 
-# 【匹配后日志】
+# 【解析后日志】
 name_list = ['adate', 'type', 'main_number', 'called_number', 'msg_scene', 'content_type', 'msg_id', 'status_code',
              'msg_type', 'content', 'app_version', 'term_brand', 'termtype_or_iosversion', 'ip', 'p_day_id']
 col_type = dict.fromkeys(
     ['type', 'main_number', 'called_number', 'msg_scene', 'content_type', 'msg_id', 'status_code', 'msg_type',
      'content', 'ip', 'p_day_id'], 'str')
-path = r'SELF_INNOVATE_ORIGIN_MESSAGE_20200506.txt'
+path = r'SELF_INNOVATE_ORIGIN_MESSAGE_20200511.txt'
 data = pd.read_csv(path,
                    sep=r'@@sep',
                    names=name_list, dtype=col_type,
@@ -38,36 +38,36 @@ len(data.loc[data.msg_id.isna()])  # 被叫号码缺失记录
 # tmp3['new_brand'] = tmp3.term_brand.apply(lambda x: 'iPhone' if x == 'iPhone' else 'Android')
 # tmp3.new_brand.value_counts()
 
-# 一对一被叫号码处理
-data.loc[(data.called_number.map(lambda x: str(x).startswith('86')))].called_number.map(lambda x: x.replace('+86', ''))
-data.loc[data.msg_scene == '1', 'called_handle'] = data.loc[data.msg_scene == '1'].called_number.map(lambda x: str(x)[-11:])
-data.loc[data.msg_scene == '2', 'called_handle'] = data.loc[data.msg_scene == '2'].called_number
+# 一对一被叫号码处理（解析日志时已做处理）
+# data.loc[data.msg_scene == '1', 'called_handle'] = data.loc[data.msg_scene == '1'].called_number.map(lambda x: str(x)[-11:])
+# data.loc[data.msg_scene == '2', 'called_handle'] = data.loc[data.msg_scene == '2'].called_number
 
 # 区分APP/PC、和飞信/和办公
 data.p_day_id.value_counts()
 data['term'] = data.term_brand.apply(terminal_distinguish)  # 区分APP、PC
 data['os'] = data.term_brand.apply(os_distinguish)          # 区分iOS、Android、PC
-data['type_name'] = data.type.apply(type_distinguish)       # 区分和飞信、和办公
+# data['type_name'] = data.type.apply(type_distinguish)       # 区分和飞信、和办公（已可通过type字段直接区分）
 # data.drop(columns='type_name', inplace=True)
 
 # 筛选出所需日志
 # st = time.time()
 tmp2 = data.loc[
     # (data.p_day_id == '20200419') &  # 日期
-    (data.type == '5d36b5b34e3f4601103c819c') &  # 和飞信
+    # (data.type == '5d36b5b34e3f4601103c819c') &  # 和飞信
+    # (data.type == 'hfx') &  # 和飞信
     (data.msg_type == 'postMessage') &  # 发消息
     (data.status_code.map(lambda x: str(x).startswith(('2', '3'))))].copy()  # 成功
 tmp2.loc[(tmp2.type_name == 'others') & (tmp2.term == 'PC')]['called_number'].drop_duplicates().to_csv(r'test.txt',
                                                                                                    index=False)  # 异常日志提取
 # print('耗时{:.4f}秒'.format(time.time() - st))
 
-# 数据统计
-tmp2.groupby(by=['p_day_id', 'type_name', 'msg_scene'])['msg_id'].nunique()  # 去重统计
-tmp2.groupby(by=['p_day_id', 'type_name', 'msg_scene'])['main_number'].nunique()  # 去重统计
+# 1、数据统计
+tmp2.groupby(by=['p_day_id', 'type', 'msg_scene'])['msg_id'].nunique()  # 去重统计
+tmp2.groupby(by=['p_day_id', 'type', 'msg_scene'])['main_number'].nunique()  # 去重统计
 tmp2.pivot_table(values=['main_number'],
-                 index=['p_day_id', 'term', 'type_name'],
+                 index=['p_day_id', 'term', 'type'],
                  columns=['msg_scene'],
-                 aggfunc=pd.Series.nunique,  # 主叫人数统计
+                 aggfunc=pd.Series.nunique,  # 主叫人数统计（对values中的列用指定函数进行统计）
                  margins=True)
 tmp2.pivot_table(values=['called_handle'],
                  index=['p_day_id', 'term'],
@@ -75,33 +75,14 @@ tmp2.pivot_table(values=['called_handle'],
                  aggfunc=pd.Series.nunique,  # 被叫人数统计
                  margins=True)
 tmp2.pivot_table(values=['msg_id'],
-                 index=['p_day_id', 'term'],
+                 index=['p_day_id', 'term', 'type'],
                  columns=['msg_scene'],
                  aggfunc=pd.Series.nunique,  # 消息量统计
                  margins=True)
 # 异常日志检查
-tmp2.loc[(tmp2.type_name == 'others')]
+tmp2.loc[~tmp2.type.isin(['hfx', 'hbg'])]
 tmp2.loc[tmp2.msg_id.isna()]
-
-
-
-# 【原始日志】
-name_list = ['adate', 'member_function', 'x_real_id', 'http_uri', 'user_agent', 'auser', 'result', 'dtime']
-col_type = dict.fromkeys(['member_function', 'x_real_id', 'http_uri', 'user_agent', 'auser', 'result', 'dtime'], 'str')
-data = pd.read_csv(r'SELF_INNOVATE_ORIGIN_MESSAGE_TEMP_ALL_CHK.txt',
-                   sep=r'@@sep',
-                   names=name_list, dtype=col_type,
-                   engine='python', encoding='utf-8')
-data['type'] = data.auser.map(lambda x: str(x)[:24])             # 区分和飞信、和办公
-data['main_number'] = data.auser.map(lambda x: str(x)[-11:])     # 提取主叫号码
-data.dtime.value_counts()
-
-error_list = list(tmp2.loc[tmp2.called_number.isna(), 'adate'])
-tmp = data.loc[
-    (data.dtime == '20200416') & (data.type == '5d36b5b34e3f4601103c819c') & (data.member_function == 'postMessage') &
-    (data.adate.isin(error_list))]
-tmp.to_csv(r'test.txt', index=False)
-
+tmp2.loc[(tmp2.type == 'hbg') & (tmp2.term == 'PC')].main_number.value_counts()
 
 # 区分操作系统（iOS、Android、其他日志）
 def os_distinguish(x):
@@ -120,6 +101,7 @@ def terminal_distinguish(x):
         return 'APP'
 
 # 区分和飞信、和办公、其他日志
+# 暂停使用。原因：解析日志时，已通过type字段（hfx/hbg）进行区分。
 def type_distinguish(x):
     if x == '5d36b5b34e3f4601103c819c':     # 和飞信
         return 'hfx'
@@ -128,6 +110,25 @@ def type_distinguish(x):
     else:
         return 'others'
 
-# 字典合并
-def dict_merge(d1, d2):
-    return d1.update(d2)
+# 2、文本内容提取
+tmp3 = data.loc[(data.content_type.isin(['text'])) & (data.msg_scene == '1')]
+tmp3 = tmp3.loc[(tmp3.content.notnull()) & (tmp3.content.map(lambda x: str(x).iscontains('Test by RCSQA')))]['content']
+
+
+
+# 【接口层原始日志】
+name_list = ['adate', 'member_function', 'x_real_id', 'http_uri', 'user_agent', 'auser', 'result', 'dtime']
+col_type = dict.fromkeys(['member_function', 'x_real_id', 'http_uri', 'user_agent', 'auser', 'result', 'dtime'], 'str')
+data = pd.read_csv(r'SELF_INNOVATE_ORIGIN_MESSAGE_TEMP_ALL_CHK.txt',
+                   sep=r'@@sep',
+                   names=name_list, dtype=col_type,
+                   engine='python', encoding='utf-8')
+data['type'] = data.auser.map(lambda x: str(x)[:24])             # 区分和飞信、和办公
+data['main_number'] = data.auser.map(lambda x: str(x)[-11:])     # 提取主叫号码
+data.dtime.value_counts()
+
+error_list = list(tmp2.loc[tmp2.called_number.isna(), 'adate'])
+tmp = data.loc[
+    (data.dtime == '20200416') & (data.type == '5d36b5b34e3f4601103c819c') & (data.member_function == 'postMessage') &
+    (data.adate.isin(error_list))]
+tmp.to_csv(r'test.txt', index=False)
