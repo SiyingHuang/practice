@@ -86,9 +86,9 @@ os.chdir(r'C:\Users\Administrator\Desktop')
 
 path = r'hfx_origin_sso_web.txt'
 path = r'hfx_origin_message_storage_web.txt'
-path = r'zhushanzhi_0507.txt'
+path = r'fengwenjie_黑名单管理_20200327142204436.txt'
 
-with open(path, encoding='gbk') as f:
+with open(path, encoding='utf-8') as f:
     for i in range(5):
         tmp = f.readline()
         print(tmp)
@@ -104,31 +104,43 @@ data = pd.read_csv(path, header=None, sep='|',
 data.iloc[:, [0]]
 
 
-black_list = pd.read_csv(r'C:\Users\Administrator\Desktop\黑名单.txt',
+black_list = pd.read_csv(r'C:\Users\Administrator\Desktop\fengwenjie_黑名单管理_20200327142204436.txt',
                          header=None, names=['mobileno'],
                          sep='&&', usecols=[0], engine='python', dtype={'mobileno': 'str'},
                          chunksize=100000)
+
+
+
+# 承宗提供的脚本
+from preprocess.data_handler import DataHandler
+
+data = pd.read_csv(r'C:\Users\Administrator\Desktop\chatbot_day_active_gd_mz_0512.txt',
+                   header=None, names=['mobileno', 'city'], usecols=[0, 1])
+dh = DataHandler(data=data)
+dh.delete_blacklist()
+dh.delete_staff()
+result = dh.save()
+result.to_csv(r'C:\Users\Administrator\Desktop\chatbot_day_active_gd_mz_0512（已剔除）.txt',
+              header=None, index=False)
+
+
+
+
+data1 = pd.read_csv(r'2020年4月账期短信账单剔除.txt', header=None, sep='|', usecols=[0], names=['mobileno'],
+                   encoding='gbk', dtype=np.int64)
+
 bl = []
 for i in black_list:
     bl.append(i)
 
 result = pd.concat(bl, ignore_index=True)
 
-result.loc[(result.mobileno.map(lambda x: len(str(x)) != 11)) | (~result.mobileno.map(lambda x: str(x).startswith('1')))]
+# result.loc[(result.mobileno.map(lambda x: len(str(x)) != 11)) | (~result.mobileno.map(lambda x: str(x).startswith('1')))]
 result = result.loc[(result.mobileno.map(lambda x: len(str(x)) == 11)) & (result.mobileno.map(lambda x: str(x).startswith('1')))]
 
 result.to_csv(r'黑名单处理后.txt', index=False)
+data2 = pd.read_csv(r'黑名单处理后.txt', header='infer')
 
-
-# 承宗提供的脚本
-from preprocess.data_handler import DataHandler
-
-data = pd.read_csv(r'C:\Users\Administrator\Desktop\chatbot_day_active_gd_mz_0426.txt',
-                   header=None, names=['mobileno', 'city'], usecols=[0, 1])
-dh = DataHandler(data=data)
-dh.delete_blacklist()
-dh.delete_staff()
-result = dh.save()
-result = pd.merge(result, data, how='left', on='mobileno')
-result.to_csv(r'C:\Users\Administrator\Desktop\chatbot_day_active_gd_mz_0426（已剔除）.txt',
-              header=None, index=False)
+data = data1.append(data2)
+data.drop_duplicates(inplace=True)
+data.to_csv(r'黑名单处理后.txt', index=False)
