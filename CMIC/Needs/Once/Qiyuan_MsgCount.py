@@ -1,5 +1,9 @@
-# 提取周期内Native消息日志
-# 统计周期内消息总量
+"""
+需求：
+提取周期内Native消息日志
+统计周期内消息总量
+"""
+
 
 import pandas as pd
 import numpy as np

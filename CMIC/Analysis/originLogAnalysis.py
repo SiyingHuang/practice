@@ -1,4 +1,6 @@
 '''
+需求：和飞信自研版接口日志解析
+具体实现：
 分APP（auser）、分端（user_agent）两个字段：{
     {和飞信：'5d36b5b34e3f4601103c819c'
         iOS：'AndFetion'

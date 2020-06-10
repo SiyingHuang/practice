@@ -1,3 +1,10 @@
+"""
+需求：找出交集号码的两种方式
+    方法1：用merge方法
+    方法2：用tuple求交集
+"""
+
+
 import numpy as np
 import pandas as pd
 import sys
@@ -41,7 +48,7 @@ tmp2 = pd.DataFrame({'A': [3, 4, 5, 6, 7]})
 Result = pd.merge(tmp1, tmp2, how='inner', on='A')
 Result = pd.merge(tmp1[['A']], tmp2, how='inner', on='A')
 
-# 方法2：先取值，再求交集
+# 方法2：用tuple求交集
 tmp3 = set(tmp1.A.values)
 tmp4 = set(tmp2.A.values)
 Result2 = tmp3 & tmp4
