@@ -41,6 +41,7 @@ tmp.to_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\
 
 
 # 找出指定省份用户
+# (1)号段表1
 path3 = r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\基础数据\号段表-1023更新.csv'  # 号段表
 data_section_prov = pd.read_csv(path3, header=None,
                                 sep=',',
@@ -49,8 +50,11 @@ data_section_prov = pd.read_csv(path3, header=None,
                                 dtype={'section_no': np.int32})
 # data_section_prov = data_section.loc[data_section['section_no'].notna()]  # 去除空值（存在省份为其他、中国，而section_no为空的情况）
 # data_section_prov['section_no'] = data_section_prov['section_no'].astype(np.int32)
+# (2)号段表2
+path3 = r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\基础数据\DIM_SECTION_NO_DAY_0610.txt'
+data_section_prov = pd.read_csv(path3, header=None, names=['prov', 'city', 'section_no'], dtype={'section_no': np.int32})
 
-path4 = r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\一众\剔除（和飞信+敏感）结果\huawei_new_（各省份）_1118和飞信.txt'
+path4 = r'C:\Users\Administrator\Desktop\huawei_poten_0612.txt'
 data = pd.read_csv(path4, header=None, names=['mobileno'])  # 源数据（完成剔除后）
 data['sec'] = data['mobileno'].map(lambda x: str(x)[:7]).astype(np.int32)
 # 源数据匹配号段表
@@ -58,7 +62,8 @@ data_tmp = pd.merge(data, data_section_prov,
                     how='inner',
                     left_on='sec', right_on='section_no')
 # 筛选出所需省份用户
-data_tmp.loc[data_tmp['prov'] == '广东']['mobileno'].to_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\一众\剔除（和飞信+敏感）结果_0818\MIUI10_广东（2667416个）_0821号段表.txt',
+data = data_tmp.loc[data_tmp['prov'] == '湖北'][['mobileno']]
+data_tmp.loc[data_tmp['prov'] == '湖北'][['mobileno']].to_csv(r'C:\Users\Administrator\Desktop\华为潜在用户-湖北.txt',
                 sep='|', header=None, index=False)
 data_tmp['prov'].value_counts()
 data_tmp.iloc[:, [0, 3, 4]].to_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\一众\剔除（和飞信+敏感）结果\huawei_new_（各省份）_1118和飞信.txt',

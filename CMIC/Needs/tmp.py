@@ -31,7 +31,7 @@ dh = DataHandler(data=data)
 dh.delete_blacklist()
 dh.delete_staff()
 result = dh.save()
-result.to_csv(r'C:\Users\Administrator\Desktop\native_mz_3months_active_3months_dm（已剔除）.txt',
+result.to_csv(r'C:\Users\Administrator\Desktop\华为潜在用户-湖北（已剔除）.txt',
               header=None, index=False)
 
 
