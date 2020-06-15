@@ -52,15 +52,25 @@ data_section_prov = pd.read_csv(path3, header=None,
 # data_section_prov['section_no'] = data_section_prov['section_no'].astype(np.int32)
 # (2)号段表2
 path3 = r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\基础数据\DIM_SECTION_NO_DAY_0610.txt'
-data_section_prov = pd.read_csv(path3, header=None, names=['prov', 'city', 'section_no'], dtype={'section_no': np.int32})
+data_section_prov = pd.read_csv(path3, header=None, names=['prov', 'city', 'sec'], dtype={'sec': np.int32})
 
 path4 = r'C:\Users\Administrator\Desktop\huawei_poten_0612.txt'
 data = pd.read_csv(path4, header=None, names=['mobileno'])  # 源数据（完成剔除后）
+data = pd.read_csv(r'C:\Users\Administrator\Desktop\native_zd_statistics.txt', header=None,
+                   names=['date', 'sec', 'cnts'], dtype={'sec': np.int32})
+data = data.loc[data.sec.notna()]
 data['sec'] = data['mobileno'].map(lambda x: str(x)[:7]).astype(np.int32)
 # 源数据匹配号段表
+data_section_prov['tag'] = 1
 data_tmp = pd.merge(data, data_section_prov,
-                    how='inner',
-                    left_on='sec', right_on='section_no')
+                    how='left',
+                    on='sec')
+data_tmp['tag'] = data_tmp.tag.fillna('2')
+data_tmp.loc[data_tmp.tag == '2']
+data_tmp.groupby(by=['date']).sum()['cnts']
+data_tmp2 = data_tmp.loc[data_tmp.prov.isin(['广东'])]
+data_tmp2.groupby(by=['date', 'prov']).sum()['cnts']
+data_tmp2.groupby(by=['date', 'tag']).sum()['cnts'].to_excel(r'C:\Users\Administrator\Desktop\test.xlsx')
 # 筛选出所需省份用户
 data = data_tmp.loc[data_tmp['prov'] == '湖北'][['mobileno']]
 data_tmp.loc[data_tmp['prov'] == '湖北'][['mobileno']].to_csv(r'C:\Users\Administrator\Desktop\华为潜在用户-湖北.txt',
