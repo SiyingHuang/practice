@@ -46,8 +46,8 @@ path3 = r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【
 data_section_prov = pd.read_csv(path3, header=None,
                                 sep=',',
                                 encoding='utf-8',
-                                usecols=[0, 2, 3, 4], names=['section_no', 'prov', 'city', 'operator'], skiprows=1,
-                                dtype={'section_no': np.int32})
+                                usecols=[0, 2, 3, 4], names=['sec', 'prov', 'city', 'operator'], skiprows=1,
+                                dtype={'sec': np.int32})
 # data_section_prov = data_section.loc[data_section['section_no'].notna()]  # 去除空值（存在省份为其他、中国，而section_no为空的情况）
 # data_section_prov['section_no'] = data_section_prov['section_no'].astype(np.int32)
 # (2)号段表2
@@ -56,17 +56,19 @@ data_section_prov = pd.read_csv(path3, header=None, names=['prov', 'city', 'sec'
 
 path4 = r'C:\Users\Administrator\Desktop\huawei_poten_0612.txt'
 data = pd.read_csv(path4, header=None, names=['mobileno'])  # 源数据（完成剔除后）
+data = pd.read_csv(r'C:\Users\Administrator\Desktop\hsy_tmp_byw.txt', header=None,
+                   names=['date', 'mobileno', 'cnts'], dtype={'cnts': np.int32})
 data = pd.read_csv(r'C:\Users\Administrator\Desktop\native_zd_statistics.txt', header=None,
                    names=['date', 'sec', 'cnts'], dtype={'sec': np.int32})
-data = data.loc[data.sec.notna()]
-data['sec'] = data['mobileno'].map(lambda x: str(x)[:7]).astype(np.int32)
+data = data.loc[data.mobileno.notna()]
+data = data.loc[data.mobileno.map(lambda x: len(str(x)) == 14)]
+data['sec'] = data['mobileno'].map(lambda x: str(x)[3:10]).astype(np.int32)
 # 源数据匹配号段表
-data_section_prov['tag'] = 1
 data_tmp = pd.merge(data, data_section_prov,
-                    how='left',
+                    how='inner',
                     on='sec')
-data_tmp['tag'] = data_tmp.tag.fillna('2')
-data_tmp.loc[data_tmp.tag == '2']
+data.groupby(by=['date']).sum()['cnts']
+data_tmp.groupby(by=['date', 'operator']).sum()['cnts']
 data_tmp.groupby(by=['date']).sum()['cnts']
 data_tmp2 = data_tmp.loc[data_tmp.prov.isin(['广东'])]
 data_tmp2.groupby(by=['date', 'prov']).sum()['cnts']
