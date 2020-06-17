@@ -65,3 +65,57 @@ ld.loc[ld.mobileno.map(lambda x: len(str(x)) != 11)]
 result1 = pd.merge(data, ld, how='inner', on='mobileno')
 result1.to_csv(r'leader_user.txt',
                header=None, index=False)
+
+
+
+data_re = pd.read_csv(r'C:\Users\Administrator\Desktop\record2.txt\record2.txt',
+                      header=None, skiprows=1, names=['mobileno'],
+                      sep='@sep', engine='python')
+import re
+s = '15951153248	全国平-13961091659,袁小宽-15152951925,包昌金主任-649149,李庆东-18861093980,曹福荣-13914411988,王  强-15996064666,张宏晓-13921723882,谢  捷-13401224588,唐春兵-13815931593,张丙权-13914419777,吕爱民-13812481120,戴  嵩-13952635998,柳秧喜-13775674496,乔华平-13401222456,鲁安婕-13775799917,夏  骎-18805268001,卞剑飞-13815929969,陆寅坤-15261000399,孙敬东-13401224548,田文新-15961088559,全  泉-15961089236,郑  浩-15195212386,周  琴-13952673626,张  伟-15195231418'
+pattern = re.compile(r'-(\d{11})')
+pattern.findall(s)
+
+ls = []
+data_re['mobileno'].map(num_extract)
+
+def num_extract(s):
+    gp = re.findall(pattern, s)
+    if gp:
+        ls.append(gp)
+    else:
+        return None
+
+ls2 = []
+for i in ls:
+    for j in i:
+        ls2.append(j)
+
+tmp = pd.DataFrame(pd.value_counts(ls2)).reset_index()
+tmp.columns = ['mobileno', 'cnts']
+tmp['sec'] = tmp['mobileno'].map(lambda x: str(x)[:7]).astype(np.int32)
+tmp2 = pd.merge(tmp, data_section_prov,
+                    how='inner',
+                    on='sec')
+tmp2.groupby(by='operator').sum()['cnts']
+tmp2.to_csv(r'C:\Users\Administrator\Desktop\record2.txt\被叫号码本异网匹配结果.txt',
+            index=False)
+
+
+from collections import Iterable
+s = [1, [2, 3], 'dfd', [4, [5, 6]], (7, 8, (9, (10, (11, 12))))]
+s_result = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+
+def unpack_list(lss):
+    for i in lss:
+        if isinstance(i, Iterable):
+            yield from unpack_list(i)
+        else:
+            yield i
+
+list(unpack_list(s))
+
+for i in s:
+    if isinstance(i, Iterable):
+        print(i)
+isinstance('ster', Iterable)
