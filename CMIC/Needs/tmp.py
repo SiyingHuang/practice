@@ -103,19 +103,25 @@ tmp2.to_csv(r'C:\Users\Administrator\Desktop\record2.txt\被叫号码本异网�
 
 
 from collections import Iterable
-s = [1, [2, 3], 'dfd', [4, [5, 6]], (7, 8, (9, (10, (11, 12))))]
+from inspect import isgeneratorfunction
+s = [1, [2, 3], 'string', b'01', [4, [5, 6]], (7, 8, (9, (10, (11, 12))))]
 s_result = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 
-def unpack_list(lss):
+ignoreInstance = (str, bytes)
+def unpack_list1(lss):
     for i in lss:
-        if isinstance(i, Iterable):
-            yield from unpack_list(i)
+        if isinstance(i, Iterable) and not isinstance(i, (str,bytes)):
+            yield from unpack_list1(i)
         else:
             yield i
+list(unpack_list1(s))
+list(unpack_list1('apple'))
 
-list(unpack_list(s))
-
-for i in s:
-    if isinstance(i, Iterable):
-        print(i)
-isinstance('ster', Iterable)
+def unpack_list2(lss):
+    for i in lss:
+        if isinstance(i, Iterable) and not isinstance(i, ignoreInstance):
+            for j in i:
+                yield j
+        else:
+            yield i
+list(unpack_list2(s))

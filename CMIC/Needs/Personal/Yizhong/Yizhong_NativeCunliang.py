@@ -18,8 +18,8 @@ with open(path2) as f:
     for i in range(5):
         tmp = f.readline()
         print(tmp)
-hfx_data = pd.read_csv(path2, header=None, names=['mobileno'])  # SQL提取数据
-hfx_data = pd.read_csv(r'C:\Users\Administrator\Desktop\DATA_FUSI_REGISTER_USER_D_0_2_20191110.txt',  # 分析平台下载
+hfx_data = pd.read_csv(path2, header=None, names=['mobileno'])  # SQL提取数据（仅含号码字段）
+hfx_data = pd.read_csv(r'C:\Users\Administrator\Desktop\DATA_FUSI_REGISTER_USER_D_0_2_20191110.txt',  # 分析平台下载（有多个字段）
                        sep='|', usecols=[6], names=['mobileno'], skiprows=1)
 hfx_data.drop_duplicates(inplace=True)
 hfx_data['tag1'] = 1
@@ -42,7 +42,7 @@ tmp.to_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\
 
 # 找出指定省份用户
 # (1)号段表1
-path3 = r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\基础数据\号段表-1023更新.csv'  # 号段表
+path3 = r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【Native】\02 - 【提数】\基础数据\号段表-1023更新.csv'
 data_section_prov = pd.read_csv(path3, header=None,
                                 sep=',',
                                 encoding='utf-8',
@@ -56,29 +56,13 @@ data_section_prov = pd.read_csv(path3, header=None, names=['prov', 'city', 'sec'
 
 path4 = r'C:\Users\Administrator\Desktop\huawei_poten_0612.txt'
 data = pd.read_csv(path4, header=None, names=['mobileno'])  # 源数据（完成剔除后）
-data = pd.read_csv(r'C:\Users\Administrator\Desktop\hsy_tmp_byw.txt', header=None,
-                   names=['date', 'mobileno', 'cnts'], dtype={'cnts': np.int32})
-data = pd.read_csv(r'C:\Users\Administrator\Desktop\native_zd_statistics.txt', header=None,
-                   names=['date', 'sec', 'cnts'], dtype={'sec': np.int32})
 data = data.loc[data.mobileno.notna()]
-data = data.loc[data.mobileno.map(lambda x: len(str(x)) == 14)]
-data['sec'] = data['mobileno'].map(lambda x: str(x)[3:10]).astype(np.int32)
+data = data.loc[data.mobileno.map(lambda x: len(str(x)) == 11)]
+data['sec'] = data['mobileno'].map(lambda x: str(x)[3:10]).astype(np.int32)  # 提取前7位号段
 # 源数据匹配号段表
 data_tmp = pd.merge(data, data_section_prov,
                     how='inner',
                     on='sec')
-data.groupby(by=['date']).sum()['cnts']
-data_tmp.groupby(by=['date', 'operator']).sum()['cnts']
-data_tmp['cnts'] = data_tmp['cnts'].astype(np.int)
-data_tmp.pivot_table(values='cnts',
-                     columns=['operator'],
-                     index=['date'],
-                     aggfunc=np.sum,
-                     margins=True).to_excel(r'C:\Users\Administrator\Desktop\test.xlsx')
-data_tmp.groupby(by=['date']).sum()['cnts']
-data_tmp2 = data_tmp.loc[data_tmp.prov.isin(['广东'])]
-data_tmp2.groupby(by=['date', 'prov']).sum()['cnts']
-data_tmp2.groupby(by=['date', 'tag']).sum()['cnts'].to_excel(r'C:\Users\Administrator\Desktop\test.xlsx')
 # 筛选出所需省份用户
 data = data_tmp.loc[data_tmp['prov'] == '湖北'][['mobileno']]
 data_tmp.loc[data_tmp['prov'] == '湖北'][['mobileno']].to_csv(r'C:\Users\Administrator\Desktop\华为潜在用户-湖北.txt',

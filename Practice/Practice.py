@@ -2,8 +2,8 @@ import pandas as pd
 import numpy as np
 import time
 
-### 【pd.MultiIndex 构造多重索引】
 
+# 【pd.MultiIndex 构造多重索引】
 # 1、from arrays 从数组
 arrays = [[1, 1, 2, 2], ['red', 'blue', 'red', 'blue']]
 pd.MultiIndex.from_arrays(arrays, names=('number', 'color'))
@@ -26,13 +26,15 @@ values = [[12, 2], [0, 4],
           [7, 1], [16, 36]]
 df = pd.DataFrame(values, columns=columns, index=index)
 
-### pd.DataFrame.stack()/unstack() 重塑
+
+# 【pd.DataFrame.stack()/unstack() 重塑】
 tmp = pd.DataFrame({'mobileno': list('aaabbb'),
                     'date': list('cdedef'),
                     'if_p_2_p': [1, 0, 1, 1, 1, 0]})
 tmp2 = tmp.set_index(['mobileno', 'date']).unstack()
 
-### pd.DataFrame
+
+# 【pd.DataFrame】
 df = pd.DataFrame([[1, 2], [4, 5], [7, 8]],
                   index=['cobra', 'viper', 'sidewinder'],
                   columns=['max_speed', 'shield'])
@@ -64,7 +66,8 @@ df.iloc[1:2, 0:1]
 df.iloc[:, [True, False]]
 
 
-# 自己写的太复杂的 to_csv 函数 →_→
+# 【to_csv函数】
+# （1）自己写的太复杂的 to_csv 函数 →_→
 def My_to_csv_own(data_ys):
     data = []
     for line in data_ys.index:
@@ -72,9 +75,23 @@ def My_to_csv_own(data_ys):
     data = pd.DataFrame(data)[['mobileno']]
     data.to_csv(r'C:\Users\Administrator\Desktop\1.txt', header=False, index=False)
 
-# 直接
+# （2）直接
 def My_to_csv(data_ys, csv_name):
     data = data_ys
     name = csv_name
     data.to_csv(r'C:\Users\Administrator\Desktop\{}.txt'.format(name), header=False, index=False)
 My_to_csv(data_yy_tmp, 'fmsg_over1')
+
+
+# 【斐波那契数列】
+# 1、普通函数法
+def fab(num):
+    t, a, b = 0, 0, 1
+    while t < num:
+        yield b
+        # print(b)
+        a, b = b, a + b  # 先完成等号右边的运算，再赋值给等号左边
+        t = t + 1
+list(fab(9))
+fab_ = fab(9)
+next(fab_)

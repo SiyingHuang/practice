@@ -1,3 +1,12 @@
+"""
+需求人：文彦杰
+需求：NPS值计算
+    1、解析日志，得到指定问题的评分；
+    2、根据得到的评分，区分 贬损/中立/推荐；
+    3、根据已有公式，计算NPS值。
+"""
+
+
 import numpy as np
 import pandas as pd
 import re
@@ -7,6 +16,7 @@ import os
 pd.set_option('display.max_columns', 300)
 pd.set_option('display.width', 600)
 
+# 单条日志样例
 s = '[{"SurveyObjType":"3","QuestionTitle":"您有多大可能性向您的亲朋好友推荐和飞信？","Score":"10","SurveyLables":["不存在无法发送或接收不成功消息的情况"]},{"SurveyObjType":"3","QuestionTitle":"结合您在和飞信发送在线消息的情况，请您对和飞信的在线消息发送体验进行整体评价","Score":"10","SurveyLables":["消息发送正常"]}]'
 s = '[{"SurveyObjType":"0","QuestionTitle":"装机整体满意度","Score":"10"},{"SurveyObjType":"2","QuestionTitle":"上门及时性","Score":"10"},{"SurveyObjType":"3","QuestionTitle":"安装专业性","Score":"10"},{"SurveyObjType":"2","QuestionTitle":"安装人员服务","Score":"10"},{"SurveyObjType":"0","QuestionTitle":"装机完成后是否测速","Score":"0","SurveyLables":["是"]},{"SurveyObjType":"0","QuestionTitle":"您是否知晓中国移动推出的“快装快修，超时送流量”活动？","Score":"0"},{"SurveyObjType":"0","QuestionTitle":"您本次装机服务是否比约定时间延迟？","Score":"0"},{"SurveyObjType":"0","QuestionTitle":"由于本次延迟上门，您获得了多少流量赠送？","Score":"0"}]'
 
@@ -25,6 +35,7 @@ data = pd.read_csv(r'nps_SurveyResult.txt', header=None, sep='|',
 
 pattern = re.compile(r'."(您有多大可能性向您的亲朋好友推荐.*?)","Score":"(\d*).*')
 
+# 取出完整问题内容
 def extract_content(s):
     gp = re.search(pattern, s)
     if gp:
@@ -32,7 +43,7 @@ def extract_content(s):
     else:
         return 'else'
 
-
+# 取出问题所对应的分值
 def extract_score(s):
     gp = re.search(pattern, s)
     if gp:
@@ -40,7 +51,7 @@ def extract_score(s):
     else:
         return 'else'
 
-
+# 根据分值范围进行划分
 def score_type(s):
     if 0 <= s <= 6:
         return '贬损'
