@@ -108,20 +108,33 @@ s = [1, [2, 3], 'string', b'01', [4, [5, 6]], (7, 8, (9, (10, (11, 12))))]
 s_result = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 
 ignoreInstance = (str, bytes)
+
+
+def unpack_list1(lss):
+    if isinstance(lss, (list, tuple)):
+        for i in lss:
+            if isinstance(i, Iterable) and not isinstance(i, (str, bytes)):
+                yield from unpack_list1(i)
+            else:
+                yield i
+    else:
+        yield lss
+
+def unpack_list(lss):
+    if isinstance(lss, Iterable) and not isinstance(lss, (str, bytes)):
+        for i in lss:
+            yield from unpack_list()
+    else:
+        yield lss
+
+
+list(unpack_list1([1, [2, 3], 'string', b'01', [4, [5, 6]], (7, 8, (9, (10, (11, 12))))]))
+list(unpack_list1('apple'))
+list(unpack_list1(1))
+
 def unpack_list1(lss):
     for i in lss:
-        if isinstance(i, Iterable) and not isinstance(i, (str,bytes)):
+        if isinstance(i, Iterable) and not isinstance(i, (str, bytes)):
             yield from unpack_list1(i)
         else:
             yield i
-list(unpack_list1(s))
-list(unpack_list1('apple'))
-
-def unpack_list2(lss):
-    for i in lss:
-        if isinstance(i, Iterable) and not isinstance(i, ignoreInstance):
-            for j in i:
-                yield j
-        else:
-            yield i
-list(unpack_list2(s))

@@ -88,10 +88,14 @@ My_to_csv(data_yy_tmp, 'fmsg_over1')
 def fab(num):
     t, a, b = 0, 0, 1
     while t < num:
-        yield b
-        # print(b)
+        yield b  # yield出现，变成生成器函数
+        # print(b)  # 普通函数法
         a, b = b, a + b  # 先完成等号右边的运算，再赋值给等号左边
         t = t + 1
-list(fab(9))
-fab_ = fab(9)
+fab_ = fab(9)  # fab_ 是生成器
+list(fab_)
 next(fab_)
+# 尝试判断是否为生成器函数
+from inspect import isgeneratorfunction
+isgeneratorfunction(fab)        # fab 是生成器函数
+isgeneratorfunction(fab(9))     # fab(9) 是生成器，而不是生成器函数
