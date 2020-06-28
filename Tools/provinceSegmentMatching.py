@@ -18,8 +18,6 @@ data_section_prov = pd.read_csv(path2, header=None, names=['prov', 'city', 'sec'
 # 2、原始数据读入
 data = pd.read_csv(r'C:\Users\Administrator\Desktop\yy_mz_imei_2.txt', header=None,
                    names=['mobileno', 'imei'])
-data = pd.read_csv(r'C:\Users\Administrator\Desktop\hsy_tmp_lg.txt', header=None,
-                   names=['date', 'mobileno'])
 data = data.loc[data.mobileno.notna()]  # 剔除空号码
 data = data.loc[data.imei.notna()]  # 剔除空IMEI
 data = data.loc[data.mobileno.map(lambda x: len(str(x)) == 14)]  # 剔除非手机号
@@ -41,10 +39,3 @@ tmp1 = data_tmp.pivot_table(values='cnts',
 tmp1.to_excel(r'C:\Users\Administrator\Desktop\test.xlsx')
 # (2) 指定省份数据提取
 tmp2 = data_tmp.loc[data_tmp.prov == '']
-# (3) DM 数据统计
-data_tmp = data_tmp.loc[data_tmp.prov.isin(['浙江', '上海'])]
-data_tmp.pivot_table(values=['mobileno'],
-                 index=['date'],
-                 columns=['prov'],
-                 aggfunc=pd.Series.nunique,  # 主叫人数统计（对values中的列用指定函数进行统计）
-                 margins=True)
