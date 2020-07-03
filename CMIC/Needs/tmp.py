@@ -139,3 +139,21 @@ def unpack_list1(lss):
             yield from unpack_list1(i)
         else:
             yield i
+
+
+data = pd.read_csv(r'C:\Users\Administrator\Desktop\yy_mz_imei.txt',
+                   header=None, names=['mobileno', 'imei'],
+                   dtype={'mobileno': 'str', 'imei': 'str'})
+data = data.loc[data.imei.notna()]
+ls = pd.read_csv(r'C:\Users\Administrator\Desktop\与10086 chatbot有交互记录的用户号码_修改.txt',
+                 header=None, names=['mobileno'], dtype={'mobileno': 'str'})
+ls['tag'] = 1
+tmp = pd.merge(data, ls, how='left', on='mobileno')
+tmp = tmp.loc[tmp.tag != 1]
+tmp.iloc[:, 0:2].to_csv(r'C:\Users\Administrator\Desktop\yy_mz_imei（已剔除）.txt', header=None, index=False)
+data.mobileno.drop_duplicates()
+
+data = pd.read_csv(r'C:\Users\Administrator\Desktop\清单.txt',
+                   header=None, names=['mobileno', 'content'],
+                   sep='\t',
+                   dtype='str')
