@@ -153,7 +153,9 @@ tmp = tmp.loc[tmp.tag != 1]
 tmp.iloc[:, 0:2].to_csv(r'C:\Users\Administrator\Desktop\yy_mz_imei（已剔除）.txt', header=None, index=False)
 data.mobileno.drop_duplicates()
 
-data = pd.read_csv(r'C:\Users\Administrator\Desktop\清单.txt',
-                   header=None, names=['mobileno', 'content'],
-                   sep='\t',
+data = pd.read_csv(r'C:\Users\Administrator\Desktop\4月1日-7月1日魅族全量活跃号码IMEI\yy_mz_imei（已剔除）.txt',
+                   header=None, names=['mobileno', 'imei'],
+                   sep=',',
                    dtype='str')
+data.iloc[:, 1].to_csv(r'C:\Users\Administrator\Desktop\4月1日-7月1日魅族全量活跃号码IMEI\yy_mz_imei（仅IMEI）.txt',
+                       header=None, index=False)
