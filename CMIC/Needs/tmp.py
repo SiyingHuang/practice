@@ -54,20 +54,6 @@ data.to_csv(r'黑名单处理后.txt', index=False)
 
 
 
-os.chdir(r'C:\Users\Administrator\Desktop')
-data = pd.read_csv(r'native_mz_3months_active_3months_dm.txt', dtype={0: 'str', 3: 'str'}, header=None,
-                   names=['mobileno', 'a', 'b', 'c'])
-ld = pd.read_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\05 - 充电\Python\[承宗]-号码剔除验证工具\blacklist\集团内部员工名单\qy0402.csv',
-                   dtype={'mobileno': 'str'}, header=None, names=['a', 'b', 'mobileno', 'c', 'd', 'e'])
-ld = ld.loc[(ld['c'].map(lambda x: '领导' in str(x))) | (ld['d'].map(lambda x: '总经理' in str(x))) | (
-    ld['d'].map(lambda x: '副总经理' in str(x)))]
-ld.loc[ld.mobileno.map(lambda x: len(str(x)) != 11)]
-result1 = pd.merge(data, ld, how='inner', on='mobileno')
-result1.to_csv(r'leader_user.txt',
-               header=None, index=False)
-
-
-
 data_re = pd.read_csv(r'C:\Users\Administrator\Desktop\record2.txt\record2.txt',
                       header=None, skiprows=1, names=['mobileno'],
                       sep='@sep', engine='python',
@@ -103,12 +89,7 @@ tmp2.to_csv(r'C:\Users\Administrator\Desktop\record2.txt\被叫号码本异网�
             index=False)
 
 
-from collections import Iterable
-from inspect import isgeneratorfunction
-s = [1, [2, 3], 'string', b'01', [4, [5, 6]], (7, 8, (9, (10, (11, 12))))]
-s_result = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
-
-ignoreInstance = (str, bytes)
+from collections.abc import Iterable
 
 
 def unpack_list1(lss):
@@ -130,15 +111,8 @@ def unpack_list(lss):
 
 
 list(unpack_list1([1, [2, 3], 'string', b'01', [4, [5, 6]], (7, 8, (9, (10, (11, 12))))]))
-list(unpack_list1('apple'))
+list(unpack_list('apple'))
 list(unpack_list1(1))
-
-def unpack_list1(lss):
-    for i in lss:
-        if isinstance(i, Iterable) and not isinstance(i, (str, bytes)):
-            yield from unpack_list1(i)
-        else:
-            yield i
 
 
 data = pd.read_csv(r'C:\Users\Administrator\Desktop\yy_mz_imei.txt',
@@ -153,9 +127,17 @@ tmp = tmp.loc[tmp.tag != 1]
 tmp.iloc[:, 0:2].to_csv(r'C:\Users\Administrator\Desktop\yy_mz_imei（已剔除）.txt', header=None, index=False)
 data.mobileno.drop_duplicates()
 
-data = pd.read_csv(r'C:\Users\Administrator\Desktop\4月1日-7月1日魅族全量活跃号码IMEI\yy_mz_imei（已剔除）.txt',
-                   header=None, names=['mobileno', 'imei'],
-                   sep=',',
-                   dtype='str')
-data.iloc[:, 1].to_csv(r'C:\Users\Administrator\Desktop\4月1日-7月1日魅族全量活跃号码IMEI\yy_mz_imei（仅IMEI）.txt',
-                       header=None, index=False)
+
+
+data = pd.read_csv(r'C:\Users\Administrator\Desktop\yy_mz_imei（已剔除）.txt',
+                   header=None, usecols=[0], names=['mobileno'], dtype='str')
+data = data.drop_duplicates()
+if_active = pd.read_csv(r'C:\Users\Administrator\Desktop\yy_if_active.txt',
+                        header=None, names=['mobileno'], dtype='str')
+if_active['tag'] = 1
+tmp = pd.merge(data, if_active, how='left', on='mobileno')
+tmp['tag'] = tmp['tag'].fillna('0')
+tmp['tag'] = tmp['tag'].astype(np.int)
+tmp.to_csv(r'C:\Users\Administrator\Desktop\yy_mz_imei（已剔除）（匹配活跃情况）.txt',
+           header=None, index=False)
+tmp.tag.value_counts()
