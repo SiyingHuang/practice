@@ -141,3 +141,24 @@ tmp['tag'] = tmp['tag'].astype(np.int)
 tmp.to_csv(r'C:\Users\Administrator\Desktop\yy_mz_imei（已剔除）（匹配活跃情况）.txt',
            header=None, index=False)
 tmp.tag.value_counts()
+
+
+import os
+os.chdir(r'C:\Users\Administrator\Desktop')
+data = pd.read_csv(r'魅族IMEI\魅族IMEI\合并.txt',
+                   header=None, names=['imei'], dtype='str')
+data2 = pd.read_csv(r'4月1日-7月1日魅族全量活跃号码IMEI\yy_mz_imei（已剔除）.txt',
+                   header=None, names=['mobileno', 'imei'], dtype='str')
+tmp = pd.concat((data[['imei']], data2[['imei']]))
+tmp = tmp.drop_duplicates()
+tmp2 = pd.merge(tmp, data2, how='left', on='imei')
+
+ls = pd.read_csv(r'与10086 chatbot有交互记录的用户号码_修改.txt',
+                 header=None, names=['mobileno'], dtype='str')
+ls['mobileno'] = ls['mobileno'].map(lambda x: str(x)[-11:])
+ls['tag'] = 1
+
+tmp3 = pd.merge(tmp2, ls, how='left', on='mobileno')
+tmp3 = tmp3.loc[tmp3.tag != 1].iloc[:, [0, 1]]
+tmp3 = tmp3.imei.drop_duplicates()
+tmp3.to_csv(r'IMEI合并后(IMEI+号码)（已剔除）.txt', header=None, index=False)
