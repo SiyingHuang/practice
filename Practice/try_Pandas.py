@@ -73,3 +73,13 @@ df - df.iloc[0]
 df.subtract(df['B'], axis=0)
 
 df.iloc[0, ::2]
+
+X = np.array([1,  'a'])
+X.sum()
+
+pd.Series([1, np.NaN, None])
+[1, np.NaN, None]
+
+X = pd.Series(np.arange(5), dtype=int)
+X[0] = np.nan
+X[1] = None
