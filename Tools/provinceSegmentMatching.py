@@ -16,12 +16,12 @@ path2 = r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【
 data_section_prov = pd.read_csv(path2, header=None, names=['prov', 'city', 'sec'], dtype={'sec': np.int32})  # 提取前7位号段（读入11位号码时）
 
 # 2、原始数据读入
-data = pd.read_csv(r'C:\Users\Administrator\Desktop\yy_mz_imei_2.txt', header=None,
-                   names=['mobileno', 'imei'])
+data = pd.read_csv(r'C:\Users\Administrator\Desktop\IMEI合并后(IMEI+号码)（已剔除）.txt', header=None,
+                   usecols=[1], names=['mobileno'])
 data = data.loc[data.mobileno.notna()]  # 剔除空号码
 data = data.loc[data.imei.notna()]  # 剔除空IMEI
 data = data.loc[data.mobileno.map(lambda x: len(str(x)) == 14)]  # 剔除非手机号
-data['sec'] = data.mobileno.map(lambda x: str(x)[2:9]).astype(np.int32)
+data['sec'] = data.mobileno.map(lambda x: str(x)[:7]).astype(np.int32)
 
 # 3、匹配省份地市信息
 data_tmp = pd.merge(data, data_section_prov,

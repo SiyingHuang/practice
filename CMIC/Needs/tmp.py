@@ -162,3 +162,9 @@ tmp3 = pd.merge(tmp2, ls, how='left', on='mobileno')
 tmp3 = tmp3.loc[tmp3.tag != 1].iloc[:, [0, 1]]
 tmp3 = tmp3.imei.drop_duplicates()
 tmp3.to_csv(r'IMEI合并后(IMEI+号码)（已剔除）.txt', header=None, index=False)
+
+mz = pd.read_csv(r'C:\Users\Administrator\Desktop\yy_if_active.txt',
+                 header=None, names=['mobileno'], dtype=np.int64)
+mz['tag'] = 1
+tmp = pd.merge(data, mz, how='left', on='mobileno')
+data = tmp.loc[tmp.tag != 1, ['mobileno']]

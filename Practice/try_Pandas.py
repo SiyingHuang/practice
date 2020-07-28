@@ -77,9 +77,24 @@ df.iloc[0, ::2]
 X = np.array([1,  'a'])
 X.sum()
 
-pd.Series([1, np.NaN, None])
+X = pd.Series([1, np.NaN, None, 'hello'], index=list('abcd'))
 [1, np.NaN, None]
+X.isnull()
+X.dropna()
 
-X = pd.Series(np.arange(5), dtype=int)
+X = pd.Series(np.arange(5), index=list('abcde'), dtype=int)
 X[0] = np.nan
 X[1] = None
+
+X = pd.DataFrame([[1, None, 'hello'],
+                  [2, np.nan, np.NaN]])
+X.dropna()
+X.dropna(axis=1, how='all')
+
+X.fillna(method='bfill')
+
+
+index = [('abby', 2010), ('owen', 2011)]
+populations = [124312, 45614]
+pop = pd.Series(populations, index=index)
+pop[:('abby', 2010)]
