@@ -94,7 +94,44 @@ X.dropna(axis=1, how='all')
 X.fillna(method='bfill')
 
 
-index = [('abby', 2010), ('owen', 2011)]
-populations = [124312, 45614]
+index = [('abby', 2010), ('abby', 2011),
+         ('owen', 2010), ('owen', 2011)]
+populations = [124312, 45614, 4654354, 43534]
 pop = pd.Series(populations, index=index)
-pop[:('abby', 2010)]
+pop[:('owen', 2010)]
+pop[[i for i in pop.index if i[0] == 'abby']]
+
+index = pd.MultiIndex.from_tuples(index)
+index
+pop = pop.reindex(index)
+pop['abby', 2011]
+pop.unstack()
+pop.unstack().stack()
+
+pop_df = pd.DataFrame({'total': pop, 'other': [1, 2, 3, 4]})
+pop_df.unstack()
+pop_df2 = pop_df['other'] / pop_df['total']
+pop_df2.unstack()
+
+pop = pop.reindex(pd.MultiIndex.from_tuples(index))
+
+data = {('abby', 2010): 1, ('abby', 2011): 2,
+         ('owen', 2010): 3, ('owen', 2011): 4}
+pop = pd.Series(data)
+
+pop[2010]
+pop[:, 2010]
+
+index = pd.MultiIndex.from_product([[2013, 2014], [1, 2]],
+                                   names=['year', 'visit'])
+columns = pd.MultiIndex.from_product([['Bob', 'Guido', 'Sue'], ['HR', 'Temp']],
+                                     names=['subject', 'type'])
+data = np.round(np.random.rand(4, 6), 1)
+data[:, ::2] *= 10
+data += 37
+
+health_data = pd.DataFrame(data, index=index, columns=columns)
+health_data.iloc[:1, :2]
+health_data.loc[(2013, 1), ('Bob', 'HR')]
+idx = pd.IndexSlice
+health_data.loc[idx[:2013, 2], idx[:, 'HR']]
