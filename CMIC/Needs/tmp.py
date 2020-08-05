@@ -163,8 +163,13 @@ tmp3 = tmp3.loc[tmp3.tag != 1].iloc[:, [0, 1]]
 tmp3 = tmp3.imei.drop_duplicates()
 tmp3.to_csv(r'IMEI合并后(IMEI+号码)（已剔除）.txt', header=None, index=False)
 
-mz = pd.read_csv(r'C:\Users\Administrator\Desktop\yy_if_active.txt',
-                 header=None, names=['mobileno'], dtype=np.int64)
+
+# 剔除周期内活跃号码
+os.chdir(r'C:\Users\Administrator\Desktop\合并去重之后再剔除全量与chatbot端口号有过交互的号码')
+data = pd.read_csv(r'IMEI合并后(仅号码)（已剔除）.txt', header=None, names=['mobileno'], dtype=np.int64)
+
+mz = pd.read_csv(r'yy_if_active.txt',
+                 header=None, names=['mobileno'], dtype=np.int64)  # 魅族活跃号码读取
 mz['tag'] = 1
 tmp = pd.merge(data, mz, how='left', on='mobileno')
 data = tmp.loc[tmp.tag != 1, ['mobileno']]

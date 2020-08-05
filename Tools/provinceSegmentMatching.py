@@ -38,4 +38,5 @@ tmp1 = data_tmp.pivot_table(values='cnts',
                             margins=True)
 tmp1.to_excel(r'C:\Users\Administrator\Desktop\test.xlsx')
 # (2) 指定省份数据提取
-tmp2 = data_tmp.loc[data_tmp.prov == '']
+tmp2 = data_tmp.loc[data_tmp.prov == '广西', ['mobileno']]
+tmp2.to_csv(r'广西.txt', header=None, index=False)

@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import os
 
 obj = Series([-1, 0, 1, 2, 3]) # obj = Series(list((-1, 0, 1, 2, 3)))
 
@@ -118,6 +119,7 @@ pop = pop.reindex(pd.MultiIndex.from_tuples(index))
 data = {('abby', 2010): 1, ('abby', 2011): 2,
          ('owen', 2010): 3, ('owen', 2011): 4}
 pop = pd.Series(data)
+pop.index.names = ['name', 'year']
 
 pop[2010]
 pop[:, 2010]
@@ -135,3 +137,55 @@ health_data.iloc[:1, :2]
 health_data.loc[(2013, 1), ('Bob', 'HR')]
 idx = pd.IndexSlice
 health_data.loc[idx[:2013, 2], idx[:, 'HR']]
+
+pop_flat = pop.reset_index(name=('count'))
+pop_flat.set_index(['name', 'year'])
+
+data_mean = health_data.mean(level='year')
+data_mean.mean(level='type', axis=1)
+
+health_data.groupby(by=['year']).mean()
+
+def make_df(cols, ind):
+    """一个简单的DataFrame"""
+    data = {c: [str(c) + str(i) for i in ind] for c in cols}
+    # data = {c: [print(c, i) for i in ind] for c in cols}
+    return pd.DataFrame(data, index=ind)
+
+make_df('A', range(3))
+make_df('ABC', range(2))
+
+[0, 1] + [1, 3]
+x = [0, 1]
+y = [1, 3]
+np.concatenate([x, y])
+x + y
+
+ser1 = pd.Series(list('ABC'), index=list('abc'))
+ser2 = pd.Series(list('DEF'), index=list('abc'))
+np.concatenate([ser1, ser2])
+ser1.append(ser2)
+pd.concat([ser1, ser2], ignore_index=True)
+pd.concat([ser1, ser2])
+np.concatenate([ser1, ser2])
+
+x = make_df('AB', [0, 1])
+y = make_df('BC', [2, 3])
+y.index = x.index
+print(pd.concat([x, y], axis=1))
+tmp = pd.concat([x, y], keys=['a', 'b'])
+tmp_flat = tmp.unstack()
+
+pd.concat([x, y], join='inner')
+
+os.chdir(r'D:\中移互联网\01 - 运营室\01 - 分析组\05 - 充电\Python\《Python数据科学手册》\PythonDataScienceHandbook-master\notebooks\data')
+pop = pd.read_csv(r'state-population.csv')
+areas = pd.read_csv(r'state-areas.csv')
+abbrevs = pd.read_csv(r'state-abbrevs.csv')
+merged = pd.merge(pop, abbrevs, how='outer', left_on='state/region', right_on='abbreviation')
+merged = merged.drop('abbreviation', axis=1)
+merged.isnull().any()
+merged.loc[merged.population.isnull()]
+merged.loc[merged.state.isnull(), 'state/region'].unique()
+merged.loc[merged['state/region'] == 'PR', 'state'] = 'Puerto Rico'
+merged.loc[merged['state/region'] == 'USA', 'state'] = 'United States'
