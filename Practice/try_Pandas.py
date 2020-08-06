@@ -178,14 +178,33 @@ tmp_flat = tmp.unstack()
 
 pd.concat([x, y], join='inner')
 
+"""
+案例：美国各州的数据统计
+"""
+# 原始数据读取
 os.chdir(r'D:\中移互联网\01 - 运营室\01 - 分析组\05 - 充电\Python\《Python数据科学手册》\PythonDataScienceHandbook-master\notebooks\data')
 pop = pd.read_csv(r'state-population.csv')
 areas = pd.read_csv(r'state-areas.csv')
 abbrevs = pd.read_csv(r'state-abbrevs.csv')
+# 合并 简称-人口 与 简称-全称 数据
 merged = pd.merge(pop, abbrevs, how='outer', left_on='state/region', right_on='abbreviation')
-merged = merged.drop('abbreviation', axis=1)
-merged.isnull().any()
-merged.loc[merged.population.isnull()]
-merged.loc[merged.state.isnull(), 'state/region'].unique()
+merged = merged.drop('abbreviation', axis=1)  # 删除重复列
+merged.isnull().any()  # 查看哪一列有缺失值
+merged.loc[merged.population.isnull()]  # 查看缺失值情况
+merged.loc[merged.state.isnull(), 'state/region'].unique()  # 查看全称缺失的国家有哪些
+# 补充国家全称
 merged.loc[merged['state/region'] == 'PR', 'state'] = 'Puerto Rico'
 merged.loc[merged['state/region'] == 'USA', 'state'] = 'United States'
+# 合并面积数据
+final = pd.merge(merged, areas, how='left', on='state')
+final.isnull().any()
+final['state'].loc[final['area (sq. mi)'].isnull()].unique()
+final.loc[final['area (sq. mi)'].isnull()]
+final.dropna(inplace=True)  # 剔除面积缺失的数据
+# 取出2010年数据
+data2010 = final.query("year == 2010 & ages == 'total'")
+# data2010 = final.loc[(final.year == 2010) & (final.ages == 'total')]
+data2010.head()
+data2010.set_index('state', inplace=True)  # 设置'state'为索引列
+density = data2010['population'] / data2010['area (sq. mi)']  # 计算人口密度
+density.sort_values(ascending=False, inplace=True)  # 降序排列
