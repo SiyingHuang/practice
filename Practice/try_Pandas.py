@@ -208,3 +208,10 @@ data2010.head()
 data2010.set_index('state', inplace=True)  # 设置'state'为索引列
 density = data2010['population'] / data2010['area (sq. mi)']  # 计算人口密度
 density.sort_values(ascending=False, inplace=True)  # 降序排列
+
+"""
+行星数据
+"""
+import seaborn as sns
+planets = sns.load_dataset('planets')
+planets.shape
