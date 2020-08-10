@@ -215,3 +215,10 @@ density.sort_values(ascending=False, inplace=True)  # 降序排列
 import seaborn as sns
 planets = sns.load_dataset('planets')
 planets.shape
+
+rng = np.random.RandomState(42)
+ser = pd.Series(rng.rand(5))
+df = pd.DataFrame({'A': rng.rand(5),
+                   'B': rng.rand(5)})
+df.mean(axis='index')
+df.mean(axis='columns')
