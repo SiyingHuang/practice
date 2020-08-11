@@ -220,5 +220,10 @@ rng = np.random.RandomState(42)
 ser = pd.Series(rng.rand(5))
 df = pd.DataFrame({'A': rng.rand(5),
                    'B': rng.rand(5)})
-df.mean(axis='index')
-df.mean(axis='columns')
+df.max(axis='index')
+df.max(axis='columns')
+planets.dropna().describe()
+
+df = pd.DataFrame({'key': ['A', 'B', 'C', 'A', 'B', 'C'],
+                   'data': range(6)})
+df.groupby(by='key').sum()
