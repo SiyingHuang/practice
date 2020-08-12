@@ -226,4 +226,5 @@ planets.dropna().describe()
 
 df = pd.DataFrame({'key': ['A', 'B', 'C', 'A', 'B', 'C'],
                    'data': range(6)})
-df.groupby(by='key').sum()
+df.groupby(by='key').min()['data']
+df.groupby(by='key')['data'].min()
