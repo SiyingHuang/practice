@@ -228,3 +228,33 @@ df = pd.DataFrame({'key': ['A', 'B', 'C', 'A', 'B', 'C'],
                    'data': range(6)})
 df.groupby(by='key').min()['data']
 df.groupby(by='key')['data'].min()
+
+planets.groupby(by='method')['orbital_period'].median()
+for (method, group) in planets.groupby(by='method'):
+    print("{0:30s} shape={1}".format(method, group.shape))
+
+planets.groupby(by='method')['year'].describe()
+
+rng = np.random.RandomState(0)
+df = pd.DataFrame({'key': list('ABCABC'),
+                   'data1': range(6),
+                   'data2': rng.randint(0, 10, 6)})
+# 累计
+df.groupby(by='key').aggregate(['min', np.median, max])
+df.groupby(by='key').aggregate({'data1': 'min',
+                                'data2': 'max'})
+# 过滤
+def filter_func(x):
+    return x['data2'].std() > 4
+print(df)
+print(df.groupby(by='key').std())
+print(df.groupby(by='key').filter(filter_func))
+# 转换
+df.groupby(by='key').transform(lambda x: x - x.mean())
+# 应用
+def norm_by_data2(x):
+    # x是一个分组数据的DataFrame
+    x['data1'] /= x['data2'].sum()
+    return x
+print(df)
+print(df.groupby(by='key').apply(norm_by_data2))

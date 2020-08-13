@@ -173,3 +173,10 @@ mz = pd.read_csv(r'yy_if_active.txt',
 mz['tag'] = 1
 tmp = pd.merge(data, mz, how='left', on='mobileno')
 data = tmp.loc[tmp.tag != 1, ['mobileno']]
+
+
+import re
+str1 = 'tel:+8613761709586'
+pattern = re.compile('tel:\+([0-9]*)')
+gp = pattern.search(str1)
+gp.groups()
