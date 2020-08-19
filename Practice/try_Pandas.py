@@ -210,12 +210,8 @@ density = data2010['population'] / data2010['area (sq. mi)']  # 计算人口密�
 density.sort_values(ascending=False, inplace=True)  # 降序排列
 
 """
-行星数据
+groupby()
 """
-import seaborn as sns
-planets = sns.load_dataset('planets')
-planets.shape
-
 rng = np.random.RandomState(42)
 ser = pd.Series(rng.rand(5))
 df = pd.DataFrame({'A': rng.rand(5),
@@ -258,3 +254,19 @@ def norm_by_data2(x):
     return x
 print(df)
 print(df.groupby(by='key').apply(norm_by_data2))
+
+L = list('010120')
+df.groupby(L).sum()
+
+df2 = df.set_index('key')
+mapping = {'A': 'vowel', 'B': 'consonant', 'C': 'consonant'}
+df2.groupby(mapping).sum()
+df2.groupby(str.lower).mean()
+df2.groupby([str.lower, mapping]).sum()
+
+'''
+行星数据
+'''
+import seaborn as sns
+planets = sns.load_dataset('planets')
+planets.shape
