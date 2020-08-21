@@ -270,3 +270,7 @@ df2.groupby([str.lower, mapping]).sum()
 import seaborn as sns
 planets = sns.load_dataset('planets')
 planets.shape
+decade = 10 * (planets['year'] // 10)
+decade = decade.astype('str') + 's'
+decade.name = 'decade'
+planets.groupby(['method', decade])['number'].sum().unstack(level=1).fillna(0)
