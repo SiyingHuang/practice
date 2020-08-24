@@ -1,6 +1,8 @@
 import numpy as np
 import pandas as pd
 import os
+pd.set_option('display.max_columns', 600)
+pd.set_option('display.width', 600)
 
 obj = Series([-1, 0, 1, 2, 3]) # obj = Series(list((-1, 0, 1, 2, 3)))
 
@@ -178,9 +180,9 @@ tmp_flat = tmp.unstack()
 
 pd.concat([x, y], join='inner')
 
-"""
+'''
 案例：美国各州的数据统计
-"""
+'''
 # 原始数据读取
 os.chdir(r'D:\中移互联网\01 - 运营室\01 - 分析组\05 - 充电\Python\《Python数据科学手册》\PythonDataScienceHandbook-master\notebooks\data')
 pop = pd.read_csv(r'state-population.csv')
@@ -209,9 +211,9 @@ data2010.set_index('state', inplace=True)  # 设置'state'为索引列
 density = data2010['population'] / data2010['area (sq. mi)']  # 计算人口密度
 density.sort_values(ascending=False, inplace=True)  # 降序排列
 
-"""
+'''
 groupby()
-"""
+'''
 rng = np.random.RandomState(42)
 ser = pd.Series(rng.rand(5))
 df = pd.DataFrame({'A': rng.rand(5),
@@ -273,4 +275,43 @@ planets.shape
 decade = 10 * (planets['year'] // 10)
 decade = decade.astype('str') + 's'
 decade.name = 'decade'
-planets.groupby(['method', decade])['number'].sum().unstack(level=1).fillna(0)
+planets.groupby(['method', decade])['number'].sum().unstack(level=-1).fillna(0)
+
+'''
+数据透视表
+'''
+# 泰坦尼克号数据
+import numpy as np
+import pandas as pd
+import seaborn as sns
+titanic = sns.load_dataset('titanic')
+
+titanic.groupby('sex')[['survived']].mean()
+titanic.groupby(['sex', 'class'])[['survived']].mean().unstack(level=-1)
+titanic.pivot_table(index='sex',
+                    columns='class',
+                    values='survived',
+                    aggfunc='mean')
+
+age = pd.cut(titanic['age'], [0, 18, 80])  # 将年龄按照划分区间进行分组
+titanic.pivot_table(index=['sex', age],
+                    columns='class',
+                    values='survived',
+                    aggfunc='mean')
+
+fare = pd.qcut(titanic['fare'], 2)  # 将船票价格按最小最大值等分为2份（最小值：0，最大值：512.3292）后进行分组
+titanic.pivot_table(index=['sex', age],
+                    columns=[fare, 'class'],
+                    values='survived',  # 生还状态
+                    aggfunc='mean')
+
+titanic.pivot_table(index='sex',
+                    columns='class',
+                    aggfunc={'survived': 'sum', 'fare': 'mean'})
+
+'''
+案例：美国人的生日
+'''
+births = pd.read_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\05 - 充电\Python\《Python数据科学手册》\PythonDataScienceHandbook-master\notebooks\data\births.csv')
+births['decade'] = (10 * (births['year'] // 10)).astype('str') + 's'  # 增加“年代”字段
+births.pivot_table(index='decade', columns='gender', values='births', aggfunc='sum')
