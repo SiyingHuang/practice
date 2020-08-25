@@ -315,3 +315,20 @@ titanic.pivot_table(index='sex',
 births = pd.read_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\05 - 充电\Python\《Python数据科学手册》\PythonDataScienceHandbook-master\notebooks\data\births.csv')
 births['decade'] = (10 * (births['year'] // 10)).astype('str') + 's'  # 增加“年代”字段
 births.pivot_table(index='decade', columns='gender', values='births', aggfunc='sum')
+
+quartiles = np.percentile(births['births'], [25, 50, 75])
+mu = quartiles[1]  # 50分位数
+sig = 0.74 * (quartiles[2] - quartiles[0])  # 样本均值的稳定性估计
+
+births = births.query('(births > @mu - 5 * @sig) & (births < @mu + 5 * @sig)')  # 筛选出有效的生日数据
+births['day'] = births['day'].astype(int)
+births.index = pd.to_datetime(10000 * births.year +
+                              100 * births.month +
+                              births.day,
+                              format='%Y%m%d')  # 生成日期格式的索引
+births['dayofweek'] = births.index.dayofweek
+births['dayofyear'] = births.index.dayofyear
+from datetime import datetime
+births_by_date = births.pivot_table(values='births',
+                                    index=[births.index.month, births.index.day]) # 查看逐月平均出生人数
+births_by_date.index = [datetime(2020, month, day) for (month, day) in births_by_date.index]  # 任意虚构一个年份
