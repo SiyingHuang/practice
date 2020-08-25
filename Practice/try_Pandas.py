@@ -330,5 +330,5 @@ births['dayofweek'] = births.index.dayofweek
 births['dayofyear'] = births.index.dayofyear
 from datetime import datetime
 births_by_date = births.pivot_table(values='births',
-                                    index=[births.index.month, births.index.day]) # 查看逐月平均出生人数
+                                    index=[births.index.month, births.index.day])  # 查看逐月平均出生人数
 births_by_date.index = [datetime(2020, month, day) for (month, day) in births_by_date.index]  # 任意虚构一个年份
