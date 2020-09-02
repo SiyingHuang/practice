@@ -1,7 +1,9 @@
-# 字符串、base64字符串之间的相互转换代码
+"""
+字符串、base64字符串之间的相互转换代码
+"""
+
 
 import base64
-
 
 # 字符串 → base64字符串
 def strToBase64(s):

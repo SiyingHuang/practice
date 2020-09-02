@@ -1,4 +1,6 @@
-# 通过MD5方式加密文件
+"""
+通过MD5方式加密文件
+"""
 
 import pandas as pd
 import hashlib

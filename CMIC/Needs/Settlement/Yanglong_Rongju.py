@@ -1,5 +1,9 @@
-# 海信结算数据处理
-# 保证号码、IMEI均唯一
+"""
+需求：
+海信结算数据处理
+保证号码、IMEI均唯一
+"""
+
 
 import pandas as pd
 import numpy as np

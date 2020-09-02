@@ -1,6 +1,10 @@
-# 商拓侧提供号码包
-# 将其与指定周期内Native、MaaP等活跃用户进行匹配，并输出结果
-# 如需进行剔除敏感号码操作，则通过NumExcept.py进行处理
+"""
+需求：
+商拓侧提供号码包
+将其与指定周期内Native、MaaP等活跃用户进行匹配，并输出结果
+如需进行剔除敏感号码操作，则通过NumExcept.py进行处理
+"""
+
 
 import pandas as pd
 import numpy as np
