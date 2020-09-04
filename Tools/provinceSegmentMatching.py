@@ -1,3 +1,9 @@
+"""
+需求：
+根据号段匹配省份、地市信息。
+"""
+
+
 import pandas as pd
 import numpy as np
 import os

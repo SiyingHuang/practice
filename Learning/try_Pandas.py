@@ -332,4 +332,12 @@ from datetime import datetime
 births_by_date = births.pivot_table(values='births',
                                     index=[births.index.month, births.index.day])  # 查看逐月平均出生人数
 births_by_date.index = [datetime(2020, month, day) for (month, day) in births_by_date.index]  # 任意虚构一个年份
-births_by_date
+
+x = np.array(list('12345'), dtype=int)
+x * 2
+y = [1, 2, 3, 4, 5]
+[i * 2 for i in y]
+
+data = ['Peter', 'owen', None, 'gUIDO']
+[s.capitalize() for s in data]
+data_series = pd.Series
