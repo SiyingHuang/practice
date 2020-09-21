@@ -180,3 +180,11 @@ str1 = 'tel:+8613761709586'
 pattern = re.compile('tel:\+([0-9]*)')
 gp = pattern.search(str1)
 gp.groups()
+
+s = 'CPM-client/OMA2.2 RCS-client/UP_2.4 term-Meiz/M5-Note-7.0 client-JUPH/GB-2.30 OS-Android/7.0 Channel-terminal-731515/Channel-client-731184'
+s = 'CPM-client/OMA2.2 RCS-client/UP_2.4 term-Mi/MI_Redmi-K20-V12.0.4.0.QFJCNXM client-JUPH/GB-2.0 OS-Android/V12.0.4.0.QFJCNXM'
+s = 'CPM-client/OMA2.2 RCS-client/UP_2.4 term-Samsung/SM-G9810-G9810ZCU2BTH6 client_Samsung/IMS 6.0 OS-Android/10'
+pattern = re.compile(r'.*?term-(.*)/(.*) client-JUPH')
+pattern = re.compile(r'.*?term-(.*)/(.*) client')
+gp = pattern.search(s)
+gp.groups()
