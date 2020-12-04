@@ -1,3 +1,9 @@
+"""
+注释脚本
+功能：剔除指定号码
+"""
+
+
 import pandas as pd
 import numpy as np
 
@@ -33,7 +39,7 @@ def get_valid_dataframe(df: pd.DataFrame):      # 【传入文件为DataFrame格
             mobileno_name = name
             break
 
-    while mobileno_name not in df.columns:  # 列名不在已知可能的列名中时，需要手动输入
+    while mobileno_name not in df.columns:  # 列名不在已知可能的列名中时（此时mobileno_name仍为None），需要手动输入
         mobileno_name = input('请输入手机号的列名称： ')
 
     try:
@@ -50,8 +56,8 @@ class DataHandler:
         """初始化，将Series或DataFrame中的手机号转化为np.int64的标准化数据"""
         self.data = None
         self.name = 'mobileno'
-        self.original_nums = data.shape[0]
-        self.final_nums = 0
+        self.original_nums = data.shape[0]  # 剔除前号码数
+        self.final_nums = 0                 # 剔除后号码数
         self.blacklist_nums = None          # '黑名单'号码数
         self.staff_nums = None              # '集团内部员工'号码数
         self.already_send_nums = None       # '已经下发过的'号码数
@@ -74,7 +80,7 @@ class DataHandler:
 
     def delete_staff(self):
         """剔除集团内部员工"""
-        staff = pd.read_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\05 - 充电\Python\[承宗]-号码剔除验证工具\blacklist\运营需剔除号码\集团内部号码(2020年4月已处理).txt',
+        staff = pd.read_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\05 - 充电\Python\[承宗]-号码剔除验证工具\blacklist\集团内部号码(2020年4月已处理).txt',
                             dtype={'mobileno': np.int64})
         self.data, self.staff_nums = remove_df2_from_df1(df1=self.data, df2=staff, df1_name=self.name)
 
@@ -167,12 +173,13 @@ if __name__ == '__main__':
 # 承宗提供的脚本
 from preprocess.data_handler import DataHandler
 
-data = pd.read_csv(r'C:\Users\Administrator\Desktop\chatbot_day_active_gd_mz_0426.txt',
-                   header=None, names=['mobileno', 'city'], usecols=[0, 1])
+data = pd.read_csv(r'C:\Users\Administrator\Desktop\5G测试号码.txt',
+                   header=None, names=['mobileno', 'term'], sep='\t', usecols=[0, 1])
 dh = DataHandler(data=data)
-dh.delete_blacklist()
+# dh.delete_blacklist()
 dh.delete_staff()
+dh.delete_provinces(provinces=['北京'])
 result = dh.save()
 result = pd.merge(result, data, how='left', on='mobileno')
-result.to_csv(r'C:\Users\Administrator\Desktop\chatbot_day_active_gd_mz_0426（已剔除）.txt',
+result.to_csv(r'C:\Users\Administrator\Desktop\5G测试号码（已剔除）.txt',
               header=None, index=False)
