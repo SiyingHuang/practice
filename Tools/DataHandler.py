@@ -1,6 +1,7 @@
 """
-注释脚本
 功能：剔除指定号码
+撰写人：詹承宗
+注释人：黄思颖
 """
 
 
@@ -13,12 +14,12 @@ def remove_df2_from_df1(df1, df2, df1_name):     # 【从df1中剔除df2中的�
     df2['delete_flag'] = 1
     df1 = pd.merge(df1, df2, how='left', left_on=df1_name, right_on='mobileno')
     df1 = df1.loc[df1.delete_flag.isnull()]    # 保留无须剔除的号码
-    if df1_name != 'mobileno':  # 原始列名非mobileno时，merge之后就会多出一列mobileno，将其删除
+    if df1_name != 'mobileno':  # 原始列名非mobileno时，merge之后就会多出一列mobileno（因right_on的列名是'mobileno'），将其删除
         df1.drop(columns=['mobileno', 'delete_flag'], inplace=True)
     else:
         df1.drop(columns=['delete_flag'], inplace=True)
     after_nums = df1.shape[0]                  # 获取剔除后文件的行数
-    delete_nums = before_nums - after_nums     # 计算得到已剔除的号码数
+    delete_nums = before_nums - after_nums     # 计算得到被剔除的号码数
     return df1, delete_nums  # 返回剔除后的结果（df1）、剔除掉的号码数（delete_nums）
 
 
@@ -55,7 +56,7 @@ class DataHandler:
     def __init__(self, data):  # 初始化时，待剔除文件传入data中
         """初始化，将Series或DataFrame中的手机号转化为np.int64的标准化数据"""
         self.data = None
-        self.name = 'mobileno'
+        self.name = 'mobileno'              # 若传入Series，列名默认为'mobileno'；若传入DataFrame，列名从数据文件中获取
         self.original_nums = data.shape[0]  # 剔除前号码数
         self.final_nums = 0                 # 剔除后号码数
         self.blacklist_nums = None          # '黑名单'号码数
@@ -63,8 +64,9 @@ class DataHandler:
         self.already_send_nums = None       # '已经下发过的'号码数
         self.provinces_nums = None          # '指定省份'号码数
         self.special_mobileno_nums = None   # '特殊号码'数
+        '''数据类型判断'''
         if not (isinstance(data, pd.Series) or isinstance(data, pd.DataFrame)):  # 判断数据是否为Series或DataFrame
-            raise TypeError('data应该是一个Series或DataFrame!')
+            raise TypeError('data应该是一个Series或DataFrame!')                   # 若是其一，则转下一步；若都不是，则报错
 
         if isinstance(data, pd.DataFrame):                      # 若传入一个DataFrame，则调用get_valid_dataframe()
             self.data, self.name = get_valid_dataframe(df=data)
@@ -90,34 +92,36 @@ class DataHandler:
                                    dtype={'mobileno': np.int64})
         self.data, self.already_send_nums = remove_df2_from_df1(df1=self.data, df2=already_send, df1_name=self.name)
 
-    def delete_provinces(self, provinces: list) -> None:  # 指定返回值为None（-> None）
+    def delete_provinces(self, provinces: list) -> None:  # 指定返回值为None（“ -> None ”）
         """在没有省份字段的情况下，根据号段表剔除部分省份"""
-        if not isinstance(provinces, list):  # 判断传入省份是否为一个list
+        if not isinstance(provinces, list):     # 判断传入省份是否为一个list
             raise TypeError('provinces必须是一个list，如["河北", "安徽", "北京"]')
 
-        provinces_tuple = (                  # 省份名称列表
+        provinces_tuple = (                     # 省份名称列表
             '陕西', '江苏', '安徽', '四川', '江西', '北京', '重庆', '甘肃', '山西', '广东', '吉林', '宁夏', '西藏',
             '青海', '湖北', '湖南', '内蒙古', '河南', '山东', '辽宁', '上海', '河北', '云南', '新疆', '浙江', '福建',
             '天津', '广西', '黑龙江', '贵州', '海南')
 
-        for prov in provinces:  # provinces为传入的需要剔除的省份列表
-            if prov not in provinces_tuple:  # 判断输入省份是否有误
+        for prov in provinces:                  # provinces为传入的需要剔除的省份列表
+            if prov not in provinces_tuple:     # 判断输入省份是否有误
                 raise ValueError(f'"{prov}"不是合理省份！(请输入省份简称，如：河北)')
 
         before_nums = self.data.shape[0]                # 剔除前号码数
         prov_map = pd.read_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\05 - 充电\Python\[承宗]-号码剔除验证工具\blacklist\运营需剔除号码\三网号段分省映射_20191120.txt',
-                               usecols=[0, 1])  # 号段（prefix）- 前8位、省份（province）、城市（city）
-        prov_map = prov_map.loc[prov_map.province.isin(provinces)]  # 剔除号段表中的异网用户（非移动用户，prefix字段为“异网”）
+                               usecols=[0, 1])  # 该文件共有3列：号段（prefix）- 前8位、省份（province）、城市（city）
+        prov_map = prov_map.loc[prov_map.province.isin(provinces)]          # 生成待剔除“省份+号码”表（provinces为待剔除省份列表）
 
-        self.data['prefix'] = self.data[self.name] // 10000  # 取号码字段的前8位（“//”表示除法，结果向下取整）作为号段
-        self.data = pd.merge(self.data, prov_map, how='left', on='prefix')
-        self.data = self.data.loc[self.data.province.isnull()]  # 剔除指定省份
-        self.data.drop(columns=['prefix', 'province'], inplace=True)  # 删除号段、省份字段，仅保留源文件原有字段
-        after_nums = self.data.shape[0]                 # 剔除后号码数
-        self.provinces_nums = before_nums - after_nums  # 计算得到已剔除的号码数
+        self.data['prefix'] = self.data[self.name] // 10000                 # 取号码字段的前8位（“//”表示除法，结果向下取整）作为号段
+        self.data = pd.merge(self.data, prov_map, how='left', on='prefix')  # 匹配待剔除的省份信息
+        self.data = self.data.loc[self.data.province.isnull()]              # 剔除指定省份（保留无需剔除的号码）
+        self.data.drop(columns=['prefix', 'province'], inplace=True)        # 删除号段、省份字段，仅保留源文件原有字段
+        after_nums = self.data.shape[0]                                     # 剔除后号码数
+        self.provinces_nums = before_nums - after_nums                      # 计算得到已剔除的号码数
 
-    def delete_special_mobileno(self, data):     # 【剔除特殊号码】
-        before_nums = self.data.shape[0]
+    def delete_special_mobileno(self, data):
+        """剔除特殊号码"""
+        before_nums = self.data.shape[0]                # 剔除前号码数
+        '''数据类型判断'''
         if not (isinstance(data, pd.Series) or isinstance(data, pd.DataFrame)):
             raise TypeError('data应该是一个Series或DataFrame!')
 
@@ -138,7 +142,7 @@ class DataHandler:
         else:
             self.data.drop(columns=['delete_flag'], inplace=True)
 
-        after_nums = self.data.shape[0]
+        after_nums = self.data.shape[0]                 # 剔除后号码数
         self.special_mobileno_nums = before_nums - after_nums
 
     def save(self):
