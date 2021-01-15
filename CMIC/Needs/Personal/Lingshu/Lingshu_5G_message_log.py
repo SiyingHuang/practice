@@ -13,8 +13,11 @@ log = pd.read_csv(r'F:\HN20201113\UP0820201113010001.txt',
 data1 = log.loc[(log['ua'].map(lambda x: 'UP_2.4' in x)) & (log['ua'].map(lambda x: 'Meiz' not in x))]
 
 s = 'CPM-client/OMA2.2 RCS-client/UP_2.4 term-Mi/MI_Mi-10-V12.0.8.0.QJBCNXM client-JUPH/GB-2.0 OS-Android/V12.0.8.0.QJBCNXM;urn%3Aurn-7%3A3gpp-application.ims.iari.rcs.chatbot.sa;"+g.gsma.rcs.botversion=""#=1,#=2""";sip:+8613556425541@gd.5GMC.ims.mnc000.mcc460.3gppnetwork.org'
+s = 'UP_2.4 term-Samsung/SM-G9860-G9860ZCU2BTH6 client_Samsung/IMS 6.0 OS-Android/sip:+8618303118287he.5GMC.ims.mnc000.mcc460.3gppnetwork.org'
 pattern = re.compile(r'UP_2.4 term-(.*)/(.*) client.*sip:\+86(\d*)@(.*?)\.')
+pattern = re.compile(r'.*sip:\+86(\d*).*')
 gp = re.search(pattern, s)
+gp.group(1)
 gp.groups()
 
 
@@ -24,6 +27,9 @@ st = time.time()  # 计时开始
 log_up = pd.read_csv(r'UP.txt',
                      header=None, sep='sep@@', names=['ua'],
                      engine='python', chunksize=100000)  # 分块读取原始日志
+chatbot_data = pd.read_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\01 - 工作内容\【5G消息】\UP24list\UP24list.txt', header=None,
+                           sep='sep@@', names=['ua'],
+                           engine='python')
 chatbot_data = []
 for i in log_up:
     tmp = i.loc[(i['ua'].map(lambda x: 'UP_2.4' in x)) & (  # 含 “UP_2.4”
@@ -73,10 +79,10 @@ def extract_prov(s):
 st = time.time()  # 计时开始
 
 result = pd.DataFrame(columns=['brand', 'term', 'mobileno', 'code'])
-result['brand'] = chatbot_data['ua'].map(extract_brand)
-result['term'] = chatbot_data['ua'].map(extract_term)
+# result['brand'] = chatbot_data['ua'].map(extract_brand)
+# result['term'] = chatbot_data['ua'].map(extract_term)
 result['mobileno'] = chatbot_data['ua'].map(extract_mobileno)
-result['code'] = chatbot_data['ua'].map(extract_prov)
+# result['code'] = chatbot_data['ua'].map(extract_prov)
 
 print('耗时{:.4f}秒'.format(time.time() - st))  # 计算耗时
 
