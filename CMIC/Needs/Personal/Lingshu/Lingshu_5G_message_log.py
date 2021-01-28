@@ -1,3 +1,13 @@
+# !/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+用途：
+1.对5G消息 8+互联网 大区原始注册日志进行解析；
+2.筛选符合条件的日志；
+3.提取出品牌、机型、号码、省份等信息。
+"""
+
 import numpy as np
 import pandas as pd
 import re
