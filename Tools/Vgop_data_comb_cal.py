@@ -85,3 +85,4 @@ date.astype(datetime)
 result['日期'] = result['日期'].astype(datetime)
 
 datetime.strftime(datetime.strptime(date, '%Y%m%d'), '%Y/%m/%d')
+
