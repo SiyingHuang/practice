@@ -113,11 +113,3 @@ def unpack_list(lss):
 list(unpack_list1([1, [2, 3], 'string', b'01', [4, [5, 6]], (7, 8, (9, (10, (11, 12))))]))
 list(unpack_list('apple'))
 list(unpack_list1(1))
-
-
-
-data = pd.read_csv(r'C:\Users\Administrator\Desktop\发送名单.txt', header=None, names=['mobileno'])
-result['mobileno'] = result['mobileno'].astype(np.int64)
-result['tag'] = 1
-tmp = pd.merge(data, result, how='left', on='mobileno')
-tmp.loc[tmp.tag.notna()]

@@ -31,8 +31,8 @@ from datetime import datetime
 
 st = time.time()  # 开始计时
 
-path = r'C:\Users\Administrator\Desktop\和飞信(2)\和飞信\Days'
-file_list = os.listdir(r'C:\Users\Administrator\Desktop\和飞信(2)\和飞信\Days')
+path = r'C:\Users\Administrator\Desktop\IOP和飞信报表'
+file_list = os.listdir(path)
 result = pd.DataFrame(columns=['省份', '活跃用户数', '和飞信企业成员'])
 for file_name in file_list:
     if '和飞信' in file_name:
