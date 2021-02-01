@@ -70,8 +70,8 @@ print('耗时{:.4f}秒'.format(time.time() - st))  # 计算耗时
 '''
 测试代码
 '''
-data = pd.read_excel(r'C:\Users\Administrator\Desktop\和飞信(2)\和飞信\Days\和飞信+业务报表_20200101.xlsx',
-                     engine='openpyxl',  # 需指定engine，否则无法读取.xlsx文件
+data = pd.read_excel(os.path.join(path, '和飞信+业务报表_20200101.xlsx'),
+                     # engine='openpyxl',  # 需指定engine，否则无法读取.xlsx文件
                      skiprows=2,
                      usecols=[0, 3, 4, 5, 6],
                      names=['province', 'active_cmcc', 'active_other', 'etp_cmcc', 'etp_other'])
@@ -85,4 +85,3 @@ date.astype(datetime)
 result['日期'] = result['日期'].astype(datetime)
 
 datetime.strftime(datetime.strptime(date, '%Y%m%d'), '%Y/%m/%d')
-
