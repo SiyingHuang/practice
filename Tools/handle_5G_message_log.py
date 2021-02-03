@@ -9,7 +9,6 @@
     3.提取出品牌、机型、号码、省份等信息。
 """
 
-import numpy as np
 import pandas as pd
 import re
 import time
