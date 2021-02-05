@@ -9,7 +9,7 @@ import pandas as pd
 import numpy as np
 
 
-def remove_df2_from_df1(df1, df2, df1_name):     # 【从df1中剔除df2中的号码】
+def remove_df2_from_df1(df1, df2, df1_name):    # 【从df1中剔除df2中的号码】
     before_nums = df1.shape[0]                 # 获取剔除前文件的行数（0表示首列）
     df2['delete_flag'] = 1
     df1 = pd.merge(df1, df2, how='left', left_on=df1_name, right_on='mobileno')
