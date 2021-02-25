@@ -202,3 +202,7 @@ for file in file_list:
     print('耗时{:.4f}秒\n'.format(time.time() - st2))
 
 print('全部处理完成!\n耗时{:.4f}秒'.format(time.time() - st))
+
+str = '1231\r'
+t = str.strip().replace('\r', '')
+num = int(t.split('\t')[0])
