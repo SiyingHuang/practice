@@ -25,7 +25,6 @@ import numpy as np
 import pandas as pd
 import os
 import time
-import functools
 
 
 """初始化"""
@@ -203,6 +202,37 @@ for file in file_list:
 
 print('全部处理完成!\n耗时{:.4f}秒'.format(time.time() - st))
 
-str = '1231\r'
-t = str.strip().replace('\r', '')
-num = int(t.split('\t')[0])
+
+"""匹配客户信息、活跃时间(首次)"""
+path = r'C:\Users\M.Owen\Desktop\附件1：反馈给市场部的明细数据\处理后\匹配客户名称活跃时间'
+os.chdir(path)
+file_list = os.listdir(path)  # 待处理文件路径
+file_list = [x for x in file_list if x[-4:] == 'xlsx']
+
+print('开始处理..\n')
+st = time.time()
+
+data = []
+
+for file in file_list:
+    print('正在处理：{file_name}'.format(file_name=file))
+
+    sheet_list = pd.ExcelFile(file).sheet_names
+
+    # file = '11月新增201811-01.xlsx'
+    for sheet in sheet_list:
+        excel_data = pd.read_excel(file, sheet_name=sheet,
+                                   usecols=[2, 3, 4], names=['name', 'mobileno', 'first_active_date'])
+
+        data.append(excel_data)
+
+        print('完成：{name}'.format(name=sheet))
+
+    print('完成：{name}\n'.format(name=file))
+
+data = pd.concat(data, ignore_index=True)
+print('全部处理完成!\n耗时{:.4f}秒'.format(time.time() - st))
+
+data = data.loc[data.mobileno.notna()]
+data['mobileno'] = data['mobileno'].astype(np.int64)
+data.sort_values(by=['mobileno', 'first_active_date'], ascending={'mobileno': True, 'first_active_date': True})

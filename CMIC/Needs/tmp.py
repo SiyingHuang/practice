@@ -113,3 +113,7 @@ def unpack_list(lss):
 list(unpack_list1([1, [2, 3], 'string', b'01', [4, [5, 6]], (7, 8, (9, (10, (11, 12))))]))
 list(unpack_list('apple'))
 list(unpack_list1(1))
+
+
+list1 = [0, 1, 2, 2, 3, 5, 6, 7, 8, 80, 11, 11]
+list1.sort()
