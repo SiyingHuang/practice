@@ -53,9 +53,9 @@ def get_valid_dataframe(df: pd.DataFrame):      # 【传入文件为DataFrame格
 
 
 class DataHandler:
-    def __init__(self, data):  # 初始化时，待剔除文件传入data中
+    def __init__(self, data):  # 定义构造函数：初始化时，待剔除文件传入data中
         """初始化，将Series或DataFrame中的手机号转化为np.int64的标准化数据"""
-        self.data = None
+        self.data = None                    # 先初始化为None，对传入data进行类型判断后再赋值
         self.name = 'mobileno'              # 若传入Series，列名默认为'mobileno'；若传入DataFrame，列名从数据文件中获取
         self.original_nums = data.shape[0]  # 剔除前号码数
         self.final_nums = 0                 # 剔除后号码数
@@ -179,7 +179,8 @@ from preprocess.data_handler import DataHandler
 
 data = pd.read_csv(r'C:\Users\Administrator\Desktop\5G测试号码.txt',
                    header=None, names=['mobileno', 'term'], sep='\t', usecols=[0, 1])
-dh = DataHandler(data=data)
+dh = DataHandler(data=data)  # 创建实例对象
+'''调用实例的方法'''
 # dh.delete_blacklist()
 dh.delete_staff()
 dh.delete_provinces(provinces=['北京'])

@@ -251,3 +251,14 @@ result = pd.merge(conti_data, data, how='left', left_on='号码', right_on='mobi
 result.drop(columns='mobileno', inplace=True)
 result.to_excel(r'连号号码匹配结果.xlsx',
                 index=False)
+
+
+"""连号数统计"""
+os.chdir(r'C:\Users\M.Owen\Desktop')
+data = pd.read_csv(r'testdata.txt')
+data.sort_values(by='mobileno', ascending=True, inplace=True)
+data.reset_index()
+list(data)
+
+for num in zip(data.mobileno):
+    print(list(num))

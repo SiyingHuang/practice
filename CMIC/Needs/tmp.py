@@ -35,25 +35,6 @@ result.to_csv(r'C:\Users\Administrator\Desktop\华为潜在用户-湖北（已�
               header=None, index=False)
 
 
-
-bl = []
-for i in black_list:
-    bl.append(i)
-
-result = pd.concat(bl, ignore_index=True)
-
-# result.loc[(result.mobileno.map(lambda x: len(str(x)) != 11)) | (~result.mobileno.map(lambda x: str(x).startswith('1')))]
-result = result.loc[(result.mobileno.map(lambda x: len(str(x)) == 11)) & (result.mobileno.map(lambda x: str(x).startswith('1')))]
-
-result.to_csv(r'黑名单处理后.txt', index=False)
-data2 = pd.read_csv(r'黑名单处理后.txt', header='infer')
-
-data = data1.append(data2)
-data.drop_duplicates(inplace=True)
-data.to_csv(r'黑名单处理后.txt', index=False)
-
-
-
 data_re = pd.read_csv(r'C:\Users\Administrator\Desktop\record2.txt\record2.txt',
                       header=None, skiprows=1, names=['mobileno'],
                       sep='@sep', engine='python',
