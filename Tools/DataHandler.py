@@ -11,7 +11,7 @@ import numpy as np
 
 def remove_df2_from_df1(df1, df2, df1_name):    # 【从df1中剔除df2中的号码】
     before_nums = df1.shape[0]                 # 获取剔除前文件的行数（0表示首列）
-    df2['delete_flag'] = 1
+    df2['delete_flag'] = 1                     # 待剔除号码标识
     df1 = pd.merge(df1, df2, how='left', left_on=df1_name, right_on='mobileno')
     df1 = df1.loc[df1.delete_flag.isnull()]    # 保留无须剔除的号码
     if df1_name != 'mobileno':  # 原始列名非mobileno时，merge之后就会多出一列mobileno（因right_on的列名是'mobileno'），将其删除
@@ -23,7 +23,7 @@ def remove_df2_from_df1(df1, df2, df1_name):    # 【从df1中剔除df2中的号
     return df1, delete_nums  # 返回剔除后的结果（df1）、剔除掉的号码数（delete_nums）
 
 
-def get_valid_series(s: pd.Series):             # 【传入文件为Series格式】
+def get_valid_series(s: pd.Series):             # 【传入文件为Series格式】（s: pd.Series）
     try:
         tmp_df = s.astype(np.int64).to_frame(name='mobileno')            # 转换为int64格式，进一步转换为DataFrame
     except ValueError as e:
@@ -32,14 +32,15 @@ def get_valid_series(s: pd.Series):             # 【传入文件为Series格式
     return tmp_df
 
 
-def get_valid_dataframe(df: pd.DataFrame):      # 【传入文件为DataFrame格式】
+def get_valid_dataframe(df: pd.DataFrame):      # 【传入文件为DataFrame格式】（df: pd.DataFrame）
     mobileno_name, tmp_df = None, None
     probably_names = ['mobileno', '手机号', '手机', '号码', '用户号码']
+    # 判断传入文件号码列名称是否在已知列名中
     for name in probably_names:
-        if name in df.columns:  # df为传入文件
+        if name in df.columns:
             mobileno_name = name
             break
-
+    # 若不在已知列名字中
     while mobileno_name not in df.columns:  # 列名不在已知可能的列名中时（此时mobileno_name仍为None），需要手动输入
         mobileno_name = input('请输入手机号的列名称： ')
 
@@ -77,8 +78,8 @@ class DataHandler:
         """剔除黑名单"""
         blacklist = pd.read_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\05 - 充电\Python\[承宗]-号码剔除验证工具\blacklist\运营需剔除号码\和飞信免打扰黑名单库.txt',
                                 dtype={'mobileno': np.int64})
-        self.data, self.blacklist_nums = remove_df2_from_df1(df1=self.data, df2=blacklist, df1_name=self.name)
         # 返回剔除后的结果、剔除掉的号码数给self.data, self.blacklist_nums
+        self.data, self.blacklist_nums = remove_df2_from_df1(df1=self.data, df2=blacklist, df1_name=self.name)
 
     def delete_staff(self):
         """剔除集团内部员工"""
@@ -108,7 +109,7 @@ class DataHandler:
 
         before_nums = self.data.shape[0]                # 剔除前号码数
         prov_map = pd.read_csv(r'D:\中移互联网\01 - 运营室\01 - 分析组\05 - 充电\Python\[承宗]-号码剔除验证工具\blacklist\运营需剔除号码\三网号段分省映射_20191120.txt',
-                               usecols=[0, 1])  # 该文件共有3列：号段（prefix）- 前8位、省份（province）、城市（city）
+                               usecols=[0, 1])  # 该文件共有3列：号段-前8位（prefix）、省份（province）、城市（city）
         prov_map = prov_map.loc[prov_map.province.isin(provinces)]          # 生成待剔除“省份+号码”表（provinces为待剔除省份列表）
 
         self.data['prefix'] = self.data[self.name] // 10000                 # 取号码字段的前8位（“//”表示除法，结果向下取整）作为号段
@@ -163,7 +164,7 @@ class DataHandler:
 
 if __name__ == '__main__':
     test_data = pd.read_csv(r'C:\Users\Administrator\Desktop\20W测试号码.txt')
-    tmp = pd.DataFrame({'mobileno': [18810062919, 15273975252]})
+    tmp = pd.DataFrame({'mobileno': [18810062919, 15273975252]})  # 待剔除的特殊号码列表
     dh = DataHandler(test_data)
     dh.delete_blacklist()  # test_data继续传入delete_blacklist中
     dh.delete_staff()

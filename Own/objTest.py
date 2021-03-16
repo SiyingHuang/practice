@@ -18,12 +18,13 @@ class Employee:  # 员工基类
     def displayEmployee(self):
         print('name:', self.name, 'age:', self.age)
 
-t1 = Employee('Mike', 16)
+
+t1 = Employee('Mike', 16)  # 实例化
 t2 = Employee('Tom', 23)
 t1.displayEmployee()
 t2.displayEmployee()
 Employee.empCount
 
-isinstance(t1, Employee)
+isinstance(t1, Employee)  # 判断是否为类的实例
 
 
