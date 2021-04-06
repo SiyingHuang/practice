@@ -13,9 +13,12 @@ result_path = r'C:\Users\Administrator\Desktop\【财务收支类问题专项评
 
 file_list = os.listdir(path)  # 待处理文件路径
 file_list = [x for x in file_list if x[-4:] == 'xlsx']
-sheet_list = ['2019年-2020年5月']
-sheet_list = ['2019年1月-2020年5月团组报账单']
-sheet_list = ['2020年6月-2021年2月']
+sheet_list = '2019年-2020年5月'
+sheet_list = '2019年1月-2020年5月团组报账单'
+sheet_list = '2020年6月-2021年2月'
+sheet_dict = {'2019年-2020年5月': ['部门', '报账单编号', '出差开始日期', '出差返回日期', '出差人', '出发地点', '到达地点', '摘要'],
+              '2019年1月-2020年5月团组报账单': ['申请单编号', '出差开始日期', '出差返回日期', '出发地点', '到达地点', '事由及说明', '出差人姓名', '报账人'],
+              '2020年6月-2021年2月': ['申请单编号', '出差开始日期', '出差返回日期', '出差人数', '出发地点', '到达地点', '事由及说明', '报账人', '供应商名称', '经办人']}
 
 print('开始处理..\n')
 st = time.time()
@@ -34,14 +37,7 @@ for sheet in sheet_list:
         if sheet in this_sheet_list:
             excel_data = pd.read_excel(file, sheet_name=sheet)
 
-            # # 2019年-2020年5月
-            # excel_data = excel_data[['部门', '报账单编号', '出差开始日期', '出差返回日期', '出差人', '出发地点', '到达地点', '摘要']]
-            #
-            # # 2020年6月-2021年2月
-            # excel_data = excel_data[['申请单编号', '出差开始日期', '出差返回日期', '出差人数', '出发地点', '到达地点', '事由及说明', '报账人', '供应商名称', '经办人']]
-
-            # 2019年1月-2020年5月团组报账单
-            excel_data = excel_data[['申请单编号', '出差开始日期', '出差返回日期', '出发地点', '到达地点', '事由及说明', '出差人姓名', '报账人']]
+            excel_data = excel_data[sheet_dict[sheet_list]]
 
         data.append(excel_data)
 
