@@ -3,6 +3,11 @@
 # @Time : 2021/4/2
 # @Author : Owen
 
+"""
+需求人：杨静宜
+需求：财务收支类审计，合并多个excel文件，并保留指定字段。
+"""
+
 import pandas as pd
 import os
 import time
