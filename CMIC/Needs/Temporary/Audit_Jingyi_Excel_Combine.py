@@ -12,6 +12,7 @@ import pandas as pd
 import os
 import time
 
+"""需求一"""
 path = r'C:\Users\Administrator\Desktop\【财务收支类问题专项评估】资料需求清单-财务部（补充资料）'
 os.chdir(path)
 result_path = r'C:\Users\Administrator\Desktop\【财务收支类问题专项评估】资料需求清单-财务部（补充资料）'
@@ -54,3 +55,23 @@ for sheet in sheet_list:
     print('完成：{sheet_name}\n'.format(sheet_name=sheet))
 
 print('全部处理完成!\n耗时{:.4f}秒'.format(time.time() - st))
+
+
+
+"""需求二"""
+path = r'C:\Users\Administrator\Desktop\外包人员的考勤记录-融通部'
+os.chdir(path)
+file_list = os.listdir(path)  # 待处理文件路径
+
+data = []
+
+for file in file_list:
+    print('正在处理：{file_name}'.format(file_name=file))
+
+    excel_data = pd.read_excel(os.path.join(path, file))
+
+    data.append(excel_data)
+
+data = pd.concat(data, ignore_index=True)
+
+data.to_excel(r'外包人员的考勤记录（合并）.xlsx', index=False)
