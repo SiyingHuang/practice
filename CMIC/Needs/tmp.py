@@ -7,15 +7,15 @@ import random
 import datetime
 
 with open(
-        r'C:\Users\Administrator\Desktop\黑名单.txt',
+        r'C:\Users\Administrator\Desktop\中间号\huadan_20191031.txt',
         encoding='utf-8') as f:
     for i in range(5):
         tmp = f.readline()
         print(tmp)
 
 count = 0
-f = open(r'C:\Users\Administrator\Desktop\20191230_I_DATA_CHATBOT_USER_DTL_D.txt',
-         encoding='utf-8')
+f = open(r'C:\Users\Administrator\Desktop\中间号\huadan_20191031.txt',
+         encoding='gbk')
 for line in f.readlines():
     count = count + 1
 print(count)
