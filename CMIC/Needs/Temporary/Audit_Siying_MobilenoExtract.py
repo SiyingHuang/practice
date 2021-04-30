@@ -40,4 +40,4 @@ tmp = data.loc[data.mobileno.map(lambda x: str(x).startswith('1') and len(str(x)
 tmp.to_csv(r'和多号中间号主叫号码清单（手机号）.txt', index=False)
 tmp = pd.read_csv(r'和多号中间号主叫号码清单（手机号）.txt', dtype='str')
 tmp['tag'] = 1
-tmp.to_csv(r'和多号中间号主叫号码清单（手机号）-tag.txt', index=False)
+tmp[['tag', 'mobileno']].to_csv(r'和多号中间号主叫号码清单（手机号）-tag.txt', index=False)
