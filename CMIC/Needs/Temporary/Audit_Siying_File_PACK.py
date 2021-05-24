@@ -3,7 +3,6 @@
 # @Time : 2021/5/12
 # @Author : Owen
 
-# from pathlib import Path
 import os
 import sys
 
@@ -16,9 +15,9 @@ def file():
         for f in files:
             xls_list.append(os.path.join(root, f))
 
-    with open('文件归档明细.txt', 'w', encoding='utf-8') as f:
-        for i in range(len(xls_list)):
-            s = str(xls_list[i]) + '\n'
+    with open(r'file_detail.txt', 'w', encoding='utf-8') as f:
+        for i in xls_list:
+            s = str(i) + '\n'
             f.write(s)
 
 
