@@ -1,3 +1,8 @@
+"""
+苏国曦提供的日志处理脚本。
+"""
+
+
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 import datetime

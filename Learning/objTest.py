@@ -26,5 +26,3 @@ t2.displayEmployee()
 Employee.empCount
 
 isinstance(t1, Employee)  # 判断是否为类的实例
-
-
