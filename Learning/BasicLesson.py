@@ -1,5 +1,32 @@
+""""
+詹承宗-Python课程、练习等。
+"""
+
+
 import pandas as pd
 import numpy as np
+import os
+
+# 【利用Python进行简单文本分析】
+from datetime import datetime
+# 1、处理格式异常的日志
+os.chdir(r'D:\Data\中移互联网\01 - 运营室\01 - 分析组\05 - 充电\Python\[承宗]-Python课程\利用Python进行简单文本分析\文本分析_mm-pandas\文本分析')
+handle_txt = open('handle.txt', 'w', encoding='utf-8')
+with open('文件1：40123端口用户上行消息.csv', 'r', encoding='gbk') as f:
+    for idx, line in enumerate(f):
+        if idx < 3:
+            continue
+        while True:
+            last_element = line.split(',')[-1].replace('\n', '')  # 每行末尾都有换行符（\n），需要替换掉
+
+            try:
+                datetime.strptime(last_element, '%Y-%m-%d %H:%M:%S')
+            except ValueError:
+                line = line.replace('\n', '。') + f.readline()
+                continue
+
+
+
 
 # 【Lesson4 练习】
 # 1、判断两个字符串是否相同

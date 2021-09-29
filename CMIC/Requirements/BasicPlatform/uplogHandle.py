@@ -1,5 +1,10 @@
 # -*-coding:utf-8-*-
 
+"""
+功能：处理上行日志，对日志进行解析、正则匹配。
+"""
+
+
 import pandas as pd
 import re
 import time
@@ -9,11 +14,9 @@ import base64
 
 # base64字符串 → 字符串
 def base64_2_str(s):
-    '''
-    将base64字符串转换为字符串
-    :param s:
-    :return:
-    '''
+    # 将base64字符串转换为字符串
+    # :param s:
+    # :return:
     strDecode = base64.b64decode(bytes(s, encoding="utf8"))
     return str(strDecode, encoding='utf8')
 
