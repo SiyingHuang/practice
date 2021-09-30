@@ -14,16 +14,28 @@ os.chdir(r'D:\Data\中移互联网\01 - 运营室\01 - 分析组\05 - 充电\Pyt
 handle_txt = open('handle.txt', 'w', encoding='utf-8')
 with open('文件1：40123端口用户上行消息.csv', 'r', encoding='gbk') as f:
     for idx, line in enumerate(f):
-        if idx < 3:
+        if idx <3:
             continue
         while True:
-            last_element = line.split(',')[-1].replace('\n', '')  # 每行末尾都有换行符（\n），需要替换掉
+            last_element = line.split(',')[-1].replace('\n', '')  # 每行最后一个元素
 
             try:
                 datetime.strptime(last_element, '%Y-%m-%d %H:%M:%S')
-            except ValueError:
-                line = line.replace('\n', '。') + f.readline()
+            except:
+                line = line.replace('\n', '') + f.readline()
                 continue
+
+            if line.count(',') == 3:
+                handle_txt.write(line)
+            else:
+                ls = line.split(',')
+
+                # ls[1:-2]为消息内容所在位置，将内容中的英文逗号替换为中文逗号
+                new_line = ls[0] + ',' + '，'.join(ls[1:-2]) + ',' + ls[-2] + ',' + ls[-1]
+                handle_txt.write(new_line)
+            break
+
+handle_txt.close()
 
 
 
