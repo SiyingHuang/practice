@@ -14,24 +14,24 @@ os.chdir(r'D:\Data\中移互联网\01 - 运营室\01 - 分析组\05 - 充电\Pyt
 handle_txt = open('handle.txt', 'w', encoding='utf-8')
 with open('文件1：40123端口用户上行消息.csv', 'r', encoding='gbk') as f:
     for idx, line in enumerate(f):
-        if idx <3:
-            continue
+        if idx < 3:
+            continue  # 跳过非标准格式数据（前3行）
         while True:
-            last_element = line.split(',')[-1].replace('\n', '')  # 每行最后一个元素
+            last_element = line.split(',')[-1].replace('\n', '')  # 取每行最后一个元素，替换掉换行符
 
-            try:
+            try:  # 检查每行最后一个元素是否为标准datetime，若不是，则由于消息内容中换行符导致换行有误
                 datetime.strptime(last_element, '%Y-%m-%d %H:%M:%S')
-            except:
-                line = line.replace('\n', '') + f.readline()
+            except ValueError:
+                line = line.replace('\n', '') + f.readline()  # 将该行与下一行内容进行拼接（f.readline()为下一行内容）
                 continue
 
-            if line.count(',') == 3:
+            if line.count(',') == 3:  # 检查数据列数是否为4（即是否有3个逗号分隔符）
                 handle_txt.write(line)
             else:
                 ls = line.split(',')
 
                 # ls[1:-2]为消息内容所在位置，将内容中的英文逗号替换为中文逗号
-                new_line = ls[0] + ',' + '，'.join(ls[1:-2]) + ',' + ls[-2] + ',' + ls[-1]
+                new_line = ls[0] + ',' + '，'.join(ls[1:-2]) + ',' + ls[-2] + ',' + ls[-1]  # 消息内容的英文逗号替换为中文逗号
                 handle_txt.write(new_line)
             break
 
