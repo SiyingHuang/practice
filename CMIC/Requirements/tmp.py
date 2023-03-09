@@ -6,8 +6,6 @@ import os
 import random
 import datetime
 
-import xlrd
-
 with open(
         r'C:\Users\Administrator\Desktop\中间号\huadan_20191031.txt',
         encoding='utf-8') as f:
